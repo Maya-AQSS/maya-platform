@@ -30,11 +30,10 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
-          # cache: 'pnpm' — re-enable once pnpm-lock.yaml is committed
+          cache: 'pnpm'
 
       - name: Install dependencies
-        # No --frozen-lockfile until we commit pnpm-lock.yaml at the root.
-        run: pnpm install
+        run: pnpm install --frozen-lockfile
 
       - name: Typecheck
         run: pnpm -r --filter='./packages/js/*' typecheck
