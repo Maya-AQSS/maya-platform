@@ -30,7 +30,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
-          cache: 'pnpm'
+          # cache: 'pnpm' — re-enable once pnpm-lock.yaml is committed
 
       - name: Install dependencies
         # No --frozen-lockfile until we commit pnpm-lock.yaml at the root.
