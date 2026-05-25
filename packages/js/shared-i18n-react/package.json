@@ -29,7 +29,8 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Maya-AQSS/shared-i18n-react.git"
+    "url": "git+https://github.com/Maya-AQSS/maya_platform.git",
+    "directory": "packages/js/shared-i18n-react"
   },
   "publishConfig": {
     "access": "public"

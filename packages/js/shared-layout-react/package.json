@@ -31,7 +31,8 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Maya-AQSS/shared-layout-react.git"
+    "url": "git+https://github.com/Maya-AQSS/maya_platform.git",
+    "directory": "packages/js/shared-layout-react"
   },
   "publishConfig": {
     "access": "public"
