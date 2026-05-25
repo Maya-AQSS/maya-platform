@@ -17,7 +17,7 @@
  */
 import { useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
-import { writeOverrides } from '@maya/shared-auth-react'
+import { writeOverrides } from '@ceedcv-maya/shared-auth-react'
 import {
   DATE_LOCALE_MAP,
   LOCALE_OPTIONS,

@@ -5,7 +5,7 @@
  * Cada app fusiona este resource con sus namespaces propios en su
  * `i18n/resources.ts`:
  *
- *   import { commonResources } from '@maya/shared-i18n-react'
+ *   import { commonResources } from '@ceedcv-maya/shared-i18n-react'
  *   export const resources = {
  *     es: { ...commonResources.es, dashboard: esDashboard, ... },
  *     va: { ...commonResources.va, ... },

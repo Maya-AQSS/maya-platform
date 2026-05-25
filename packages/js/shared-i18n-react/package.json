@@ -1,6 +1,6 @@
 {
-  "name": "@maya/shared-i18n-react",
-  "version": "0.1.0",
+  "name": "@ceedcv-maya/shared-i18n-react",
+  "version": "0.2.0",
   "type": "module",
   "main": "src/index.ts",
   "types": "src/index.ts",
@@ -9,7 +9,8 @@
     "react-i18next": "^17.0.0",
     "i18next-browser-languagedetector": "^8.0.0",
     "react": "^18.0.0 || ^19.0.0",
-    "react-dom": "^18.0.0 || ^19.0.0"
+    "react-dom": "^18.0.0 || ^19.0.0",
+    "@ceedcv-maya/shared-auth-react": "^0.2.0"
   },
   "devDependencies": {
     "@types/react": "^19.0.0",
@@ -20,7 +21,7 @@
     "i18next-browser-languagedetector": "^8.0.0"
   },
   "scripts": {
-    "build": "echo \"source-only library \u2014 no build step\"",
+    "build": "tsc --noEmit",
     "test": "echo \"no tests yet\" && exit 0",
     "typecheck": "tsc --noEmit",
     "lint": "echo \"no linter configured\""
@@ -28,10 +29,36 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/Maya-AQSS/maya-shared-i18n-react.git",
-    "directory": "packages/js/shared-i18n-react"
+    "url": "git+https://github.com/Maya-AQSS/shared-i18n-react.git"
   },
   "publishConfig": {
     "access": "public"
-  }
+  },
+  "description": "i18next + Keycloak locale sync for React: useLocale, useKeycloakLocaleSync, createI18n factory, language overrides API.",
+  "keywords": [
+    "react",
+    "i18n",
+    "i18next",
+    "locale",
+    "keycloak",
+    "translation",
+    "ceedcv",
+    "maya"
+  ],
+  "author": {
+    "name": "CEEDCV",
+    "email": "info@ceedcv.es",
+    "homepage": "https://ceedcv.es"
+  },
+  "homepage": "https://github.com/Maya-AQSS/shared-i18n-react#readme",
+  "bugs": {
+    "url": "https://github.com/Maya-AQSS/maya_platform/issues"
+  },
+  "sideEffects": false,
+  "files": [
+    "src",
+    "LICENSE",
+    "README.md",
+    "tsconfig.json"
+  ]
 }

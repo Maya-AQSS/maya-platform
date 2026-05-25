@@ -1,31 +1,23 @@
-# ceedcv-maya/shared-messaging-laravel
+# ceedcv-maya/shared-profile-laravel
 
-RabbitMQ messaging layer for Laravel: typed event publishers (audit, logs, notifications, alerts), reusable consumer base, retry/DLX handling.
+User profile endpoints for Laravel + Keycloak: GET /me, PUT /me/locale, configurable resolvers, FormRequest validation.
 
 Part of the [ceedcv-maya/maya_platform](https://github.com/Maya-AQSS/maya_platform) mono-repo. Distributed independently for reuse outside the Maya ecosystem.
 
 ## Installation
 
 ```bash
-composer require ceedcv-maya/shared-messaging-laravel
+composer require ceedcv-maya/shared-profile-laravel
 ```
+
+Adds `GET /me` and `PUT /me/locale` endpoints to your Laravel app. Resolver is configurable to bind to your user model.
 
 ```php
-use Maya\Messaging\Publishers\AuditPublisher;
-
-AuditPublisher::dispatch([
-    'app' => 'orders',
-    'action' => 'create',
-    'entity_type' => 'order',
-    'entity_id' => $order->id,
-    'user_id' => auth()->id(),
-]);
-```
-
-```env
-RABBITMQ_HOST=rabbitmq.example.org
-RABBITMQ_USER=guest
-RABBITMQ_PASS=guest
+// config/profile.php
+return [
+    'user_resolver' => \App\Resolvers\KeycloakUserResolver::class,
+    'locale_writer' => \App\Resolvers\DbLocaleWriter::class,
+];
 ```
 
 

@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react'
-import { useOidcSession } from '@maya/shared-auth-react'
+import { useOidcSession } from '@ceedcv-maya/shared-auth-react'
 import { useUserProfile } from './UserProfileContext'
 
 /**

@@ -8,7 +8,7 @@
  *
  * @example
  * // src/i18n/index.ts
- * import { createI18n } from '@maya/shared-i18n-react'
+ * import { createI18n } from '@ceedcv-maya/shared-i18n-react'
  * import { resources, NAMESPACES } from './resources'
  *
  * const i18n = createI18n(resources, NAMESPACES)
@@ -17,7 +17,7 @@
 import i18next, { type Resource } from 'i18next'
 import LanguageDetector from 'i18next-browser-languagedetector'
 import { initReactI18next } from 'react-i18next'
-import { readOverrides } from '@maya/shared-auth-react'
+import { readOverrides } from '@ceedcv-maya/shared-auth-react'
 import { DEFAULT_LOCALE, STORAGE_KEY, SUPPORTED_LOCALES, type SupportedLocale } from './config'
 
 /**

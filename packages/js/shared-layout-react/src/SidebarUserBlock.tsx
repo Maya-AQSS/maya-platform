@@ -6,7 +6,7 @@ import {
   useState,
 } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Avatar } from '@maya/shared-ui-react'
+import { Avatar } from '@ceedcv-maya/shared-ui-react'
 
 type Props = {
   userName: string

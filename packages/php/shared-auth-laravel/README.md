@@ -1,31 +1,29 @@
-# ceedcv-maya/shared-messaging-laravel
+# ceedcv-maya/shared-auth-laravel
 
-RabbitMQ messaging layer for Laravel: typed event publishers (audit, logs, notifications, alerts), reusable consumer base, retry/DLX handling.
+Keycloak/OIDC JWT authentication middleware for Laravel: JWKS caching, RequirePermissionMiddleware, AppToAppAuthenticator, configurable user resolver.
 
 Part of the [ceedcv-maya/maya_platform](https://github.com/Maya-AQSS/maya_platform) mono-repo. Distributed independently for reuse outside the Maya ecosystem.
 
 ## Installation
 
 ```bash
-composer require ceedcv-maya/shared-messaging-laravel
+composer require ceedcv-maya/shared-auth-laravel
 ```
 
 ```php
-use Maya\Messaging\Publishers\AuditPublisher;
+// routes/api.php
+use Maya\Auth\Middleware\AuthenticateJwt;
+use Maya\Auth\Middleware\RequirePermission;
 
-AuditPublisher::dispatch([
-    'app' => 'orders',
-    'action' => 'create',
-    'entity_type' => 'order',
-    'entity_id' => $order->id,
-    'user_id' => auth()->id(),
-]);
+Route::middleware([AuthenticateJwt::class, RequirePermission::class.':users.read'])->group(function () {
+    Route::get('/me', fn () => auth()->user());
+});
 ```
 
 ```env
-RABBITMQ_HOST=rabbitmq.example.org
-RABBITMQ_USER=guest
-RABBITMQ_PASS=guest
+KEYCLOAK_URL=https://keycloak.example.org
+KEYCLOAK_REALM=my-realm
+KEYCLOAK_CLIENT_ID=my-app
 ```
 
 

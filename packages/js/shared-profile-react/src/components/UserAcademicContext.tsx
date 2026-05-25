@@ -7,7 +7,7 @@ import {
   EmptyState,
   Spinner,
   type ColumnDef,
-} from '@maya/shared-ui-react'
+} from '@ceedcv-maya/shared-ui-react'
 import type {
   AcademicBlockKey,
   AcademicContext,

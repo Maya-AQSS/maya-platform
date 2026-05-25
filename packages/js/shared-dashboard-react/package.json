@@ -1,6 +1,6 @@
 {
-  "name": "@maya/shared-dashboard-react",
-  "version": "0.1.0",
+  "name": "@ceedcv-maya/shared-dashboard-react",
+  "version": "0.2.0",
   "type": "module",
   "main": "src/index.ts",
   "types": "src/index.ts",
@@ -21,7 +21,7 @@
     "i18next": "^26.0.0"
   },
   "scripts": {
-    "build": "echo \"source-only library \u2014 no build step\"",
+    "build": "tsc --noEmit",
     "test": "echo \"no tests yet\" && exit 0",
     "typecheck": "tsc --noEmit",
     "lint": "echo \"no linter configured\""
@@ -29,10 +29,34 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/Maya-AQSS/maya-shared-dashboard-react.git",
-    "directory": "packages/js/shared-dashboard-react"
+    "url": "git+https://github.com/Maya-AQSS/shared-dashboard-react.git"
   },
   "publishConfig": {
     "access": "public"
-  }
+  },
+  "description": "Dashboard primitives for React: configurable widget grid (react-grid-layout), widget registry, persistence helpers.",
+  "keywords": [
+    "react",
+    "dashboard",
+    "widgets",
+    "grid-layout",
+    "ceedcv",
+    "maya"
+  ],
+  "author": {
+    "name": "CEEDCV",
+    "email": "info@ceedcv.es",
+    "homepage": "https://ceedcv.es"
+  },
+  "homepage": "https://github.com/Maya-AQSS/shared-dashboard-react#readme",
+  "bugs": {
+    "url": "https://github.com/Maya-AQSS/maya_platform/issues"
+  },
+  "sideEffects": false,
+  "files": [
+    "src",
+    "LICENSE",
+    "README.md",
+    "tsconfig.json"
+  ]
 }

@@ -13,7 +13,7 @@ import {
   readCachedUserProfile,
   useOidcSession,
   writeCachedUserProfile,
-} from '@maya/shared-auth-react'
+} from '@ceedcv-maya/shared-auth-react'
 import type { BaseMeProfile } from './types'
 
 export type UserProfileContextValue<TProfile extends BaseMeProfile> = {

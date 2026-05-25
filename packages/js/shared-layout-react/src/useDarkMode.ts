@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { readOverrides, writeOverrides } from '@maya/shared-auth-react'
+import { readOverrides, writeOverrides } from '@ceedcv-maya/shared-auth-react'
 
 /**
  * Hook compartido de tema claro/oscuro con sincronización cross-subdomain.

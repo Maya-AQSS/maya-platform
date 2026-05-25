@@ -1,4 +1,4 @@
-import type { ApiClient } from '@maya/shared-auth-react'
+import type { ApiClient } from '@ceedcv-maya/shared-auth-react'
 import type {
   AcademicContext,
   AcademicContextResponse,

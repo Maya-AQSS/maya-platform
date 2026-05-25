@@ -1,31 +1,20 @@
-# ceedcv-maya/shared-messaging-laravel
+# ceedcv-maya/shared-http-laravel
 
-RabbitMQ messaging layer for Laravel: typed event publishers (audit, logs, notifications, alerts), reusable consumer base, retry/DLX handling.
+Reusable HTTP utilities for Laravel APIs: standardized JSON response envelope, health endpoint, app metadata controller, exception handler.
 
 Part of the [ceedcv-maya/maya_platform](https://github.com/Maya-AQSS/maya_platform) mono-repo. Distributed independently for reuse outside the Maya ecosystem.
 
 ## Installation
 
 ```bash
-composer require ceedcv-maya/shared-messaging-laravel
+composer require ceedcv-maya/shared-http-laravel
 ```
 
 ```php
-use Maya\Messaging\Publishers\AuditPublisher;
+use Maya\Http\ResponseEnvelope;
 
-AuditPublisher::dispatch([
-    'app' => 'orders',
-    'action' => 'create',
-    'entity_type' => 'order',
-    'entity_id' => $order->id,
-    'user_id' => auth()->id(),
-]);
-```
-
-```env
-RABBITMQ_HOST=rabbitmq.example.org
-RABBITMQ_USER=guest
-RABBITMQ_PASS=guest
+return ResponseEnvelope::ok(['user' => $user]);
+return ResponseEnvelope::error('not_found', 'User not found', status: 404);
 ```
 
 

@@ -6,7 +6,7 @@ type PlaceholderPageProps = {
 /**
  * Placeholder genérico para rutas que aún no tienen vista propia. Usado en
  * audit/logs durante la migración progresiva a React; las apps lo importan
- * desde `@maya/shared-ui-react`.
+ * desde `@ceedcv-maya/shared-ui-react`.
  */
 export function PlaceholderPage({ title, description }: PlaceholderPageProps) {
   return (
