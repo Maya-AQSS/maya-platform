@@ -21,8 +21,8 @@
     "react-i18next": "^17.0.0",
     "i18next": "^26.0.0",
     "@types/react-router-dom": "^5.3.3",
-    "@maya/shared-auth-react": "workspace:*",
-    "@maya/shared-ui-react": "workspace:*"
+    "@maya/shared-auth-react": "^0.1.0",
+    "@maya/shared-ui-react": "^0.1.0"
   },
   "scripts": {
     "build": "echo \"source-only library \u2014 no build step\"",

@@ -70,7 +70,7 @@ importers:
   packages/js/shared-i18n-react:
     devDependencies:
       '@maya/shared-auth-react':
-        specifier: workspace:*
+        specifier: ^0.1.0
         version: link:../shared-auth-react
       '@types/react':
         specifier: ^19.0.0
@@ -94,10 +94,10 @@ importers:
   packages/js/shared-layout-react:
     devDependencies:
       '@maya/shared-auth-react':
-        specifier: workspace:*
+        specifier: ^0.1.0
         version: link:../shared-auth-react
       '@maya/shared-ui-react':
-        specifier: workspace:*
+        specifier: ^0.1.0
         version: link:../shared-ui-react
       '@types/react':
         specifier: ^19.0.0
@@ -127,10 +127,10 @@ importers:
   packages/js/shared-profile-react:
     devDependencies:
       '@maya/shared-auth-react':
-        specifier: workspace:*
+        specifier: ^0.1.0
         version: link:../shared-auth-react
       '@maya/shared-ui-react':
-        specifier: workspace:*
+        specifier: ^0.1.0
         version: link:../shared-ui-react
       '@types/react':
         specifier: ^19.0.0
@@ -154,10 +154,10 @@ importers:
   packages/js/shared-sidebar-react:
     devDependencies:
       '@maya/shared-auth-react':
-        specifier: workspace:*
+        specifier: ^0.1.0
         version: link:../shared-auth-react
       '@maya/shared-layout-react':
-        specifier: workspace:*
+        specifier: ^0.1.0
         version: link:../shared-layout-react
       '@types/react':
         specifier: ^19.0.0
