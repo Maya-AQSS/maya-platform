@@ -48,7 +48,9 @@ jobs:
 
       - name: Validate composer.json
         working-directory: packages/php/${{ matrix.package }}
-        run: composer validate --strict --no-check-publish
+        # No --strict: monorepo-builder needs the `version` field, which triggers
+        # an informational warning that --strict would treat as error.
+        run: composer validate --no-check-publish
 
       - name: Install dependencies
         working-directory: packages/php/${{ matrix.package }}

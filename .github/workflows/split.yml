@@ -42,6 +42,8 @@ jobs:
           fetch-depth: 0
       - name: Split via splitsh/lite
         uses: danharrin/monorepo-split-github-action@v2.3.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.SPLIT_TOKEN }}
         with:
           tag: ${{ github.ref_type == 'tag' && github.ref_name || '' }}
           branch: ${{ github.ref_type == 'branch' && github.ref_name || 'main' }}
@@ -50,7 +52,6 @@ jobs:
           repository_name: '${{ matrix.package }}'
           user_name: 'maya-platform-bot'
           user_email: 'bot@maya-aqss.org'
-          token: ${{ secrets.SPLIT_TOKEN }}
 
   split-js:
     name: Split ${{ matrix.package }}
@@ -66,6 +67,8 @@ jobs:
           fetch-depth: 0
       - name: Split via splitsh/lite
         uses: danharrin/monorepo-split-github-action@v2.3.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.SPLIT_TOKEN }}
         with:
           tag: ${{ github.ref_type == 'tag' && github.ref_name || '' }}
           branch: ${{ github.ref_type == 'branch' && github.ref_name || 'main' }}
@@ -74,4 +77,3 @@ jobs:
           repository_name: '${{ matrix.package }}'
           user_name: 'maya-platform-bot'
           user_email: 'bot@maya-aqss.org'
-          token: ${{ secrets.SPLIT_TOKEN }}
