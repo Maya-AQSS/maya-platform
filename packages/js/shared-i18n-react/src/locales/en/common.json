@@ -1,0 +1,244 @@
+{
+  "actions": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "create": "Create",
+    "edit": "Edit",
+    "delete": "Delete",
+    "close": "Close",
+    "confirm": "Confirm",
+    "back": "Back",
+    "reset": "Reset",
+    "apply": "Apply",
+    "search": "Search",
+    "refresh": "Refresh",
+    "viewAll": "View all",
+    "view": "View",
+    "retry": "Retry",
+    "assign": "Assign",
+    "revoke": "Revoke",
+    "upload": "Upload",
+    "download": "Download",
+    "preview": "Preview",
+    "duplicate": "Duplicate",
+    "export": "Export",
+    "import": "Import",
+    "print": "Print",
+    "copy": "Copy",
+    "archive": "Archive",
+    "restore": "Restore",
+    "add": "Add",
+    "remove": "Remove",
+    "select": "Select",
+    "clear": "Clear",
+    "backTo": "Back to {{entity}}"
+  },
+  "status": {
+    "loading": "Loading…",
+    "saving": "Saving…",
+    "empty": "No results",
+    "error": "An error occurred",
+    "success": "Operation completed",
+    "unknown": "Unknown",
+    "idle": "Idle",
+    "processing": "Processing…"
+  },
+  "pagination": {
+    "previous": "Previous",
+    "next": "Next",
+    "page": "Page {{page}}",
+    "rangeOf": "{{from}}–{{to}} of {{total}}",
+    "ariaLabel": "Pagination",
+    "firstPage": "First page",
+    "lastPage": "Last page",
+    "perPage": "Per page"
+  },
+  "feedback": {
+    "savedSuccess": "Saved successfully",
+    "deletedSuccess": "Deleted successfully",
+    "createdSuccess": "Created successfully",
+    "updatedSuccess": "Updated successfully",
+    "saveError": "Failed to save",
+    "deleteError": "Failed to delete",
+    "createError": "Failed to create",
+    "updateError": "Failed to update",
+    "loadError": "Failed to load",
+    "copiedToClipboard": "Copied to clipboard"
+  },
+  "confirmations": {
+    "deleteTitle": "Delete?",
+    "deleteMessage": "This action cannot be undone.",
+    "discardChanges": "Discard changes?",
+    "discardChangesMessage": "You have unsaved changes that will be lost.",
+    "leavePage": "Leave page?",
+    "leavePageMessage": "You have unsaved changes. Leave anyway?"
+  },
+  "auth": {
+    "logout": "Log out",
+    "profile": "Profile",
+    "sessionExpired": "Session expired",
+    "sessionExpiredMessage": "Your session has expired. Please sign in again.",
+    "unauthorized": "Unauthorized",
+    "unauthorizedMessage": "You do not have permission to view this content.",
+    "unauthorizedPermission": "Permission required: {{permission}}",
+    "loginRequired": "Please log in to continue",
+    "accessDenied": "Access denied",
+    "signIn": "Sign in",
+    "signingOut": "Signing out…",
+    "initializing": "Signing in…",
+    "redirecting": "Redirecting to sign-in…",
+    "verifying": "Verifying session…",
+    "name": "First name",
+    "surname": "Last name",
+    "email": "Email"
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "favorites": "Favorites",
+    "applications": "Applications",
+    "settings": "Settings",
+    "notifications": "Notifications",
+    "profile": "Profile"
+  },
+  "layout": {
+    "skipToContent": "Skip to main content",
+    "openSidebarMenu": "Open side menu",
+    "expandSidebarMenu": "Expand side menu",
+    "collapseSidebarMenu": "Collapse side menu",
+    "userMenuOf": "Menu of {{name}}"
+  },
+  "dashboard": {
+    "loading": "Loading dashboard…",
+    "loadError": "Failed to load dashboard",
+    "empty": "No widgets on the dashboard. Restore the default layout to see them again.",
+    "addWidget": "Add widget",
+    "removeWidget": "Remove widget",
+    "exitEdit": "Done"
+  },
+  "errors": {
+    "network": "Connection error",
+    "server": "Server error",
+    "notFound": "Not found",
+    "forbidden": "Access denied",
+    "validation": "Invalid data",
+    "required": "Required field",
+    "invalidFormat": "Invalid format",
+    "loadFailed": "Failed to load",
+    "listFailed": "Failed to list",
+    "unknown": "Unknown error",
+    "componentLoad": "Could not load component. Reload the page or contact support."
+  },
+  "toast": {
+    "regionAriaLabel": "Notifications",
+    "closeAriaLabel": "Close notification"
+  },
+  "severity": {
+    "all": "All",
+    "debug": "Debug",
+    "info": "Info",
+    "warning": "Warning",
+    "error": "Error",
+    "critical": "Critical",
+    "high": "High",
+    "medium": "Medium",
+    "low": "Low"
+  },
+  "resolved": {
+    "all": "All",
+    "only": "Resolved",
+    "unresolved": "Unresolved"
+  },
+  "filters": {
+    "searchLabel": "Search",
+    "searchPlaceholder": "Message, file, line…",
+    "applicationLabel": "Application",
+    "applicationAll": "All applications",
+    "severityLabel": "Severity",
+    "resolvedLabel": "Status",
+    "dateFrom": "From",
+    "dateTo": "To",
+    "reset": "Clear"
+  },
+  "userMenu": {
+    "darkMode": "Dark mode",
+    "lightMode": "Light mode",
+    "profile": "Profile",
+    "preferences": "Preferences",
+    "settings": "Settings",
+    "logout": "Log out"
+  },
+  "profile": {
+    "academicContext": {
+      "loading": "Loading academic context…",
+      "loadErrorPrefix": "Could not load academic context:",
+      "sectionAriaLabel": "Academic context",
+      "unavailableBadge": "Unavailable",
+      "blockUnavailable": "Academic data is temporarily unavailable for this block.",
+      "emptyState": "No assignments",
+      "blocks": {
+        "studyTypes": "Study types",
+        "studies": "Studies",
+        "modules": "Modules",
+        "teams": "Teams / Departments"
+      },
+      "headers": {
+        "code": "Code",
+        "name": "Name",
+        "id": "ID",
+        "type": "Type",
+        "department": "Department"
+      }
+    }
+  },
+  "tables": {
+    "date": "Date",
+    "user": "User",
+    "action": "Action",
+    "status": "Status",
+    "type": "Type",
+    "application": "Application",
+    "id": "ID",
+    "description": "Description",
+    "name": "Name",
+    "email": "Email",
+    "createdAt": "Created",
+    "updatedAt": "Modified",
+    "by": "By",
+    "total": "Total",
+    "noData": "No data",
+    "actions": "Actions"
+  },
+  "states": {
+    "active": "Active",
+    "inactive": "Inactive",
+    "enabled": "Enabled",
+    "disabled": "Disabled",
+    "pending": "Pending",
+    "approved": "Approved",
+    "rejected": "Rejected",
+    "inProgress": "In progress",
+    "completed": "Completed",
+    "draft": "Draft",
+    "published": "Published",
+    "archived": "Archived"
+  },
+  "dates": {
+    "today": "Today",
+    "yesterday": "Yesterday",
+    "thisWeek": "This week",
+    "thisMonth": "This month",
+    "lastWeek": "Last week",
+    "lastMonth": "Last month"
+  },
+  "values": {
+    "yes": "Yes",
+    "no": "No",
+    "all": "All",
+    "none": "None",
+    "optional": "(optional)",
+    "required": "(required)",
+    "on": "On",
+    "off": "Off"
+  },
+  "notFound": "404 — Not found"
+}

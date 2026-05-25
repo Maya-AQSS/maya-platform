@@ -1,0 +1,244 @@
+{
+  "actions": {
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "create": "Crear",
+    "edit": "Editar",
+    "delete": "Eliminar",
+    "close": "Cerrar",
+    "confirm": "Confirmar",
+    "back": "Volver",
+    "reset": "Restablecer",
+    "apply": "Aplicar",
+    "search": "Buscar",
+    "refresh": "Actualizar",
+    "viewAll": "Ver todo",
+    "view": "Ver",
+    "retry": "Reintentar",
+    "assign": "Asignar",
+    "revoke": "Revocar",
+    "upload": "Subir",
+    "download": "Descargar",
+    "preview": "Previsualizar",
+    "duplicate": "Duplicar",
+    "export": "Exportar",
+    "import": "Importar",
+    "print": "Imprimir",
+    "copy": "Copiar",
+    "archive": "Archivar",
+    "restore": "Restaurar",
+    "add": "Añadir",
+    "remove": "Quitar",
+    "select": "Seleccionar",
+    "clear": "Limpiar",
+    "backTo": "Volver a {{entity}}"
+  },
+  "status": {
+    "loading": "Cargando…",
+    "saving": "Guardando…",
+    "empty": "Sin resultados",
+    "error": "Se produjo un error",
+    "success": "Operación completada",
+    "unknown": "Desconocido",
+    "idle": "Inactivo",
+    "processing": "Procesando…"
+  },
+  "pagination": {
+    "previous": "Anterior",
+    "next": "Siguiente",
+    "page": "Página {{page}}",
+    "rangeOf": "{{from}}–{{to}} de {{total}}",
+    "ariaLabel": "Paginación",
+    "firstPage": "Primera página",
+    "lastPage": "Última página",
+    "perPage": "Por página"
+  },
+  "feedback": {
+    "savedSuccess": "Guardado correctamente",
+    "deletedSuccess": "Eliminado correctamente",
+    "createdSuccess": "Creado correctamente",
+    "updatedSuccess": "Actualizado correctamente",
+    "saveError": "Error al guardar",
+    "deleteError": "Error al eliminar",
+    "createError": "Error al crear",
+    "updateError": "Error al actualizar",
+    "loadError": "Error al cargar",
+    "copiedToClipboard": "Copiado al portapapeles"
+  },
+  "confirmations": {
+    "deleteTitle": "¿Eliminar?",
+    "deleteMessage": "Esta acción no se puede deshacer.",
+    "discardChanges": "¿Descartar cambios?",
+    "discardChangesMessage": "Hay cambios sin guardar que se perderán.",
+    "leavePage": "¿Salir de la página?",
+    "leavePageMessage": "Hay cambios sin guardar. ¿Salir igualmente?"
+  },
+  "auth": {
+    "logout": "Cerrar sesión",
+    "profile": "Perfil",
+    "sessionExpired": "Sesión expirada",
+    "sessionExpiredMessage": "Tu sesión ha expirado. Vuelve a iniciar sesión.",
+    "unauthorized": "No autorizado",
+    "unauthorizedMessage": "No tienes permisos para ver este contenido.",
+    "unauthorizedPermission": "Permiso requerido: {{permission}}",
+    "loginRequired": "Inicia sesión para continuar",
+    "accessDenied": "Acceso denegado",
+    "signIn": "Iniciar sesión",
+    "signingOut": "Cerrando sesión…",
+    "initializing": "Iniciando sesión…",
+    "redirecting": "Redirigiendo al inicio de sesión…",
+    "verifying": "Verificando sesión…",
+    "name": "Nombre",
+    "surname": "Apellidos",
+    "email": "Email"
+  },
+  "nav": {
+    "dashboard": "Panel",
+    "favorites": "Favoritos",
+    "applications": "Aplicaciones",
+    "settings": "Ajustes",
+    "notifications": "Notificaciones",
+    "profile": "Perfil"
+  },
+  "layout": {
+    "skipToContent": "Saltar al contenido principal",
+    "openSidebarMenu": "Abrir menú lateral",
+    "expandSidebarMenu": "Expandir menú lateral",
+    "collapseSidebarMenu": "Contraer menú lateral",
+    "userMenuOf": "Menú de {{name}}"
+  },
+  "dashboard": {
+    "loading": "Cargando panel…",
+    "loadError": "No se pudo cargar el panel",
+    "empty": "No hay widgets en el panel. Restaura el diseño por defecto para volver a verlos.",
+    "addWidget": "Añadir widget",
+    "removeWidget": "Eliminar widget",
+    "exitEdit": "Listo"
+  },
+  "errors": {
+    "network": "Error de conexión",
+    "server": "Error del servidor",
+    "notFound": "No encontrado",
+    "forbidden": "Acceso denegado",
+    "validation": "Datos inválidos",
+    "required": "Campo obligatorio",
+    "invalidFormat": "Formato inválido",
+    "loadFailed": "No se pudo cargar",
+    "listFailed": "Error al listar",
+    "unknown": "Error desconocido",
+    "componentLoad": "Error al cargar el componente. Recarga la página o contacta con soporte."
+  },
+  "toast": {
+    "regionAriaLabel": "Notificaciones",
+    "closeAriaLabel": "Cerrar notificación"
+  },
+  "severity": {
+    "all": "Todos",
+    "debug": "Depuración",
+    "info": "Información",
+    "warning": "Aviso",
+    "error": "Error",
+    "critical": "Crítico",
+    "high": "Alta",
+    "medium": "Media",
+    "low": "Baja"
+  },
+  "resolved": {
+    "all": "Todos",
+    "only": "Resueltos",
+    "unresolved": "Sin resolver"
+  },
+  "filters": {
+    "searchLabel": "Buscar",
+    "searchPlaceholder": "Mensaje, archivo, línea…",
+    "applicationLabel": "Aplicación",
+    "applicationAll": "Todas las aplicaciones",
+    "severityLabel": "Severidad",
+    "resolvedLabel": "Estado",
+    "dateFrom": "Desde",
+    "dateTo": "Hasta",
+    "reset": "Limpiar"
+  },
+  "userMenu": {
+    "darkMode": "Modo oscuro",
+    "lightMode": "Modo claro",
+    "profile": "Perfil",
+    "preferences": "Preferencias",
+    "settings": "Configuración",
+    "logout": "Cerrar sesión"
+  },
+  "profile": {
+    "academicContext": {
+      "loading": "Cargando contexto académico…",
+      "loadErrorPrefix": "No se pudo cargar el contexto académico:",
+      "sectionAriaLabel": "Contexto académico",
+      "unavailableBadge": "No disponible",
+      "blockUnavailable": "Datos académicos temporalmente no disponibles para este bloque.",
+      "emptyState": "Sin asignaciones",
+      "blocks": {
+        "studyTypes": "Tipos de estudio",
+        "studies": "Estudios",
+        "modules": "Módulos",
+        "teams": "Equipos / Departamentos"
+      },
+      "headers": {
+        "code": "Código",
+        "name": "Nombre",
+        "id": "ID",
+        "type": "Tipo",
+        "department": "Departamento"
+      }
+    }
+  },
+  "tables": {
+    "date": "Fecha",
+    "user": "Usuario",
+    "action": "Acción",
+    "status": "Estado",
+    "type": "Tipo",
+    "application": "Aplicación",
+    "id": "ID",
+    "description": "Descripción",
+    "name": "Nombre",
+    "email": "Email",
+    "createdAt": "Creado",
+    "updatedAt": "Modificado",
+    "by": "Por",
+    "total": "Total",
+    "noData": "Sin datos",
+    "actions": "Acciones"
+  },
+  "states": {
+    "active": "Activo",
+    "inactive": "Inactivo",
+    "enabled": "Habilitado",
+    "disabled": "Deshabilitado",
+    "pending": "Pendiente",
+    "approved": "Aprobado",
+    "rejected": "Rechazado",
+    "inProgress": "En curso",
+    "completed": "Completado",
+    "draft": "Borrador",
+    "published": "Publicado",
+    "archived": "Archivado"
+  },
+  "dates": {
+    "today": "Hoy",
+    "yesterday": "Ayer",
+    "thisWeek": "Esta semana",
+    "thisMonth": "Este mes",
+    "lastWeek": "Última semana",
+    "lastMonth": "Último mes"
+  },
+  "values": {
+    "yes": "Sí",
+    "no": "No",
+    "all": "Todos",
+    "none": "Ninguno",
+    "optional": "(opcional)",
+    "required": "(obligatorio)",
+    "on": "Activado",
+    "off": "Desactivado"
+  },
+  "notFound": "404 — No encontrado"
+}

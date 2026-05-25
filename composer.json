@@ -1,0 +1,21 @@
+{
+  "name": "maya/platform",
+  "description": "Maya Platform monorepo — shared PHP/Laravel and React packages for the Maya AQSS ecosystem. This root package is NOT installable; it orchestrates the sub-tree split into individual package repos.",
+  "type": "project",
+  "license": "MIT",
+  "require": {
+    "php": "^8.4"
+  },
+  "require-dev": {
+    "symplify/monorepo-builder": "^11.2"
+  },
+  "scripts": {
+    "validate-packages": "for d in packages/php/*; do (cd \"$d\" && composer validate --strict --no-check-publish); done",
+    "merge": "monorepo-builder merge",
+    "release-validate": "monorepo-builder validate",
+    "release": "monorepo-builder release"
+  },
+  "config": {
+    "sort-packages": true
+  }
+}

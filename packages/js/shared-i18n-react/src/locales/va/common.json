@@ -1,0 +1,244 @@
+{
+  "actions": {
+    "save": "Guardar",
+    "cancel": "Cancel·lar",
+    "create": "Crear",
+    "edit": "Editar",
+    "delete": "Eliminar",
+    "close": "Tancar",
+    "confirm": "Confirmar",
+    "back": "Tornar",
+    "reset": "Restablir",
+    "apply": "Aplicar",
+    "search": "Cercar",
+    "refresh": "Actualitzar",
+    "viewAll": "Veure tot",
+    "view": "Veure",
+    "retry": "Reintentar",
+    "assign": "Assignar",
+    "revoke": "Revocar",
+    "upload": "Pujar",
+    "download": "Descarregar",
+    "preview": "Previsualitzar",
+    "duplicate": "Duplicar",
+    "export": "Exportar",
+    "import": "Importar",
+    "print": "Imprimir",
+    "copy": "Copiar",
+    "archive": "Arxivar",
+    "restore": "Restaurar",
+    "add": "Afegir",
+    "remove": "Llevar",
+    "select": "Seleccionar",
+    "clear": "Netejar",
+    "backTo": "Tornar a {{entity}}"
+  },
+  "status": {
+    "loading": "Carregant…",
+    "saving": "Guardant…",
+    "empty": "Sense resultats",
+    "error": "S'ha produït un error",
+    "success": "Operació completada",
+    "unknown": "Desconegut",
+    "idle": "Inactiu",
+    "processing": "Processant…"
+  },
+  "pagination": {
+    "previous": "Anterior",
+    "next": "Següent",
+    "page": "Pàgina {{page}}",
+    "rangeOf": "{{from}}–{{to}} de {{total}}",
+    "ariaLabel": "Paginació",
+    "firstPage": "Primera pàgina",
+    "lastPage": "Última pàgina",
+    "perPage": "Per pàgina"
+  },
+  "feedback": {
+    "savedSuccess": "Guardat correctament",
+    "deletedSuccess": "Eliminat correctament",
+    "createdSuccess": "Creat correctament",
+    "updatedSuccess": "Actualitzat correctament",
+    "saveError": "Error en guardar",
+    "deleteError": "Error en eliminar",
+    "createError": "Error en crear",
+    "updateError": "Error en actualitzar",
+    "loadError": "Error en carregar",
+    "copiedToClipboard": "Copiat al porta-retalls"
+  },
+  "confirmations": {
+    "deleteTitle": "Eliminar?",
+    "deleteMessage": "Aquesta acció no es pot desfer.",
+    "discardChanges": "Descartar canvis?",
+    "discardChangesMessage": "Hi ha canvis sense guardar que es perdran.",
+    "leavePage": "Eixir de la pàgina?",
+    "leavePageMessage": "Hi ha canvis sense guardar. Eixir igualment?"
+  },
+  "auth": {
+    "logout": "Tancar sessió",
+    "profile": "Perfil",
+    "sessionExpired": "Sessió expirada",
+    "sessionExpiredMessage": "La teva sessió ha expirat. Torna a iniciar sessió.",
+    "unauthorized": "No autoritzat",
+    "unauthorizedMessage": "No tens permisos per a veure aquest contingut.",
+    "unauthorizedPermission": "Permís requerit: {{permission}}",
+    "loginRequired": "Inicia sessió per a continuar",
+    "accessDenied": "Accés denegat",
+    "signIn": "Iniciar sessió",
+    "signingOut": "Tancant sessió…",
+    "initializing": "Iniciant sessió…",
+    "redirecting": "Redirigint a l'inici de sessió…",
+    "verifying": "Verificant sessió…",
+    "name": "Nom",
+    "surname": "Cognoms",
+    "email": "Correu electrònic"
+  },
+  "nav": {
+    "dashboard": "Tauler",
+    "favorites": "Favorits",
+    "applications": "Aplicacions",
+    "settings": "Ajustes",
+    "notifications": "Notificacions",
+    "profile": "Perfil"
+  },
+  "layout": {
+    "skipToContent": "Anar al contingut principal",
+    "openSidebarMenu": "Obrir menú lateral",
+    "expandSidebarMenu": "Expandir menú lateral",
+    "collapseSidebarMenu": "Contraure menú lateral",
+    "userMenuOf": "Menú de {{name}}"
+  },
+  "dashboard": {
+    "loading": "Carregant panell…",
+    "loadError": "No s'ha pogut carregar el panell",
+    "empty": "No hi ha widgets al panell. Restaura el disseny per defecte per tornar a veure'ls.",
+    "addWidget": "Afegir widget",
+    "removeWidget": "Eliminar widget",
+    "exitEdit": "Fet"
+  },
+  "errors": {
+    "network": "Error de connexió",
+    "server": "Error del servidor",
+    "notFound": "No trobat",
+    "forbidden": "Accés denegat",
+    "validation": "Dades invàlides",
+    "required": "Camp obligatori",
+    "invalidFormat": "Format invàlid",
+    "loadFailed": "No s'ha pogut carregar",
+    "listFailed": "Error en llistar",
+    "unknown": "Error desconegut",
+    "componentLoad": "Error en carregar el component. Recarrega la pàgina o contacta amb suport."
+  },
+  "toast": {
+    "regionAriaLabel": "Notificacions",
+    "closeAriaLabel": "Tancar notificació"
+  },
+  "severity": {
+    "all": "Tots",
+    "debug": "Depuració",
+    "info": "Informació",
+    "warning": "Avís",
+    "error": "Error",
+    "critical": "Crític",
+    "high": "Alta",
+    "medium": "Mitjana",
+    "low": "Baixa"
+  },
+  "resolved": {
+    "all": "Tots",
+    "only": "Resolts",
+    "unresolved": "Sense resoldre"
+  },
+  "filters": {
+    "searchLabel": "Cercar",
+    "searchPlaceholder": "Missatge, arxiu, línia…",
+    "applicationLabel": "Aplicació",
+    "applicationAll": "Totes les aplicacions",
+    "severityLabel": "Severitat",
+    "resolvedLabel": "Estat",
+    "dateFrom": "Des de",
+    "dateTo": "Fins a",
+    "reset": "Netejar"
+  },
+  "userMenu": {
+    "darkMode": "Mode fosc",
+    "lightMode": "Mode clar",
+    "profile": "Perfil",
+    "preferences": "Preferències",
+    "settings": "Configuració",
+    "logout": "Tancar sessió"
+  },
+  "profile": {
+    "academicContext": {
+      "loading": "Carregant context acadèmic…",
+      "loadErrorPrefix": "No s'ha pogut carregar el context acadèmic:",
+      "sectionAriaLabel": "Context acadèmic",
+      "unavailableBadge": "No disponible",
+      "blockUnavailable": "Dades acadèmiques temporalment no disponibles per a este bloc.",
+      "emptyState": "Sense assignacions",
+      "blocks": {
+        "studyTypes": "Tipus d'estudi",
+        "studies": "Estudis",
+        "modules": "Mòduls",
+        "teams": "Equips / Departaments"
+      },
+      "headers": {
+        "code": "Codi",
+        "name": "Nom",
+        "id": "ID",
+        "type": "Tipus",
+        "department": "Departament"
+      }
+    }
+  },
+  "tables": {
+    "date": "Data",
+    "user": "Usuari",
+    "action": "Acció",
+    "status": "Estat",
+    "type": "Tipus",
+    "application": "Aplicació",
+    "id": "ID",
+    "description": "Descripció",
+    "name": "Nom",
+    "email": "Correu",
+    "createdAt": "Creat",
+    "updatedAt": "Modificat",
+    "by": "Per",
+    "total": "Total",
+    "noData": "Sense dades",
+    "actions": "Accions"
+  },
+  "states": {
+    "active": "Actiu",
+    "inactive": "Inactiu",
+    "enabled": "Habilitat",
+    "disabled": "Deshabilitat",
+    "pending": "Pendent",
+    "approved": "Aprovat",
+    "rejected": "Rebutjat",
+    "inProgress": "En curs",
+    "completed": "Completat",
+    "draft": "Esborrany",
+    "published": "Publicat",
+    "archived": "Arxivat"
+  },
+  "dates": {
+    "today": "Hui",
+    "yesterday": "Ahir",
+    "thisWeek": "Aquesta setmana",
+    "thisMonth": "Aquest mes",
+    "lastWeek": "Última setmana",
+    "lastMonth": "Últim mes"
+  },
+  "values": {
+    "yes": "Sí",
+    "no": "No",
+    "all": "Tots",
+    "none": "Cap",
+    "optional": "(opcional)",
+    "required": "(obligatori)",
+    "on": "Activat",
+    "off": "Desactivat"
+  },
+  "notFound": "404 — No trobat"
+}

@@ -1,0 +1,27 @@
+{
+  "name": "@maya/platform",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Maya Platform monorepo — shared PHP/Laravel and React packages for the Maya AQSS ecosystem.",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Maya-AQSS/maya-platform.git"
+  },
+  "engines": {
+    "node": ">=20",
+    "pnpm": ">=9"
+  },
+  "packageManager": "pnpm@9.15.0",
+  "scripts": {
+    "build": "pnpm -r --filter='./packages/js/*' build",
+    "test": "pnpm -r --filter='./packages/js/*' test",
+    "lint": "pnpm -r --filter='./packages/js/*' lint",
+    "typecheck": "pnpm -r --filter='./packages/js/*' typecheck",
+    "clean": "pnpm -r exec rm -rf dist node_modules",
+    "publish:dry": "pnpm -r --filter='./packages/js/*' publish --dry-run --no-git-checks"
+  },
+  "devDependencies": {
+    "typescript": "^5.6.0"
+  }
+}

@@ -1,0 +1,64 @@
+name: CI — PHP
+
+on:
+  pull_request:
+    paths:
+      - 'packages/php/**'
+      - 'composer.json'
+      - 'monorepo-builder.php'
+      - '.github/workflows/ci-php.yml'
+  push:
+    branches: [main, develop]
+    paths:
+      - 'packages/php/**'
+      - 'composer.json'
+      - 'monorepo-builder.php'
+      - '.github/workflows/ci-php.yml'
+
+jobs:
+  matrix:
+    name: Discover PHP packages
+    runs-on: ubuntu-latest
+    outputs:
+      packages: ${{ steps.list.outputs.packages }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: list
+        run: |
+          pkgs=$(ls -1 packages/php | jq -R -s -c 'split("\n") | map(select(length > 0))')
+          echo "packages=$pkgs" >> "$GITHUB_OUTPUT"
+
+  test:
+    name: Test ${{ matrix.package }}
+    needs: matrix
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        package: ${{ fromJson(needs.matrix.outputs.packages) }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          coverage: none
+          tools: composer:v2
+
+      - name: Validate composer.json
+        working-directory: packages/php/${{ matrix.package }}
+        run: composer validate --strict --no-check-publish
+
+      - name: Install dependencies
+        working-directory: packages/php/${{ matrix.package }}
+        run: composer install --no-interaction --no-progress --prefer-dist
+
+      - name: Run Pest (if test script exists)
+        working-directory: packages/php/${{ matrix.package }}
+        run: |
+          if [ -d tests ] && composer show --self 2>/dev/null | grep -q "test"; then
+            composer test
+          else
+            echo "No tests directory or test script — skipping"
+          fi

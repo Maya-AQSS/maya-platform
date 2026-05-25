@@ -1,0 +1,39 @@
+name: Release
+
+# Manual release: bumps mutual deps, tags, pushes. Triggered via Actions UI.
+# After this tags, the `split` workflow propagates the tag to every read-only repo.
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Semver version to release (e.g. 0.2.0)'
+        required: true
+        type: string
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.SPLIT_TOKEN }}
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          tools: composer:v2
+
+      - name: Install monorepo-builder
+        run: composer install --no-interaction --no-progress
+
+      - name: Configure git
+        run: |
+          git config user.name  'maya-platform-bot'
+          git config user.email 'bot@maya-aqss.org'
+
+      - name: Release
+        run: vendor/bin/monorepo-builder release ${{ inputs.version }}

@@ -1,0 +1,38 @@
+# Dependencies
+node_modules/
+vendor/
+
+# Lock files at package level (libraries should NOT commit locks)
+packages/php/*/composer.lock
+packages/js/*/package-lock.json
+packages/js/*/yarn.lock
+
+# Root lock files (kept for reproducible dev)
+!pnpm-lock.yaml
+!composer.lock
+
+# Build outputs
+packages/js/*/dist/
+packages/js/*/build/
+packages/js/*/*.tsbuildinfo
+
+# Coverage and tests
+coverage/
+.phpunit.result.cache
+.phpunit.cache/
+
+# IDE
+.idea/
+.vscode/
+*.iml
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Env
+.env
+.env.local
+
+# Logs
+*.log
