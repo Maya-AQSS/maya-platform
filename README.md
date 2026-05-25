@@ -37,8 +37,8 @@ sub-tree split (ver [`docs/architecture.md`](docs/architecture.md)).
 ```bash
 # Requisitos: PHP 8.4, Composer 2, Node 20+, pnpm 9+
 
-git clone https://github.com/Maya-AQSS/maya-platform.git
-cd maya-platform
+git clone https://github.com/Maya-AQSS/maya_platform.git
+cd maya_platform
 
 # JS workspace
 pnpm install
@@ -77,7 +77,7 @@ Y en `maya_authorization/frontend/package.json`:
 
 Para desarrollo local con hot-reload contra tu checkout, los servicios
 soportan **overrides condicionales** que apuntan a este checkout de
-`maya-platform`. Ver [`docs/publishing.md`](docs/publishing.md).
+`maya_platform`. Ver [`docs/publishing.md`](docs/publishing.md).
 
 ## Documentación
 

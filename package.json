@@ -6,7 +6,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/Maya-AQSS/maya-platform.git"
+    "url": "https://github.com/Maya-AQSS/maya_platform.git"
   },
   "engines": {
     "node": ">=20",

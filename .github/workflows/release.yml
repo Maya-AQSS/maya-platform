@@ -32,7 +32,7 @@ jobs:
 
       - name: Configure git
         run: |
-          git config user.name  'maya-platform-bot'
+          git config user.name  'maya_platform-bot'
           git config user.email 'bot@maya-aqss.org'
 
       - name: Release

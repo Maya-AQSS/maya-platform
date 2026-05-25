@@ -50,7 +50,7 @@ jobs:
           package_directory: 'packages/php/${{ matrix.package }}'
           repository_organization: 'Maya-AQSS'
           repository_name: '${{ matrix.package }}'
-          user_name: 'maya-platform-bot'
+          user_name: 'maya_platform-bot'
           user_email: 'bot@maya-aqss.org'
 
   split-js:
@@ -75,5 +75,5 @@ jobs:
           package_directory: 'packages/js/${{ matrix.package }}'
           repository_organization: 'Maya-AQSS'
           repository_name: '${{ matrix.package }}'
-          user_name: 'maya-platform-bot'
+          user_name: 'maya_platform-bot'
           user_email: 'bot@maya-aqss.org'

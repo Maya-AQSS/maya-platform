@@ -33,20 +33,20 @@ llena automáticamente.
 for pkg in shared-auth-laravel shared-http-laravel shared-messaging-laravel \
            shared-platform-laravel shared-profile-laravel; do
   gh repo create "Maya-AQSS/$pkg" --public \
-    --description "Read-only mirror of packages/php/$pkg from maya-platform. Do NOT PR here."
+    --description "Read-only mirror of packages/php/$pkg from maya_platform. Do NOT PR here."
 done
 
 for pkg in shared-auth-react shared-dashboard-react shared-i18n-react \
            shared-layout-react shared-profile-react shared-sidebar-react \
            shared-ui-react; do
   gh repo create "Maya-AQSS/$pkg" --public \
-    --description "Read-only mirror of packages/js/$pkg from maya-platform. Do NOT PR here."
+    --description "Read-only mirror of packages/js/$pkg from maya_platform. Do NOT PR here."
 done
 ```
 
 Cada repo read-only debe tener:
 
-- Issues **deshabilitados** (los bugs se reportan en `maya-platform`).
+- Issues **deshabilitados** (los bugs se reportan en `maya_platform`).
 - Branch protection en `main` que solo permita pushes del bot del split.
 - README auto-generado por el split que apunte al mono-repo.
 
@@ -88,7 +88,7 @@ Pinear a tag concreto. Cuando publiquemos a npm registry, se reemplaza por
 ## Desarrollo local con overrides
 
 Para iterar sin ciclo commit → tag → reinstall, cada servicio soporta
-overrides que apuntan al checkout local de `maya-platform`.
+overrides que apuntan al checkout local de `maya_platform`.
 
 ### Composer — `composer-merge-plugin`
 
@@ -103,7 +103,7 @@ Cada servicio Laravel tiene:
     "repositories": {
       "maya-auth": {
         "type": "path",
-        "url": "../../maya-platform/packages/php/shared-auth-laravel"
+        "url": "../../maya_platform/packages/php/shared-auth-laravel"
       }
     }
   }
@@ -122,7 +122,7 @@ Para JS proponemos un Makefile target en cada servicio:
 ```makefile
 # maya_<service>/frontend/Makefile
 link-platform:
-\tpnpm link --global ../../../maya-platform/packages/js/shared-auth-react
+\tpnpm link --global ../../../maya_platform/packages/js/shared-auth-react
 \tpnpm link --global @maya/shared-auth-react
 \t# ... repetir para cada paquete
 
@@ -132,7 +132,7 @@ unlink-platform:
 ```
 
 Una alternativa más limpia: convertir cada `<servicio>/frontend` en un
-miembro de un workspace pnpm raíz que incluye `maya-platform/packages/js/*`.
+miembro de un workspace pnpm raíz que incluye `maya_platform/packages/js/*`.
 Lo abordaremos cuando estabilicemos el flujo.
 
 ## Futuro: publicar en Packagist y npm

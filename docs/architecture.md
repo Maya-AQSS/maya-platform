@@ -4,7 +4,7 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│  maya-platform (mono-repo de desarrollo)                    │
+│  maya_platform (mono-repo de desarrollo)                    │
 │  - todo el código vive aquí                                 │
 │  - CI valida los 13 paquetes                                │
 │  - PRs cross-package en un solo lugar                       │
@@ -47,7 +47,7 @@ que envuelve `splitsh/lite`. En cada push a `main` y en cada tag `v*.*.*`:
 3. Si es un tag, lo propaga al repo target.
 
 El historial del repo split es **una vista filtrada** del mono-repo — no se
-puede editar directamente. Los PRs llegan a `maya-platform`, nunca a los
+puede editar directamente. Los PRs llegan a `maya_platform`, nunca a los
 splits.
 
 ## Versionado
