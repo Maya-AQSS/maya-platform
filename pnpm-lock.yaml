@@ -68,10 +68,11 @@ importers:
         version: 17.0.8(i18next@26.2.0(typescript@5.9.3))(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(typescript@5.9.3)
 
   packages/js/shared-i18n-react:
-    devDependencies:
+    dependencies:
       '@maya/shared-auth-react':
         specifier: ^0.1.0
         version: link:../shared-auth-react
+    devDependencies:
       '@types/react':
         specifier: ^19.0.0
         version: 19.2.15
@@ -92,13 +93,14 @@ importers:
         version: 17.0.8(i18next@26.2.0(typescript@5.9.3))(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(typescript@5.9.3)
 
   packages/js/shared-layout-react:
-    devDependencies:
+    dependencies:
       '@maya/shared-auth-react':
         specifier: ^0.1.0
         version: link:../shared-auth-react
       '@maya/shared-ui-react':
         specifier: ^0.1.0
         version: link:../shared-ui-react
+    devDependencies:
       '@types/react':
         specifier: ^19.0.0
         version: 19.2.15
@@ -125,13 +127,14 @@ importers:
         version: 7.15.1(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
 
   packages/js/shared-profile-react:
-    devDependencies:
+    dependencies:
       '@maya/shared-auth-react':
         specifier: ^0.1.0
         version: link:../shared-auth-react
       '@maya/shared-ui-react':
         specifier: ^0.1.0
         version: link:../shared-ui-react
+    devDependencies:
       '@types/react':
         specifier: ^19.0.0
         version: 19.2.15
@@ -152,13 +155,14 @@ importers:
         version: 17.0.8(i18next@26.2.0(typescript@5.9.3))(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(typescript@5.9.3)
 
   packages/js/shared-sidebar-react:
-    devDependencies:
+    dependencies:
       '@maya/shared-auth-react':
         specifier: ^0.1.0
         version: link:../shared-auth-react
       '@maya/shared-layout-react':
         specifier: ^0.1.0
         version: link:../shared-layout-react
+    devDependencies:
       '@types/react':
         specifier: ^19.0.0
         version: 19.2.15
