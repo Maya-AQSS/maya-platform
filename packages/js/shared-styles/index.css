@@ -1,0 +1,652 @@
+/* NOTA: cada app importa `tailwindcss` y las fuentes desde su propio
+   `src/shared/styles/index.css` antes de incluir este archivo. No
+   re-importar aquí o Vite no sabrá resolver `tailwindcss` desde
+   `/maya_infra/configs/styles/`. */
+
+/* ─── Asegurar escaneo de paquetes compartidos ──────────── */
+/* Rutas relativas a este archivo (`/maya_infra/configs/styles/index.css`).
+   Los paquetes shared viven en `/maya_infra/packages/` tanto en Docker como
+   en local (montados como volume). */
+@source "../../packages/maya-shared-layout-react/src/**/*.{tsx,ts}";
+@source "../../packages/maya-shared-sidebar-react/src/**/*.{tsx,ts}";
+@source "../../packages/maya-shared-ui-react/src/**/*.{tsx,ts}";
+@source "../../packages/maya-shared-dashboard-react/src/**/*.{tsx,ts}";
+
+/* ─── Dark mode basado en clase .dark ─────────────────────  */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* ─── Tokens del ecosistema Maya / Odoo 19 ─────────────── */
+@theme {
+  /* Paleta Odoo — Light */
+  --color-odoo-purple:       #714B67;
+  --color-odoo-purple-d:     #5A3A52;
+  --color-odoo-purple-l:     #9B7B93;
+  --color-odoo-teal:         #017E84;
+  --color-odoo-teal-d:       #015F65;
+
+  /* Paleta Odoo — Dark */
+  --color-odoo-dark-purple:   #9B7B93;
+  --color-odoo-dark-purple-d: #714B67;
+  --color-odoo-dark-purple-l: #5A3A52;
+  --color-odoo-dark-teal:     #20A8AE;
+  --color-odoo-dark-teal-d:   #017E84;
+
+  /* Grises de interfaz — Light */
+  --color-ui-sidebar:         #2C2C2C;
+  --color-ui-sidebar-hover:   #3D3D3D;
+  --color-ui-sidebar-active:  #714B67;
+  --color-ui-topbar:          #FFFFFF;
+  --color-ui-body:            #F4F5F7;
+  --color-ui-card:            #FFFFFF;
+  --color-ui-border:          #D0D0D0;
+  --color-ui-border-l:        #E9ECEF;
+
+  /* Grises de interfaz — Dark */
+  --color-ui-dark-bg:         #1A1A1A;
+  --color-ui-dark-card:       #2C2C2C;
+  --color-ui-dark-topbar:     #212121;
+  --color-ui-dark-border:     #404040;
+  --color-ui-dark-border-l:   #343434;
+
+  /* Texto — Light
+     Tokens calibrados para WCAG AA (ratio ≥4.5:1) sobre superficies card
+     y card-glass. El antiguo `muted` (#ADB5BD) daba 1.7:1 sobre glass blanco
+     y era prácticamente ilegible — corregido a #5C636A (5.4:1).
+     `secondary` subido a gray-700 para márgen extra sobre los nuevos fondos
+     translúcidos. */
+  --color-text-primary:       #212529;
+  --color-text-secondary:     #495057;
+  --color-text-muted:         #5C636A;
+  --color-text-inverse:       #FFFFFF;
+  --color-text-link:          #714B67;
+
+  /* Texto — Dark
+     Calibrado para fondo card-glass dark (rgba 44,44,44,0.66 sobre #1A1A1A).
+     El antiguo `dark-muted` (#6C757D) daba 3.1:1 — corregido a #8B95A0 (4.7:1).
+     `dark-link` subido a un tono purple más claro para asegurar 6:1. */
+  --color-text-dark-primary:   #E9ECEF;
+  --color-text-dark-secondary: #ADB5BD;
+  --color-text-dark-muted:     #8B95A0;
+  --color-text-dark-inverse:   #212529;
+  --color-text-dark-link:      #B89AAF;
+
+  /* Estados semánticos */
+  --color-success:       #28A745;
+  --color-success-light: #D4EDDA;
+  --color-success-dark:  #155724;
+  --color-info:          #17A2B8;
+  --color-info-light:    #D1ECF1;
+  --color-info-dark:     #0C5460;
+  --color-warning:       #FFC107;
+  --color-warning-light: #FFF3CD;
+  --color-warning-dark:  #856404;
+  --color-danger:        #DC3545;
+  --color-danger-light:  #F8D7DA;
+  --color-danger-dark:   #721C24;
+
+  /* Categóricos (badges decorativos para visibilidad/categorías).
+     Cada categoría tiene un par fondo+texto con suficiente contraste AA.
+     Modo claro: fondo pastel + texto oscuro saturado.
+     Modo oscuro: fondo oscuro saturado + texto pastel. */
+  --color-cat-global:        #DBEAFE;
+  --color-cat-global-fg:     #1E40AF;
+  --color-cat-study-type:    #E0E7FF;
+  --color-cat-study-type-fg: #3730A3;
+  --color-cat-study:         #EDE9FE;
+  --color-cat-study-fg:      #5B21B6;
+  --color-cat-module:        #F3E8FF;
+  --color-cat-module-fg:     #6B21A8;
+  --color-cat-team:          #CCFBF1;
+  --color-cat-team-fg:       #115E59;
+
+  /* Categóricos — variantes dark (fondo saturado tenue + texto pastel) */
+  --color-cat-dark-global:        #1E3A8A4D;
+  --color-cat-dark-global-fg:     #93C5FD;
+  --color-cat-dark-study-type:    #312E814D;
+  --color-cat-dark-study-type-fg: #A5B4FC;
+  --color-cat-dark-study:         #4C1D954D;
+  --color-cat-dark-study-fg:      #C4B5FD;
+  --color-cat-dark-module:        #581C874D;
+  --color-cat-dark-module-fg:     #D8B4FE;
+  --color-cat-dark-team:          #134E4A4D;
+  --color-cat-dark-team-fg:       #5EEAD4;
+
+  /* Tipografía
+     - sans (cuerpo): Lato — humanista, óptima para tablas y forms
+     - display (titulares): Manrope — geometric sans con personalidad */
+  --font-sans:    'Lato', 'Inter', ui-sans-serif, system-ui, sans-serif;
+  --font-display: 'Manrope', 'Lato', ui-sans-serif, system-ui, sans-serif;
+
+  /* Escala de fuente canónica (base 13px — Odoo).
+     Toda la app debe usar las clases `text-2xs/xs/sm/base/md/lg/xl/2xl/3xl`.
+     `text-2xs` (11px) reservado para micro-labels en badges, fechas absolutas,
+     contadores y descripciones secundarias compactas. No usar valores en
+     pixeles directos en componentes (`text-[Npx]`). */
+  --text-2xs:  11px;
+  --text-xs:   12px;
+  --text-sm:   13px;
+  --text-base: 14px;
+  --text-md:   16px;
+  --text-lg:   18px;
+  --text-xl:   20px;
+  --text-2xl:  22px;
+  --text-3xl:  24px;
+
+  /* Bordes */
+  --radius-sm:   3px;
+  --radius:      4px;
+  --radius-md:   6px;
+  --radius-lg:   8px;
+  --radius-xl:   12px;
+  --radius-2xl:  16px;
+  --radius-3xl:  24px;
+  --radius-full: 9999px;
+
+  /* Sombras */
+  --shadow-card:     0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06);
+  --shadow-card-md:  0 4px 6px rgba(0,0,0,0.07), 0 2px 4px rgba(0,0,0,0.06);
+  --shadow-card-glass: 0 24px 48px -16px rgba(15,23,42,0.18), 0 8px 16px -8px rgba(113,75,103,0.18);
+  --shadow-topbar:   0 1px 4px rgba(0,0,0,0.1);
+  --shadow-dropdown: 0 4px 16px rgba(0,0,0,0.12);
+  --shadow-input:    0 0 0 3px rgba(113,75,103,0.15);
+
+  /* Espaciado custom */
+  --spacing-13: 3.25rem;
+  --spacing-15: 3.75rem;
+  --spacing-18: 4.5rem;
+  --spacing-22: 5.5rem;
+  --spacing-68: 17rem;
+  --spacing-72: 18rem;
+
+  /* Z-index */
+  --z-index-sidebar:  100;
+  --z-index-topbar:   200;
+  --z-index-dropdown: 300;
+  --z-index-modal:    400;
+  --z-index-toast:    500;
+}
+
+/* ─── Base global ───────────────────────────────────────── */
+@layer base {
+  html,
+  body,
+  #root {
+    height: 100%;
+  }
+  html {
+    font-size: 13px;
+    -webkit-font-smoothing: antialiased;
+  }
+  body {
+    @apply bg-ui-body text-text-primary font-sans dark:bg-ui-dark-bg dark:text-text-dark-primary;
+  }
+
+  /* Titulares: par tipográfico (Manrope display + Lato body).
+     Tracking apretado y pesos altos para presencia visual. */
+  h1, h2, h3 {
+    font-family: var(--font-display);
+    letter-spacing: -0.015em;
+  }
+}
+
+/* ─── Reduced motion: respeto a prefers-reduced-motion ──── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ─── Tipografía base global ─────────────────────────────── */
+/* El body adopta `text-sm` (13px). Tailwind genera las utilidades
+   `.text-xs/.text-sm/.text-base/.text-md/.text-lg/.text-xl/.text-2xl/.text-3xl`
+   automáticamente desde los tokens `--text-*` definidos en `@theme`. */
+body {
+  font-size: var(--text-sm);
+  line-height: 1.5;
+}
+
+/* ─── Animaciones canónicas ──────────────────────────────── */
+@layer utilities {
+  .animate-slide-up      { animation: slide-up      0.25s ease-out both; }
+  .animate-slide-up-full { animation: slide-up-full 0.3s  ease-out both; }
+  .animate-fade-in       { animation: fade-in       0.18s ease-out both; }
+  .animate-fade-in-up    { animation: fade-in-up    0.18s ease-out both; }
+  .animate-slide-in-right{ animation: slide-in-right 0.18s ease-out both; }
+  .animate-slide-in-left { animation: slide-in-left  0.18s ease-out both; }
+
+  /* Composición estilo tailwindcss-animate: `animate-in <fade-in|slide-in-*|zoom-in-*>`.
+     Aplicar `animate-in` junto con uno o varios modificadores; el último activa la
+     animación. Usado por ConfirmDialog (zoom-in-95) y wizards de DMS (slide-in-from-top-1). */
+  .animate-in {
+    animation-duration: 200ms;
+    animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    animation-fill-mode: forwards;
+  }
+  .animate-in.fade-in,             .animate-in .fade-in             { animation-name: fade-in; }
+  .animate-in.zoom-in-95,          .animate-in .zoom-in-95          { animation-name: zoom-in-95; }
+  .animate-in.slide-in-from-top-1, .animate-in .slide-in-from-top-1 { animation-name: slide-in-from-top-1; }
+  .animate-in.slide-in-from-top-2, .animate-in .slide-in-from-top-2 { animation-name: slide-in-from-top-2; }
+
+  /* Compatibilidad con uso individual (`animate-in fade-in` como dos clases hermanas). */
+  .fade-in             { animation-name: fade-in; }
+  .zoom-in-95          { animation-name: zoom-in-95; }
+  .slide-in-from-top-1 { animation-name: slide-in-from-top-1; }
+  .slide-in-from-top-2 { animation-name: slide-in-from-top-2; }
+}
+
+/* ─── Maya/Tulsar — Gradientes y glass (rediseño 2026) ───── */
+@layer utilities {
+  /* Texto con gradiente diagonal — para números/headlines protagonistas */
+  .text-gradient-primary {
+    background-image: linear-gradient(135deg, #714B67 0%, #5A3A52 55%, #017E84 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .dark .text-gradient-primary {
+    background-image: linear-gradient(135deg, #C9A8C0 0%, #9B7B93 50%, #20A8AE 100%);
+  }
+
+  /* Gradientes semánticos para números de KPI (estados positivos/neutros/críticos).
+     Estandariza widgets de dashboard que antes usaban `bg-gradient-to-br` inline. */
+  .text-gradient-info {
+    background-image: linear-gradient(135deg, #17A2B8 0%, #28A745 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .dark .text-gradient-info {
+    background-image: linear-gradient(135deg, #5EEAD4 0%, #A7F3D0 100%);
+  }
+
+  .text-gradient-danger {
+    background-image: linear-gradient(135deg, #DC3545 0%, #856404 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .dark .text-gradient-danger {
+    background-image: linear-gradient(135deg, #FCA5A5 0%, #FCD34D 100%);
+  }
+
+  .text-gradient-accent {
+    background-image: linear-gradient(135deg, #714B67 0%, #17A2B8 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .dark .text-gradient-accent {
+    background-image: linear-gradient(135deg, #9B7B93 0%, #5EEAD4 100%);
+  }
+
+  /* Fondo gradiente para CTAs primary y píldoras activas */
+  .bg-gradient-primary {
+    background-image: linear-gradient(135deg, #714B67 0%, #5A3A52 100%);
+  }
+  .dark .bg-gradient-primary {
+    background-image: linear-gradient(135deg, #9B7B93 0%, #714B67 100%);
+  }
+  .bg-gradient-primary-hover:hover {
+    background-image: linear-gradient(135deg, #5A3A52 0%, #3F2A39 100%);
+  }
+  .dark .bg-gradient-primary-hover:hover {
+    background-image: linear-gradient(135deg, #714B67 0%, #5A3A52 100%);
+  }
+
+  /* Cards glass (semi-transparente con blur) */
+  .bg-card-glass {
+    background-color: rgba(255,255,255,0.72);
+    backdrop-filter: blur(14px) saturate(160%);
+    -webkit-backdrop-filter: blur(14px) saturate(160%);
+  }
+  .dark .bg-card-glass {
+    background-color: rgba(44,44,44,0.66);
+    backdrop-filter: blur(14px) saturate(140%);
+    -webkit-backdrop-filter: blur(14px) saturate(140%);
+  }
+
+  /* Card con gradiente sutil de iluminación superior */
+  .bg-card-tinted {
+    background-image: linear-gradient(180deg, rgba(255,255,255,0.96) 0%, rgba(255,255,255,0.88) 100%);
+  }
+  .dark .bg-card-tinted {
+    background-image: linear-gradient(180deg, rgba(60,60,60,0.92) 0%, rgba(40,40,40,0.88) 100%);
+  }
+
+  /* Card con tinte de acento diagonal (purple en light, teal en dark).
+     Para widgets de dashboard que quieran resaltar sin usar glass. */
+  .bg-card-tinted-accent {
+    background-image: linear-gradient(135deg, rgba(113,75,103,0.15) 0%, rgba(113,75,103,0.05) 45%, transparent 100%);
+  }
+  .dark .bg-card-tinted-accent {
+    background-image: linear-gradient(135deg, rgba(32,168,174,0.25) 0%, rgba(32,168,174,0.10) 45%, transparent 100%);
+  }
+
+  /* Fondo principal de la app con tinte degradado (Beluga/Tulsar) */
+  .bg-app-gradient {
+    background-color: var(--color-ui-body);
+    background-image:
+      radial-gradient(ellipse 1100px 650px at 85% -5%, rgba(113,75,103,0.22), transparent 58%),
+      radial-gradient(ellipse 900px 550px at -5% 105%, rgba(1,126,132,0.14), transparent 62%),
+      radial-gradient(ellipse 700px 400px at 50% 50%, rgba(155,123,147,0.06), transparent 70%),
+      linear-gradient(180deg, #FBF6F8 0%, #F0E9EF 55%, #E8DEE8 100%);
+  }
+  .dark .bg-app-gradient {
+    background-color: var(--color-ui-dark-bg);
+    background-image:
+      radial-gradient(ellipse 1100px 700px at 75% 0%, rgba(155,123,147,0.18), transparent 55%),
+      radial-gradient(ellipse 900px 600px at 0% 100%, rgba(32,168,174,0.10), transparent 60%),
+      linear-gradient(180deg, #1A1212 0%, #181618 55%, #141113 100%);
+  }
+
+  /* Sidebar con gradiente vertical sutil (acompaña al fondo) */
+  .bg-sidebar-gradient {
+    background-image: linear-gradient(180deg, #2C2A2C 0%, #262426 60%, #221F22 100%);
+  }
+  .dark .bg-sidebar-gradient {
+    background-image: linear-gradient(180deg, #1F1A1E 0%, #1A1517 60%, #15101D 100%);
+  }
+
+  /* Borde gradiente diagonal (purple → teal) para tarjetas destacadas.
+     Técnica: doble background — gradient en `border-box` y fondo real en `padding-box`.
+     Aplicar sobre elemento con `border: 1px solid transparent`.
+     Uso: <Card class="border-glow-primary"> o <div class="border-glow-primary border"> */
+  .border-glow-primary {
+    border: 1px solid transparent;
+    background-image:
+      linear-gradient(var(--color-ui-card), var(--color-ui-card)),
+      linear-gradient(135deg, rgba(113,75,103,0.55) 0%, rgba(90,58,82,0.35) 45%, rgba(1,126,132,0.45) 100%);
+    background-origin: border-box;
+    background-clip: padding-box, border-box;
+  }
+  .dark .border-glow-primary {
+    background-image:
+      linear-gradient(var(--color-ui-dark-card), var(--color-ui-dark-card)),
+      linear-gradient(135deg, rgba(155,123,147,0.55) 0%, rgba(113,75,103,0.35) 45%, rgba(32,168,174,0.55) 100%);
+  }
+
+  /* Variante glass: borde gradiente + fondo semi-transparente con blur */
+  .border-glow-glass {
+    border: 1px solid transparent;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.72), rgba(255,255,255,0.72)),
+      linear-gradient(135deg, rgba(113,75,103,0.65) 0%, rgba(1,126,132,0.55) 100%);
+    background-origin: border-box;
+    background-clip: padding-box, border-box;
+    backdrop-filter: blur(14px) saturate(160%);
+    -webkit-backdrop-filter: blur(14px) saturate(160%);
+  }
+  .dark .border-glow-glass {
+    background-image:
+      linear-gradient(rgba(44,44,44,0.66), rgba(44,44,44,0.66)),
+      linear-gradient(135deg, rgba(155,123,147,0.7) 0%, rgba(32,168,174,0.6) 100%);
+    backdrop-filter: blur(14px) saturate(140%);
+    -webkit-backdrop-filter: blur(14px) saturate(140%);
+  }
+}
+
+/* Si el usuario prefiere transparencia reducida, fallback opaco */
+@media (prefers-reduced-transparency: reduce) {
+  .bg-card-glass {
+    background-color: var(--color-ui-card);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+  .dark .bg-card-glass {
+    background-color: var(--color-ui-dark-card);
+  }
+  .border-glow-glass {
+    background-image:
+      linear-gradient(var(--color-ui-card), var(--color-ui-card)),
+      linear-gradient(135deg, rgba(113,75,103,0.65) 0%, rgba(1,126,132,0.55) 100%);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+  .dark .border-glow-glass {
+    background-image:
+      linear-gradient(var(--color-ui-dark-card), var(--color-ui-dark-card)),
+      linear-gradient(135deg, rgba(155,123,147,0.7) 0%, rgba(32,168,174,0.6) 100%);
+  }
+}
+
+@keyframes slide-up {
+  from { transform: translateY(12px); opacity: 0; }
+  to   { transform: translateY(0);    opacity: 1; }
+}
+@keyframes slide-up-full {
+  from { transform: translateY(100%); }
+  to   { transform: translateY(0); }
+}
+@keyframes fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes fade-in-up {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes slide-in-right {
+  from { opacity: 0; transform: translateX(16px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+@keyframes slide-in-left {
+  from { opacity: 0; transform: translateX(-16px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+@keyframes zoom-in-95 {
+  from { opacity: 0; transform: scale(0.95); }
+  to   { opacity: 1; transform: scale(1); }
+}
+@keyframes slide-in-from-top-1 {
+  from { transform: translateY(-4px); }
+  to   { transform: translateY(0); }
+}
+@keyframes slide-in-from-top-2 {
+  from { transform: translateY(-8px); }
+  to   { transform: translateY(0); }
+}
+
+/* ─── WidgetGrid: items con decoraciones flotantes ───────────────────── */
+/* Aplicado al wrapper externo del item cuando `allowOverflow:true` para que
+   las decoraciones (megáfono, badges) queden por encima de los vecinos. */
+.maya-widget-item--overflow {
+  z-index: 5;
+}
+
+/* ─── PageTitle: imagen de cabecera ────────────────────────────────────── */
+.maya-page-title-image {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: auto;
+  max-height: 150px;
+  object-fit: contain;
+}
+
+/* ─── UserAlertsWidget: lienzo "AVISO" ────────────────────────────────── */
+/* Fondo principal del widget de avisos: gradiente diagonal purple→teal de
+   marca. Las decoraciones (blobs, puntos, ondas) viven en pseudo-elementos
+   o spans con clases dedicadas para mantener el JSX libre de estilos. */
+.maya-alerts-canvas {
+  background: linear-gradient(135deg, #714B67 0%, #8E5C7E 38%, #5BB8A8 100%);
+}
+.maya-alerts-blob-tr {
+  background: radial-gradient(circle, #F2C7E0 0%, transparent 70%);
+}
+.maya-alerts-blob-bl {
+  background: radial-gradient(circle, #5BB8A8 0%, transparent 65%);
+}
+.maya-alerts-dots {
+  background-image: radial-gradient(circle, rgba(255, 255, 255, 0.9) 1.2px, transparent 1.5px);
+  background-size: 8px 8px;
+}
+/* Sombra cálida del megáfono (versión claro/crema). */
+.maya-megaphone-shadow {
+  filter: drop-shadow(0 10px 20px rgba(245, 158, 11, 0.4));
+}
+
+/* ─── DailyFichajesWidget ────────────────────────────────────────────── */
+.maya-fichaje-card {
+  /* Gradiente sutil de marca para la card del widget de fichajes. */
+  background-image: linear-gradient(180deg, rgba(113, 75, 103, 0.04) 0%, rgba(91, 184, 168, 0.02) 100%);
+}
+
+/* Barra de progreso de la jornada — segmentos. Los componentes solo
+   inyectan las variables CSS `--seg-left` y `--seg-width`. */
+.maya-day-segment {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: var(--seg-left, 0%);
+  width: var(--seg-width, 0%);
+  transition: left 200ms ease, width 200ms ease;
+}
+.maya-day-segment--closed {
+  background-image: linear-gradient(90deg, var(--color-success, #10B981), var(--color-success-dark, #047857));
+}
+.maya-day-segment--auto {
+  background-color: var(--color-warning, #F59E0B);
+}
+.maya-day-segment--open {
+  background-image: repeating-linear-gradient(
+    45deg,
+    var(--color-success, #10B981) 0 6px,
+    rgba(255, 255, 255, 0.35) 6px 10px
+  );
+}
+.maya-day-now-marker {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  left: var(--now-left, 0%);
+  background-color: rgba(113, 75, 103, 0.8);
+  box-shadow: 0 0 4px var(--color-odoo-purple, #714B67);
+}
+
+/* Avatar con gradiente determinístico por hue. Solo `--avatar-hue` y
+   `--avatar-size` vienen como variables CSS — el resto es estático. */
+.maya-profile-avatar {
+  width: var(--avatar-size, 40px);
+  height: var(--avatar-size, 40px);
+  font-size: calc(var(--avatar-size, 40px) * 0.4);
+  background: linear-gradient(
+    135deg,
+    hsl(var(--avatar-hue, 220) 65% 52%),
+    hsl(calc(var(--avatar-hue, 220) + 28) 60% 38%)
+  );
+}
+.maya-profile-avatar-img {
+  width: var(--avatar-size, 40px);
+  height: var(--avatar-size, 40px);
+}
+
+/* ─── BookingsWidget: rejilla de días opaca dentro del card tinted ───── */
+/* El wrapper del widget usa `.bg-card-tinted` (mismo fondo que StatCard)
+   y `bleed: true` en el WidgetFrame para que el card vaya a sangre y no
+   aparezca un "borde blanco" del frame. La rejilla de días pinta opaca
+   por encima para destacar visualmente sobre el card tinted. */
+.maya-bookings-canvas .rbc-month-view,
+.maya-bookings-canvas .rbc-time-view,
+.maya-bookings-canvas .rbc-agenda-view {
+  background-color: var(--color-ui-card, #FFFFFF);
+  border-radius: 0.5rem;
+  overflow: hidden;
+}
+.dark .maya-bookings-canvas .rbc-month-view,
+.dark .maya-bookings-canvas .rbc-time-view,
+.dark .maya-bookings-canvas .rbc-agenda-view {
+  background-color: var(--color-ui-dark-card, #1E293B);
+}
+
+/* ─── react-big-calendar: toolbar con botones glass + marca ────────────── */
+/* Sobrescribe los estilos por defecto del paquete para integrarlos con la
+   identidad Maya: efecto glass (fondo translúcido + blur), acento purple en
+   hover y gradiente diagonal en estado activo. */
+.rbc-toolbar {
+  margin-bottom: 0.75rem;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  padding: 0;
+}
+.rbc-btn-group {
+  display: inline-flex;
+  gap: 0.25rem;
+}
+.rbc-btn-group > button + button {
+  margin-left: 0;
+}
+.rbc-toolbar button {
+  background-color: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(113, 75, 103, 0.18);
+  color: var(--color-text-primary, #1F2937);
+  font-weight: 500;
+  border-radius: 0.5rem;
+  padding: 0.4rem 0.9rem;
+  transition: transform 150ms ease, box-shadow 150ms ease,
+    background-color 150ms ease, border-color 150ms ease, color 150ms ease;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.05);
+}
+.rbc-toolbar button:hover {
+  background-color: rgba(113, 75, 103, 0.08);
+  border-color: rgba(113, 75, 103, 0.4);
+  color: var(--color-odoo-purple, #714B67);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(113, 75, 103, 0.18);
+}
+.rbc-toolbar button:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(113, 75, 103, 0.4);
+}
+/* Estado activo y todas sus combinaciones con :hover/:focus/:focus-visible —
+   react-big-calendar incluye reglas más específicas para `.rbc-active:focus`,
+   `.rbc-active:focus:hover`, etc. que devolvían el texto a negro al hacer
+   click. Listamos todas para ganarles en especificidad. */
+.rbc-toolbar button.rbc-active,
+.rbc-toolbar button.rbc-active:hover,
+.rbc-toolbar button.rbc-active:focus,
+.rbc-toolbar button.rbc-active:focus:hover,
+.rbc-toolbar button.rbc-active:focus-visible,
+.rbc-toolbar button.rbc-active:focus-visible:hover,
+.rbc-toolbar button:active,
+.rbc-toolbar button:active:hover,
+.rbc-toolbar button:active:focus,
+.rbc-toolbar button:active:focus:hover {
+  /* Igual que el botón 'Fichar entrada' / Button variant primary: gradiente
+     purple→purple-dark muy sutil que se lee como sólido de marca. */
+  background-image: linear-gradient(135deg, #714B67 0%, #5A3A52 100%);
+  background-color: #714B67;
+  color: #FFFFFF;
+  border-color: #5A3A52;
+  box-shadow: 0 2px 6px -2px rgba(113, 75, 103, 0.45);
+  transform: translateY(0);
+}
+.rbc-toolbar-label {
+  font-weight: 600;
+  color: var(--color-text-primary, #1F2937);
+  text-transform: capitalize;
+}
+/* Dark mode */
+.dark .rbc-toolbar button {
+  background-color: rgba(30, 30, 30, 0.45);
+  border-color: rgba(255, 255, 255, 0.12);
+  color: var(--color-text-dark-primary, #E5E7EB);
+}
+.dark .rbc-toolbar button:hover {
+  background-color: rgba(155, 123, 147, 0.15);
+  border-color: rgba(155, 123, 147, 0.45);
+  color: var(--color-odoo-dark-purple, #9B7B93);
+}
+.dark .rbc-toolbar button.rbc-active,
+.dark .rbc-toolbar button:active {
+  background-image: linear-gradient(135deg, #9B7B93, #6FCABE);
+  color: #FFFFFF;
+}
+.dark .rbc-toolbar-label {
+  color: var(--color-text-dark-primary, #E5E7EB);
+}
