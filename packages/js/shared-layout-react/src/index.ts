@@ -23,4 +23,5 @@ export {
   ShieldIcon,
   KeyIcon,
   AppsIcon,
+  BellIcon,
 } from './navIcons';
