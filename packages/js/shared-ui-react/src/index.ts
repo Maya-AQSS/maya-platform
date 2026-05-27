@@ -66,6 +66,7 @@ export { ColumnVisibilityMenu } from './ColumnVisibilityMenu'
 export { FiltersButton } from './FiltersButton'
 export { Pagination } from './Pagination'
 export { useTablePreferences } from './useTablePreferences'
+export { useDebounce } from './useDebounce'
 export {
   paginate,
   getPageNumbersToDisplay,
