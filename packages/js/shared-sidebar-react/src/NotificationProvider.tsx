@@ -111,12 +111,13 @@ export function NotificationProvider({ children }: NotificationProviderProps) {
 
     async function connect() {
       try {
-        // Importaciones dinámicas para evitar errores en entornos sin Reverb.
-        // @vite-ignore evita que Vite resuelva estáticamente estos imports
-        // opcionales — los paquetes son deps del consumidor, no de la app host.
+        // new Function escapa el análisis estático de Vite — laravel-echo y
+        // pusher-js son peer deps opcionales que solo existen cuando Reverb
+        // está activo. El consumidor los instala; la app host no los necesita.
+        const dynImport = new Function('s', 'return import(s)') as (s: string) => Promise<{ default: unknown }>
         const [{ default: Echo }, { default: Pusher }] = await Promise.all([
-          import(/* @vite-ignore */ 'laravel-echo'),
-          import(/* @vite-ignore */ 'pusher-js'),
+          dynImport('laravel-echo'),
+          dynImport('pusher-js'),
         ])
 
         if (cancelled) return
