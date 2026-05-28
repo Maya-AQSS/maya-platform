@@ -111,10 +111,12 @@ export function NotificationProvider({ children }: NotificationProviderProps) {
 
     async function connect() {
       try {
-        // Importaciones dinámicas para evitar errores en entornos sin Reverb
+        // Importaciones dinámicas para evitar errores en entornos sin Reverb.
+        // @vite-ignore evita que Vite resuelva estáticamente estos imports
+        // opcionales — los paquetes son deps del consumidor, no de la app host.
         const [{ default: Echo }, { default: Pusher }] = await Promise.all([
-          import('laravel-echo'),
-          import('pusher-js'),
+          import(/* @vite-ignore */ 'laravel-echo'),
+          import(/* @vite-ignore */ 'pusher-js'),
         ])
 
         if (cancelled) return
