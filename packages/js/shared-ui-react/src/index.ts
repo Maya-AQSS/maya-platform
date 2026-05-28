@@ -61,6 +61,7 @@ export {
   type ColumnDef,
   type SortState,
   type SortDirection,
+  type DataTableFilterValues,
 } from './DataTable'
 export { ColumnVisibilityMenu } from './ColumnVisibilityMenu'
 export { FiltersButton } from './FiltersButton'

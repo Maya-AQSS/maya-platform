@@ -15,6 +15,12 @@ export interface SortState {
   direction: SortDirection
 }
 
+/**
+ * ADR-C — Tipo del mapa de filtros usado en `filterValues` y `onFilterChange`.
+ * Permite que el consumidor tipifique su estado de filtros URL-persistido.
+ */
+export type DataTableFilterValues = Record<string, string>
+
 /** Definición de una columna del DataTable. */
 export interface ColumnDef<T> {
   /** id estable; usado para sort y para la persistencia de visibilidad. */
@@ -166,6 +172,36 @@ interface Props<T> {
   columnsLabel?: string
   /** Oculta el botón de columnas aunque se pase `onToggleHiddenColumn`. */
   hideColumnsMenu?: boolean
+  /**
+   * ADR-C — Patrón filtros-en-URL (controlled).
+   *
+   * Valores actuales de los filtros. Cuando se pasa, el DataTable trata el
+   * panel de filtros como controlled: los inputs del `filtersPanel` deben
+   * leer de aquí y llamar a `onFilterChange` al cambiar.
+   *
+   * El padre es responsable de persistir los filtros en la URL
+   * (p. ej. con `useSearchParams` de React Router).
+   */
+  filterValues?: Record<string, string>
+  /**
+   * ADR-C — Callback para actualizar filtros cuando el usuario interactúa con
+   * los controles de filtro. Recibe el objeto completo de filtros actualizado.
+   *
+   * Ejemplo de uso:
+   * ```tsx
+   * <DataTable
+   *   filterValues={filters}
+   *   onFilterChange={(next) => setSearchParams(next)}
+   *   filtersPanel={
+   *     <TextInput
+   *       value={filters.search ?? ''}
+   *       onChange={(e) => onFilterChange({ ...filters, search: e.target.value })}
+   *     />
+   *   }
+   * />
+   * ```
+   */
+  onFilterChange?: (filters: Record<string, string>) => void
 }
 
 const SORT_ARROWS: Record<SortDirection | 'none', string> = {
@@ -408,6 +444,8 @@ export function DataTable<T>({
   pageSizeOptions = [10, 25, 50, 75, 100],
   onPageSizeChange,
   pageSizeLabel = 'Por página',
+  filterValues: _filterValues,
+  onFilterChange: _onFilterChange,
 }: Props<T>) {
   // Auto-genera un cardRender por defecto a partir de las columnas visibles.
   // Sin etiquetas: la primera columna actúa como título destacado, la segunda
