@@ -67,10 +67,22 @@ importers:
         specifier: ^17.0.0
         version: 17.0.8(i18next@26.2.0(typescript@5.9.3))(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(typescript@5.9.3)
 
+  packages/js/shared-hooks-react:
+    devDependencies:
+      '@types/react':
+        specifier: ^19.0.0
+        version: 19.2.15
+      react:
+        specifier: ^19.0.0
+        version: 19.2.6
+      react-router-dom:
+        specifier: ^7.0.0
+        version: 7.15.1(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
+
   packages/js/shared-i18n-react:
     dependencies:
-      '@maya/shared-auth-react':
-        specifier: ^0.1.0
+      '@ceedcv-maya/shared-auth-react':
+        specifier: ^0.4.0
         version: link:../shared-auth-react
     devDependencies:
       '@types/react':
@@ -94,11 +106,11 @@ importers:
 
   packages/js/shared-layout-react:
     dependencies:
-      '@maya/shared-auth-react':
-        specifier: ^0.1.0
+      '@ceedcv-maya/shared-auth-react':
+        specifier: ^0.4.0
         version: link:../shared-auth-react
-      '@maya/shared-ui-react':
-        specifier: ^0.1.0
+      '@ceedcv-maya/shared-ui-react':
+        specifier: ^0.4.0
         version: link:../shared-ui-react
     devDependencies:
       '@types/react':
@@ -128,11 +140,11 @@ importers:
 
   packages/js/shared-profile-react:
     dependencies:
-      '@maya/shared-auth-react':
-        specifier: ^0.1.0
+      '@ceedcv-maya/shared-auth-react':
+        specifier: ^0.4.0
         version: link:../shared-auth-react
-      '@maya/shared-ui-react':
-        specifier: ^0.1.0
+      '@ceedcv-maya/shared-ui-react':
+        specifier: ^0.4.0
         version: link:../shared-ui-react
     devDependencies:
       '@types/react':
@@ -154,14 +166,41 @@ importers:
         specifier: ^17.0.0
         version: 17.0.8(i18next@26.2.0(typescript@5.9.3))(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(typescript@5.9.3)
 
+  packages/js/shared-realtime-react:
+    devDependencies:
+      '@tanstack/react-query':
+        specifier: ^5.100.0
+        version: 5.100.14(react@19.2.6)
+      '@types/react':
+        specifier: ^19.0.0
+        version: 19.2.15
+      laravel-echo:
+        specifier: ^2.2.0
+        version: 2.3.4(pusher-js@8.5.0)(socket.io-client@4.8.3)
+      pusher-js:
+        specifier: ^8.4.0
+        version: 8.5.0
+      react:
+        specifier: ^19.0.0
+        version: 19.2.6
+      typescript:
+        specifier: ^5.6.0
+        version: 5.9.3
+
   packages/js/shared-sidebar-react:
     dependencies:
-      '@maya/shared-auth-react':
-        specifier: ^0.1.0
+      '@ceedcv-maya/shared-auth-react':
+        specifier: ^0.4.0
         version: link:../shared-auth-react
-      '@maya/shared-layout-react':
-        specifier: ^0.1.0
+      '@ceedcv-maya/shared-layout-react':
+        specifier: ^0.4.0
         version: link:../shared-layout-react
+      laravel-echo:
+        specifier: ^1.16.1
+        version: 1.19.0
+      pusher-js:
+        specifier: ^8.4.0
+        version: 8.5.0
     devDependencies:
       '@types/react':
         specifier: ^19.0.0
@@ -181,6 +220,8 @@ importers:
       react-i18next:
         specifier: ^17.0.0
         version: 17.0.8(i18next@26.2.0(typescript@5.9.3))(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(typescript@5.9.3)
+
+  packages/js/shared-styles: {}
 
   packages/js/shared-ui-react:
     devDependencies:
@@ -211,6 +252,9 @@ packages:
   '@babel/runtime@7.29.7':
     resolution: {integrity: sha512-Nq8OhGWiZIZGV6hLHoyAKLLcJihP/xFeBMGJoUrxTX2psI8dCifzLhZISFb+VWS3wFMRDmCGw5R+dOySCqPLhw==}
     engines: {node: '>=6.9.0'}
+
+  '@socket.io/component-emitter@3.1.2':
+    resolution: {integrity: sha512-9BCxFwvbGg/RsZK9tjXd8s4UcwR0MWeFQ1XEKIQVVvAGJyINdrqKMcTRyLoK8Rse1GjzLV9cwjWV1olXRWEXVA==}
 
   '@tanstack/query-core@5.100.14':
     resolution: {integrity: sha512-5X41dGpxgeaHISCRW2oYwcSycZeULZzAunaudXT9ov1KOTj9xwt0CH6hbwqP1/z74ZWF7rYFnDpyYH07XFcZew==}
@@ -285,6 +329,13 @@ packages:
   dunder-proto@1.0.1:
     resolution: {integrity: sha512-KIN/nDJBQRcXw0MLVhZE9iQHmG68qAVIBg9CqmUYjmQIhgij9U5MFvrqkUL5FbtyyzZuOeOt0zdeRe4UY7ct+A==}
     engines: {node: '>= 0.4'}
+
+  engine.io-client@6.6.5:
+    resolution: {integrity: sha512-QCwxUDULPlXv8F6tqMMKx5dNkTe6OaBYRMPYeXKBlyOoKvAmE0ac6pW7fFhSscJ/5SI7666/U/B+MElbsrJlIg==}
+
+  engine.io-parser@5.2.3:
+    resolution: {integrity: sha512-HqD3yTBfnBxIrbnM1DoD6Pcq8NECnh8d4As1Qgh0z5Gg3jRRIqijury0CL3ghu/edArpUYiYqQiDUQBIs4np3Q==}
+    engines: {node: '>=10.0.0'}
 
   es-define-property@1.0.1:
     resolution: {integrity: sha512-e3nRfgfUZ4rNGL232gUgX06QNyyez04KdjFrF+LTRoOXmrOgFKDg4BCdsjW8EnT69eqdYGmRpJwiPVYNrCaW3g==}
@@ -369,6 +420,17 @@ packages:
   keycloak-js@26.2.4:
     resolution: {integrity: sha512-PnXpR3ubETGOt0B/Qt2lxmPbkZr5bc3vlQsOqDoTPPQsZRp7JjhTKxlJ187uWh8qJhvBab6Gsjb06a8ayOPfuw==}
 
+  laravel-echo@1.19.0:
+    resolution: {integrity: sha512-o/X4XH8BIRwij66PSjtotZfM88Z8g/4P3gzxQf2BTcZBKmGqucvI5JYYLprR2OZQ9XlGsmJ2v+hDpPGEbXwUWw==}
+    engines: {node: '>=10'}
+
+  laravel-echo@2.3.4:
+    resolution: {integrity: sha512-rpALCIK1uw2SrttcK9P5JzItt5I85RcfXQKUNnkcorzhtKeXi5GS0PVFFBH8ppNo8wnbdBKuD1EtIHgTbXo9FQ==}
+    engines: {node: '>=20'}
+    peerDependencies:
+      pusher-js: '*'
+      socket.io-client: '*'
+
   loose-envify@1.4.0:
     resolution: {integrity: sha512-lyuxPGr/Wfhrlem2CL/UcnUc1zcqKAImBDzukY7Y5F/yQiNdko6+fRLevlw1HgMySw7f611UIY408EtxRSoK3Q==}
     hasBin: true
@@ -398,6 +460,9 @@ packages:
   proxy-from-env@2.1.0:
     resolution: {integrity: sha512-cJ+oHTW1VAEa8cJslgmUZrc+sjRKgAKl3Zyse6+PV38hZe/V6Z14TbCuXcan9F9ghlz4QrFr2c92TNF82UkYHA==}
     engines: {node: '>=10'}
+
+  pusher-js@8.5.0:
+    resolution: {integrity: sha512-V7uzGi9bqOOOyM/6IkJdpFyjGZj7llz1v0oWnYkZKcYLvbz6VcHVLmzKqkvegjuMumpfIEKGLmWHwFb39XFCpw==}
 
   react-dom@19.2.6:
     resolution: {integrity: sha512-0prMI+hvBbPjsWnxDLxlCGyM8PN6UuWjEUCYmZhO67xIV9Xasa/r/vDnq+Xyq4Lo27g8QSbO5YzARu0D1Sps3g==}
@@ -471,12 +536,23 @@ packages:
   set-cookie-parser@2.7.2:
     resolution: {integrity: sha512-oeM1lpU/UvhTxw+g3cIfxXHyJRc/uidd3yK1P242gzHds0udQBYzs3y8j4gCCW+ZJ7ad0yctld8RYO+bdurlvw==}
 
+  socket.io-client@4.8.3:
+    resolution: {integrity: sha512-uP0bpjWrjQmUt5DTHq9RuoCBdFJF10cdX9X+a368j/Ft0wmaVgxlrjvK3kjvgCODOMMOz9lcaRzxmso0bTWZ/g==}
+    engines: {node: '>=10.0.0'}
+
+  socket.io-parser@4.2.6:
+    resolution: {integrity: sha512-asJqbVBDsBCJx0pTqw3WfesSY0iRX+2xzWEWzrpcH7L6fLzrhyF8WPI8UaeM4YCuDfpwA/cgsdugMsmtz8EJeg==}
+    engines: {node: '>=10.0.0'}
+
   tldts-core@7.4.0:
     resolution: {integrity: sha512-/mb9kRld+x1sIMXxWNOAp5m6C+D4GrAORWlJkOJ5dElvxdN1eutz/o7qHLp9gFvDF4Y3/L2xeScoxz6AbEo8rQ==}
 
   tldts@7.4.0:
     resolution: {integrity: sha512-yHBe+zVfzNZ3QfTPW/Z6KK1G2t340gFjMHqI/4KKSt/abzYydzuCnpqdaF5gCCABby+9Yfbj59oR5F2Fd5CBzg==}
     hasBin: true
+
+  tweetnacl@1.0.3:
+    resolution: {integrity: sha512-6rt+RN7aOi1nGMyC4Xa5DdYiukl2UWCbcJft7YhxReBGQD7OAM8Pbxw6YMo4r2diNEA8FEmu32YOn9rhaiE5yw==}
 
   typescript@5.9.3:
     resolution: {integrity: sha512-jl1vZzPDinLr9eUt3J/t7V6FgNEw9QjvBPdysz9KfQDD41fQrC2Y4vKQdiaUpFT4bXlb1RHhLpp8wtm6M5TgSw==}
@@ -492,9 +568,27 @@ packages:
     resolution: {integrity: sha512-Dhxzh5HZuiHQhbvTW9AMetFfBHDMYpo23Uo9btPXgdYP+3T5S+p+jgNy7spra+veYhBP2dCSgxR/i2Y02h5/6w==}
     engines: {node: '>=0.10.0'}
 
+  ws@8.20.1:
+    resolution: {integrity: sha512-It4dO0K5v//JtTXuPkfEOaI3uUN87iYPnqo/ZzqCoG3g8uhA66QUMs/SrM0YK7/NAu+r4LMh/9dq2A7k+rHs+w==}
+    engines: {node: '>=10.0.0'}
+    peerDependencies:
+      bufferutil: ^4.0.1
+      utf-8-validate: '>=5.0.2'
+    peerDependenciesMeta:
+      bufferutil:
+        optional: true
+      utf-8-validate:
+        optional: true
+
+  xmlhttprequest-ssl@2.1.2:
+    resolution: {integrity: sha512-TEU+nJVUUnA4CYJFLvK5X9AOeH4KvDvhIfm0vV1GaQRtchnG0hgK5p8hw/xjv8cunWYCsiPCSDzObPyhEwq3KQ==}
+    engines: {node: '>=0.4.0'}
+
 snapshots:
 
   '@babel/runtime@7.29.7': {}
+
+  '@socket.io/component-emitter@3.1.2': {}
 
   '@tanstack/query-core@5.100.14': {}
 
@@ -572,6 +666,20 @@ snapshots:
       call-bind-apply-helpers: 1.0.2
       es-errors: 1.3.0
       gopd: 1.2.0
+
+  engine.io-client@6.6.5:
+    dependencies:
+      '@socket.io/component-emitter': 3.1.2
+      debug: 4.4.3
+      engine.io-parser: 5.2.3
+      ws: 8.20.1
+      xmlhttprequest-ssl: 2.1.2
+    transitivePeerDependencies:
+      - bufferutil
+      - supports-color
+      - utf-8-validate
+
+  engine.io-parser@5.2.3: {}
 
   es-define-property@1.0.1: {}
 
@@ -655,6 +763,13 @@ snapshots:
 
   keycloak-js@26.2.4: {}
 
+  laravel-echo@1.19.0: {}
+
+  laravel-echo@2.3.4(pusher-js@8.5.0)(socket.io-client@4.8.3):
+    dependencies:
+      pusher-js: 8.5.0
+      socket.io-client: 4.8.3
+
   loose-envify@1.4.0:
     dependencies:
       js-tokens: 4.0.0
@@ -678,6 +793,10 @@ snapshots:
       react-is: 16.13.1
 
   proxy-from-env@2.1.0: {}
+
+  pusher-js@8.5.0:
+    dependencies:
+      tweetnacl: 1.0.3
 
   react-dom@19.2.6(react@19.2.6):
     dependencies:
@@ -744,11 +863,31 @@ snapshots:
 
   set-cookie-parser@2.7.2: {}
 
+  socket.io-client@4.8.3:
+    dependencies:
+      '@socket.io/component-emitter': 3.1.2
+      debug: 4.4.3
+      engine.io-client: 6.6.5
+      socket.io-parser: 4.2.6
+    transitivePeerDependencies:
+      - bufferutil
+      - supports-color
+      - utf-8-validate
+
+  socket.io-parser@4.2.6:
+    dependencies:
+      '@socket.io/component-emitter': 3.1.2
+      debug: 4.4.3
+    transitivePeerDependencies:
+      - supports-color
+
   tldts-core@7.4.0: {}
 
   tldts@7.4.0:
     dependencies:
       tldts-core: 7.4.0
+
+  tweetnacl@1.0.3: {}
 
   typescript@5.9.3: {}
 
@@ -757,3 +896,7 @@ snapshots:
       react: 19.2.6
 
   void-elements@3.1.0: {}
+
+  ws@8.20.1: {}
+
+  xmlhttprequest-ssl@2.1.2: {}
