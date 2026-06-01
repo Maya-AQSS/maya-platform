@@ -17,10 +17,15 @@ jobs:
     permissions:
       contents: write
     steps:
+      # Usamos GITHUB_TOKEN (auto-provisto por Actions) en lugar de SPLIT_TOKEN.
+      # SPLIT_TOKEN es un PAT con scope sobre los repos hijos `shared-*` para
+      # el workflow split.yml, NO sobre este monorepo — usarlo aquí hacía que
+      # `git push --tags` fallara con 403 "Permission to Maya-AQSS/maya_platform
+      # denied". GITHUB_TOKEN tiene `contents: write` (configurado en
+      # permissions arriba) y es suficiente para tagear + pushear al propio repo.
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          token: ${{ secrets.SPLIT_TOKEN }}
 
       - uses: shivammathur/setup-php@v2
         with:
