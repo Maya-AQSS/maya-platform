@@ -36,3 +36,8 @@ Thumbs.db
 
 # Logs
 *.log
+
+# Per-consumer symlinks created by the frontends' vite.config.ts so that
+# transitive imports from shared package sources resolve to the consumer's
+# node_modules. See vite.config.ts in maya_{dms,logs,dashboard}/frontend/.
+packages/js/shared-*/node_modules
