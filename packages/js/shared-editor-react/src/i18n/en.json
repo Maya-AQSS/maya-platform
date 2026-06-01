@@ -1,0 +1,39 @@
+{
+  "editor": {
+    "toolbar": {
+      "bold": "Bold",
+      "italic": "Italic",
+      "underline": "Underline",
+      "strike": "Strikethrough",
+      "code": "Code",
+      "link": "Insert link",
+      "linkPrompt": "Link URL",
+      "unlink": "Remove link",
+      "heading1": "Heading 1",
+      "heading2": "Heading 2",
+      "heading3": "Heading 3",
+      "paragraph": "Paragraph",
+      "bulletList": "Bullet list",
+      "orderedList": "Numbered list",
+      "taskList": "Task list",
+      "blockquote": "Quote",
+      "codeBlock": "Code block",
+      "horizontalRule": "Horizontal rule",
+      "image": "Insert image",
+      "table": "Insert table",
+      "alert": "Alert",
+      "iframe": "Insert iframe",
+      "iframePrompt": "Iframe URL",
+      "fullscreen": "Fullscreen",
+      "exitFullscreen": "Exit fullscreen",
+      "addComment": "Comment selection",
+      "importDocx": "Import .docx",
+      "exportDocx": "Export as .docx"
+    },
+    "placeholder": "Start typing or press / for commands…",
+    "errors": {
+      "uploadFailed": "File upload failed",
+      "linkInvalid": "Invalid URL"
+    }
+  }
+}
