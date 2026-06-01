@@ -22,9 +22,10 @@ export interface ReverbBootstrapConfig {
   /**
    * Resolver for the bearer JWT sent to authEndpoint. Called per authorize
    * request so the client always sends a fresh token (handles silent refresh).
+   * May be sync or async — the authorizer awaits the result.
    * Return null to deny the channel without making the request.
    */
-  getBearerToken: () => string | null | undefined;
+  getBearerToken: () => string | null | undefined | Promise<string | null | undefined>;
 }
 
 let instance: Echo<'reverb'> | null = null;
@@ -69,26 +70,32 @@ export function createEcho(config: ReverbBootstrapConfig): Echo<'reverb'> {
     },
     authorizer: (channel) => ({
       authorize: (socketId, callback) => {
-        const token = config.getBearerToken();
-        if (!token) {
-          callback(new Error('no_bearer_token'), null);
-          return;
-        }
-        fetch(config.authEndpoint, {
-          method: 'POST',
-          headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({ socket_id: socketId, channel_name: channel.name }),
-        })
-          .then(async (response) => {
-            if (!response.ok) {
-              callback(new Error(`broadcasting_auth_${response.status}`), null);
+        // Resolve token first (await Promise if the resolver is async — the
+        // shared-auth-react getBearerToken IS async because it triggers a
+        // silent refresh; passing the Promise as `${token}` would serialize
+        // it as "[object Promise]" and produce a malformed JWT server-side).
+        Promise.resolve(config.getBearerToken())
+          .then((token) => {
+            if (!token) {
+              callback(new Error('no_bearer_token'), null);
               return;
             }
-            callback(null, await response.json());
+            return fetch(config.authEndpoint, {
+              method: 'POST',
+              headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${token}`,
+              },
+              body: JSON.stringify({ socket_id: socketId, channel_name: channel.name }),
+            })
+              .then(async (response) => {
+                if (!response.ok) {
+                  callback(new Error(`broadcasting_auth_${response.status}`), null);
+                  return;
+                }
+                callback(null, await response.json());
+              });
           })
           .catch((err: unknown) => {
             callback(err instanceof Error ? err : new Error('broadcasting_auth_failed'), null);
