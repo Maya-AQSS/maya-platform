@@ -126,6 +126,10 @@ export function MayaEditor({
     id: string;
     rect: DOMRect;
   } | null>(null);
+  // viewReady flips to true after TipTap's `create` event fires, which is
+  // when `editor.view` becomes safely accessible. Used to defer effects
+  // that touch the view DOM until it's actually mounted.
+  const [viewReady, setViewReady] = useState(false);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const docxInputRef = useRef<HTMLInputElement | null>(null);
 
@@ -196,11 +200,19 @@ export function MayaEditor({
   useEffect(() => {
     if (!editor) return;
     const bump = () => setSelectionVersion((v) => v + 1);
+    const markReady = () => setViewReady(true);
     editor.on('selectionUpdate', bump);
     editor.on('transaction', bump);
+    editor.on('create', markReady);
+    // The editor may have already fired `create` before we got here
+    // (useEditor sometimes returns an instance that's already mounted).
+    try {
+      if (editor.view && editor.view.dom) setViewReady(true);
+    } catch { /* view not ready yet — markReady will fire it */ }
     return () => {
       editor.off('selectionUpdate', bump);
       editor.off('transaction', bump);
+      editor.off('create', markReady);
     };
   }, [editor]);
 
@@ -208,12 +220,17 @@ export function MayaEditor({
   // Listens on the editor view DOM so we don't pay for delegated mouse
   // events outside the editor surface. Closes when the pointer leaves
   // the comment span and there's no replacement inside the same hover.
+  // Gated on `viewReady` because `editor.view` is a getter that throws
+  // until TipTap fires the `create` event.
   useEffect(() => {
-    if (!editor || !commentsById) return;
-    // Editor view is created asynchronously after mount in TipTap v3 —
-    // accessing it too early throws "editor view is not available".
-    if (!editor.view) return;
-    const root = editor.view.dom;
+    if (!editor || !commentsById || !viewReady) return;
+    let root: HTMLElement;
+    try {
+      root = editor.view.dom as HTMLElement;
+    } catch {
+      return;
+    }
+    if (!root) return;
     let hideTimer: ReturnType<typeof setTimeout> | null = null;
 
     const handleEnter = (e: MouseEvent) => {
@@ -242,7 +259,7 @@ export function MayaEditor({
       root.removeEventListener('mouseout', handleLeave);
       if (hideTimer) clearTimeout(hideTimer);
     };
-  }, [editor, commentsById]);
+  }, [editor, commentsById, viewReady]);
 
   useEffect(() => {
     if (editor) editor.setEditable(editable);
