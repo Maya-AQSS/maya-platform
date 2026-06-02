@@ -25,6 +25,7 @@ import { useEditorContent, type EditorOutput } from '../hooks/useEditorContent';
 import { sanitizeEditorHtml } from '../lib/dompurifyConfig';
 import { markdownToHtml } from '../lib/markdownToHtml';
 import { htmlToMarkdown } from '../lib/htmlToMarkdown';
+import { normalizeTableHtml } from '../lib/normalizeTableHtml';
 import type { EditorMode, TiptapDoc } from '../types';
 import { EditorToolbar, type ToolbarLabels } from './EditorToolbar';
 import '../styles/maya-editor.css';
@@ -139,6 +140,9 @@ export function MayaEditor({
         class: `maya-editor maya-editor--${mode}${isDark ? ' is-dark' : ''}`,
         ...(placeholder ? { 'data-placeholder': placeholder } : {}),
       },
+      // Reshape pasted HTML so complex tables (caption/tfoot/colgroup)
+      // survive TipTap's parser. See `normalizeTableHtml` for details.
+      transformPastedHTML: (html) => normalizeTableHtml(html),
     },
   });
 
@@ -167,10 +171,14 @@ export function MayaEditor({
   };
 
   const exitSource = () => {
-    const html =
+    const rawHtml =
       viewMode === 'markdown'
-        ? sanitizeEditorHtml(markdownToHtml(sourceText))
-        : sanitizeEditorHtml(sourceText);
+        ? markdownToHtml(sourceText)
+        : sourceText;
+    // Normalise complex tables (caption/tfoot/colgroup) before sanitising
+    // — DOMPurify only strips disallowed tags, it doesn't reshape the
+    // tree to match TipTap's schema.
+    const html = sanitizeEditorHtml(normalizeTableHtml(rawHtml));
     if (editor && html != null) {
       editor.commands.setContent(html, { emitUpdate: true });
     }
