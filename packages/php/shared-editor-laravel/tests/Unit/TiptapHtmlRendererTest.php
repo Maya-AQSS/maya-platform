@@ -121,7 +121,7 @@ final class TiptapHtmlRendererTest extends TestCase
         $this->assertStringContainsString('<a href="https://example.com">click</a>', $html);
     }
 
-    public function test_09_escapes_href_in_link(): void
+    public function test_09_blocks_javascript_protocol_in_link(): void
     {
         $html = self::renderFromBlockNote([[
             'type' => 'paragraph',
@@ -132,7 +132,9 @@ final class TiptapHtmlRendererTest extends TestCase
             ]],
         ]]);
 
-        $this->assertStringContainsString('href="javascript:alert(1)"', $html);
+        // javascript: protocol is blocked; href becomes empty string
+        $this->assertStringContainsString('href=""', $html);
+        $this->assertStringNotContainsString('javascript:', $html);
     }
 
     public function test_10_sanitizes_color_to_hex_or_named_only(): void
@@ -283,5 +285,65 @@ final class TiptapHtmlRendererTest extends TestCase
         // colspan was cast to int → "2" only.
         $this->assertStringNotContainsString('onclick', $html);
         $this->assertMatchesRegularExpression('/colspan="2"/', $html);
+    }
+
+    public function test_20_data_url_protocol_blocked_in_link(): void
+    {
+        $html = self::renderFromBlockNote([[
+            'type' => 'paragraph',
+            'content' => [[
+                'type' => 'link',
+                'href' => 'data:text/html,<script>alert(1)</script>',
+                'content' => [['type' => 'text', 'text' => 'x', 'styles' => []]],
+            ]],
+        ]]);
+
+        // data: protocol is blocked; href becomes empty string
+        $this->assertStringContainsString('href=""', $html);
+        $this->assertStringNotContainsString('data:', $html);
+    }
+
+    public function test_21_vbscript_protocol_blocked_in_link(): void
+    {
+        $html = self::renderFromBlockNote([[
+            'type' => 'paragraph',
+            'content' => [[
+                'type' => 'link',
+                'href' => 'vbscript:msgbox(1)',
+                'content' => [['type' => 'text', 'text' => 'x', 'styles' => []]],
+            ]],
+        ]]);
+
+        // vbscript: protocol is blocked; href becomes empty string
+        $this->assertStringContainsString('href=""', $html);
+        $this->assertStringNotContainsString('vbscript:', $html);
+    }
+
+    public function test_22_https_and_http_protocols_allowed(): void
+    {
+        $validUrls = [
+            'https://example.com',
+            'http://example.com',
+            'mailto:user@example.com',
+            'tel:+1234567890',
+            '#anchor',
+            '/relative/path',
+            './current/path',
+            '../parent/path',
+        ];
+
+        foreach ($validUrls as $url) {
+            $html = self::renderFromBlockNote([[
+                'type' => 'paragraph',
+                'content' => [[
+                    'type' => 'link',
+                    'href' => $url,
+                    'content' => [['type' => 'text', 'text' => 'link', 'styles' => []]],
+                ]],
+            ]]);
+
+            $escaped = htmlspecialchars($url, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+            $this->assertStringContainsString('href="'.$escaped.'"', $html, "URL $url should be preserved");
+        }
     }
 }

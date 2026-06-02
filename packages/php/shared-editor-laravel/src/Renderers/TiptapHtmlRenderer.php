@@ -311,7 +311,8 @@ final class TiptapHtmlRenderer
             $text = '<code>'.$text.'</code>';
         }
         if ($link !== null) {
-            $text = '<a href="'.self::escape($link).'">'.$text.'</a>';
+            $validatedLink = self::validateUrlScheme($link);
+            $text = '<a href="'.self::escape($validatedLink).'">'.$text.'</a>';
         }
 
         return $text;
@@ -339,6 +340,28 @@ final class TiptapHtmlRenderer
         }
 
         return implode(';', $parts);
+    }
+
+    /**
+     * Validate link href against allowed URI schemes.
+     * Prevents javascript:, data:, vbscript: and other dangerous protocols.
+     *
+     * Allowed schemes: http, https, mailto, tel, fragment (#), relative paths (/, ./, ../)
+     */
+    private static function validateUrlScheme(string $href): string
+    {
+        if ($href === '') {
+            return '';
+        }
+
+        // Pattern matches: https:, http:, mailto:, tel:, #, /, ./, ../
+        $pattern = '/^(https?:|mailto:|tel:|#|\/|\.\/|\.\.\/)/i';
+        if (preg_match($pattern, $href) === 1) {
+            return $href;
+        }
+
+        // If href doesn't match allowed schemes, return empty string (link becomes useless).
+        return '';
     }
 
     /**

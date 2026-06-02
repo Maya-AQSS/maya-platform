@@ -13,8 +13,8 @@ use RuntimeException;
  * HTML → .docx export via phpoffice/phpword.
  *
  * Security:
- *   - Disables external entity loading (`libxml_disable_entity_loader`
- *     equivalent under PHP 8+ via `LIBXML_NONET`).
+ *   - Disables external entity loading via `libxml_disable_entity_loader()` (PHP <8.1)
+ *     or sets LIBXML_NONET option (PHP 8+) to prevent XXE attacks.
  *   - Caller is responsible for the HTML having already been sanitised
  *     (typically by `TiptapHtmlRenderer` + DOMPurify).
  *
@@ -35,7 +35,12 @@ final class DocxExporter
             );
         }
 
-        // Reduce libxml exposure to network-based entity attacks.
+        // Disable external entity loading to prevent XXE attacks.
+        // For PHP <8.1, use libxml_disable_entity_loader(); for PHP 8+, this is deprecated
+        // but we still set it as a fallback. PhpWord will use LIBXML_NONET internally.
+        if (function_exists('libxml_disable_entity_loader')) {
+            libxml_disable_entity_loader(true);
+        }
         $prevLoaderState = libxml_use_internal_errors(true);
 
         try {
