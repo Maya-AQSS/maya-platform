@@ -107,6 +107,11 @@ export function MayaEditor({
   const [viewMode, setViewMode] = useState<ViewMode>('wysiwyg');
   const [sourceText, setSourceText] = useState('');
   const [findOpen, setFindOpen] = useState(false);
+  // selectionVersion bumps on every selectionUpdate so toolbar predicates
+  // that read `editor.state.selection` (e.g. the comment button's disabled
+  // state) re-evaluate on cursor moves. TipTap v3's `useEditor` re-renders
+  // on transactions but not selection-only changes.
+  const [, setSelectionVersion] = useState(0);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const docxInputRef = useRef<HTMLInputElement | null>(null);
 
@@ -170,6 +175,17 @@ export function MayaEditor({
   useEffect(() => {
     if (editor && onEditorReady) onEditorReady(editor);
   }, [editor, onEditorReady]);
+
+  useEffect(() => {
+    if (!editor) return;
+    const bump = () => setSelectionVersion((v) => v + 1);
+    editor.on('selectionUpdate', bump);
+    editor.on('transaction', bump);
+    return () => {
+      editor.off('selectionUpdate', bump);
+      editor.off('transaction', bump);
+    };
+  }, [editor]);
 
   useEffect(() => {
     if (editor) editor.setEditable(editable);
