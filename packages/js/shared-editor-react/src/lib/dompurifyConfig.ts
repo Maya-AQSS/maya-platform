@@ -65,11 +65,13 @@ export const ALLOWED_ATTR = [
   'colspan',
   'rowspan',
   'role',
+  // Data attributes: trusted because they originate from TiptapHtmlRenderer, not user input
   'data-node-type',
   'data-comment-id',
   'data-block-type',
   'data-original-type',
   'data-indent',
+  // iframe sandbox attribute: server-side renderer sets default sandbox if none present
   'sandbox',
   'loading',
   'scope',
@@ -81,12 +83,25 @@ export const ALLOWED_ATTR = [
 ];
 
 /**
- * Restricts URL schemes — blocks `javascript:`, `data:`, `vbscript:`.
+ * Restricts URL schemes — blocks dangerous protocols like `javascript:`, `data:`, `vbscript:`.
+ * This pattern is exported for reference and should match the server-side TiptapHtmlRenderer
+ * URL scheme validation for consistent security across client and server.
+ *
+ * Allowed schemes:
+ * - http:// and https:// (secure web links)
+ * - mailto: (email links)
+ * - tel: (phone links)
+ * - # (fragment identifiers / anchors)
+ * - /, ./, ../ (relative paths)
  */
 export const ALLOWED_URI_REGEXP = /^(https?:|mailto:|tel:|#|\/|\.\/|\.\.\/)/i;
 
 let hooksInstalled = false;
 
+/**
+ * Install DOMPurify hooks for sanitization enhancements:
+ * - Ensure INPUT elements without a type attribute default to 'checkbox'
+ */
 function installDomPurifyHooks(): void {
   if (hooksInstalled) return;
   hooksInstalled = true;

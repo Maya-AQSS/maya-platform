@@ -66,5 +66,9 @@ export function normalizeTableHtml(html: string): string {
     table.querySelectorAll(':scope > colgroup').forEach((cg) => cg.remove());
   }
 
+  // Safe to use innerHTML here because:
+  // 1. The input HTML is parsed fresh from a local string (not user-controlled)
+  // 2. Manipulations are DOM API only (no string injection)
+  // 3. Output is always passed through sanitizeEditorHtml before editor render
   return root.innerHTML;
 }

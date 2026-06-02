@@ -30,7 +30,12 @@ type MammothConvert = (input: {
   arrayBuffer: ArrayBuffer;
 }) => Promise<{ value: string; messages?: DocxConversionMessage[] }>;
 
-/** Full result including mammoth conversion messages. */
+/**
+ * Convert .docx to HTML with full diagnostic messages.
+ * Use this when you need to show users warnings about unsupported Word features
+ * (e.g., "Warning: dropped unsupported style 'MyStyle'").
+ * The messages array contains any warnings/errors from the mammoth parser.
+ */
 export async function docxToHtmlResult(file: File): Promise<DocxConversionResult> {
   const mod = (await import('mammoth/mammoth.browser.js')) as unknown as {
     convertToHtml: MammothConvert;
@@ -42,7 +47,11 @@ export async function docxToHtmlResult(file: File): Promise<DocxConversionResult
   return { html: sanitizeEditorHtml(normalizeTableHtml(rawHtml)), messages };
 }
 
-/** Convenience wrapper that returns only the HTML. */
+/**
+ * Convenience wrapper that returns only the sanitised HTML.
+ * Use this when you don't need diagnostic messages and just want clean HTML
+ * ready to insert into the editor.
+ */
 export async function docxToHtml(file: File): Promise<string> {
   const { html } = await docxToHtmlResult(file);
   return html;
