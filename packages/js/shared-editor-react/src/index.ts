@@ -21,6 +21,10 @@ export { sanitizeEditorHtml, ALLOWED_TAGS, ALLOWED_ATTR } from './lib/dompurifyC
 export { markdownToHtml } from './lib/markdownToHtml';
 export { htmlToMarkdown } from './lib/htmlToMarkdown';
 export { normalizeTableHtml } from './lib/normalizeTableHtml';
+export { splitHtmlIntoBlocks } from './lib/splitHtmlIntoBlocks';
+export type { BlockChunk, BlockChunkType } from './lib/splitHtmlIntoBlocks';
+export { htmlToTiptapDoc } from './lib/htmlToTiptapDoc';
+export { buildMayaEditorExtensions } from './lib/editorExtensions';
 export { SourceInputDialog } from './components/SourceInputDialog';
 export { FindReplaceBar } from './components/FindReplaceBar';
 export { CommentHoverPopover } from './components/CommentHoverPopover';

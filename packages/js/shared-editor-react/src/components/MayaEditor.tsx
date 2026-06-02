@@ -1,26 +1,8 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { EditorContent, useEditor } from '@tiptap/react';
 import type { Editor } from '@tiptap/react';
-// TipTap v3 ships all extensions as named exports (no default exports).
-import { StarterKit } from '@tiptap/starter-kit';
-import { Link } from '@tiptap/extension-link';
-import { Underline } from '@tiptap/extension-underline';
-import { Table } from '@tiptap/extension-table';
-import { TableRow } from '@tiptap/extension-table-row';
-import { TableHeader } from '@tiptap/extension-table-header';
-import { TableCell } from '@tiptap/extension-table-cell';
-import { Image } from '@tiptap/extension-image';
-import { TaskList } from '@tiptap/extension-task-list';
-import { TaskItem } from '@tiptap/extension-task-item';
-import { Highlight } from '@tiptap/extension-highlight';
-import { TextStyle } from '@tiptap/extension-text-style';
-import { Color } from '@tiptap/extension-color';
-import { TextAlign } from '@tiptap/extension-text-align';
 
-import { IframeBlock } from '../extensions/IframeBlock';
-import { AlertBlock } from '../extensions/AlertBlock';
-import { CommentMark } from '../extensions/CommentMark';
-import { Indent } from '../extensions/Indent';
+import { buildMayaEditorExtensions } from '../lib/editorExtensions';
 import { useEditorContent, type EditorOutput } from '../hooks/useEditorContent';
 import { sanitizeEditorHtml } from '../lib/dompurifyConfig';
 import { markdownToHtml } from '../lib/markdownToHtml';
@@ -133,48 +115,7 @@ export function MayaEditor({
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const docxInputRef = useRef<HTMLInputElement | null>(null);
 
-  const extensions = useMemo(() => {
-    const base = [
-      // StarterKit v3 already bundles Link + Underline (and other marks).
-      // Disable both so we can add our customised versions without
-      // tripping "Duplicate extension names" warnings.
-      StarterKit.configure({
-        link: false,
-        underline: false,
-      }),
-      Underline,
-      Link.configure({
-        openOnClick: false,
-        autolink: true,
-        protocols: ['http', 'https', 'mailto', 'tel'],
-        HTMLAttributes: { rel: 'noopener noreferrer nofollow' },
-      }),
-      TextStyle,
-      Color,
-      Highlight.configure({ multicolor: true }),
-      CommentMark,
-    ];
-    if (mode === 'full') {
-      base.push(
-        TextAlign.configure({
-          types: ['heading', 'paragraph'],
-          alignments: ['left', 'center', 'right', 'justify'],
-          defaultAlignment: 'left',
-        }),
-        Indent,
-        Table.configure({ resizable: true }),
-        TableRow,
-        TableHeader,
-        TableCell,
-        Image,
-        TaskList,
-        TaskItem.configure({ nested: true }),
-        IframeBlock,
-        AlertBlock,
-      );
-    }
-    return base;
-  }, [mode]);
+  const extensions = useMemo(() => buildMayaEditorExtensions(mode), [mode]);
 
   const editor = useEditor({
     extensions,
