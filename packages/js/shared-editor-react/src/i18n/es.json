@@ -30,7 +30,20 @@
       "importDocx": "Importar .docx",
       "exportDocx": "Exportar como .docx",
       "insertHtml": "Insertar HTML",
-      "insertMarkdown": "Insertar Markdown"
+      "insertMarkdown": "Insertar Markdown",
+      "undo": "Deshacer",
+      "redo": "Rehacer",
+      "uploadImage": "Insertar imagen",
+      "find": "Buscar y reemplazar",
+      "findPlaceholder": "Buscar",
+      "replacePlaceholder": "Reemplazar por",
+      "findNext": "Siguiente",
+      "findPrev": "Anterior",
+      "replace": "Reemplazar",
+      "replaceAll": "Reemplazar todo",
+      "findClose": "Cerrar",
+      "caseSensitive": "Distinguir mayúsculas",
+      "findNone": "Sin coincidencias"
     },
     "placeholder": "Empieza a escribir o pulsa / para comandos…",
     "errors": {

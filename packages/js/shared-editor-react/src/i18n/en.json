@@ -30,7 +30,20 @@
       "importDocx": "Import .docx",
       "exportDocx": "Export as .docx",
       "insertHtml": "Insert HTML",
-      "insertMarkdown": "Insert Markdown"
+      "insertMarkdown": "Insert Markdown",
+      "undo": "Undo",
+      "redo": "Redo",
+      "uploadImage": "Insert image",
+      "find": "Find and replace",
+      "findPlaceholder": "Find",
+      "replacePlaceholder": "Replace with",
+      "findNext": "Next match",
+      "findPrev": "Previous match",
+      "replace": "Replace",
+      "replaceAll": "Replace all",
+      "findClose": "Close find",
+      "caseSensitive": "Match case",
+      "findNone": "No matches"
     },
     "placeholder": "Start typing or press / for commands…",
     "errors": {

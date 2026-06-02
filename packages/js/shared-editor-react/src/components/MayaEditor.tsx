@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { EditorContent, useEditor } from '@tiptap/react';
 import type { Editor } from '@tiptap/react';
 // TipTap v3 ships all extensions as named exports (no default exports).
@@ -28,6 +28,7 @@ import { htmlToMarkdown } from '../lib/htmlToMarkdown';
 import { normalizeTableHtml } from '../lib/normalizeTableHtml';
 import type { EditorMode, TiptapDoc } from '../types';
 import { EditorToolbar, type ToolbarLabels } from './EditorToolbar';
+import { FindReplaceBar } from './FindReplaceBar';
 import '../styles/maya-editor.css';
 
 type ViewMode = 'wysiwyg' | 'html' | 'markdown';
@@ -60,6 +61,19 @@ export interface MayaEditorProps {
   placeholder?: string;
   /** Forwarded onEditorReady callback to access the underlying editor. */
   onEditorReady?: (editor: Editor) => void;
+  /**
+   * Called when the user clicks "Comment selection". Receives the current
+   * text range. The consumer should persist the comment, then return the
+   * commentId — the editor wraps the selection with a `CommentMark`
+   * carrying that id. Returning `null`/`undefined` cancels.
+   */
+  onCreateComment?: (range: {
+    from: number;
+    to: number;
+    text: string;
+  }) => Promise<string | number | null | undefined> | string | number | null | undefined;
+  /** Called when the user clicks "Export .docx". Consumer triggers the download. */
+  onExportDocx?: () => void;
 }
 
 /**
@@ -80,16 +94,21 @@ export function MayaEditor({
   mode = 'lite',
   onChange,
   onFullscreenChange,
-  uploadFile: _uploadFile, // reserved for Fase 9
+  uploadFile,
   toolbarLabels,
   placeholder,
   onEditorReady,
   output,
+  onCreateComment,
+  onExportDocx,
 }: MayaEditorProps) {
   const effectiveOutput: EditorOutput = output ?? (mode === 'full' ? 'json' : 'html');
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [viewMode, setViewMode] = useState<ViewMode>('wysiwyg');
   const [sourceText, setSourceText] = useState('');
+  const [findOpen, setFindOpen] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const docxInputRef = useRef<HTMLInputElement | null>(null);
 
   const extensions = useMemo(() => {
     const base = [
@@ -163,6 +182,54 @@ export function MayaEditor({
 
   if (!editor) return null;
 
+  const handlePickImage = async (file: File) => {
+    if (!uploadFile) return;
+    try {
+      const url = await uploadFile(file);
+      if (url) editor.chain().focus().setImage({ src: url, alt: file.name }).run();
+    } catch (e) {
+      // Surface as console only — the upstream uploader is expected to
+      // show its own toast/error UI.
+      console.error('[MayaEditor] image upload failed', e);
+    }
+  };
+
+  const handlePickDocx = async (file: File) => {
+    // Mammoth runs entirely client-side. Imported via dynamic `import()` so
+    // its ~430KB bundle only ships to apps that exercise the .docx flow.
+    // Note: `mammoth/mammoth.browser.js` is the browser entry — using the
+    // package root entry pulls Node-specific code that breaks in the
+    // browser when Vite tries to optimise it.
+    try {
+      const mod = (await import('mammoth/mammoth.browser.js')) as unknown as {
+        convertToHtml: (input: { arrayBuffer: ArrayBuffer }) => Promise<{ value: string }>;
+        default?: { convertToHtml: typeof mod.convertToHtml };
+      };
+      const mammoth = mod.default ?? mod;
+      const buffer = await file.arrayBuffer();
+      const { value: rawHtml } = await mammoth.convertToHtml({ arrayBuffer: buffer });
+      const html = sanitizeEditorHtml(normalizeTableHtml(rawHtml));
+      editor.commands.setContent(html, { emitUpdate: true });
+    } catch (e) {
+      console.error('[MayaEditor] docx import failed', e);
+    }
+  };
+
+  const handleCommentSelection = async () => {
+    if (!onCreateComment) return;
+    const { from, to } = editor.state.selection;
+    if (to <= from) return;
+    const text = editor.state.doc.textBetween(from, to, ' ');
+    const id = await Promise.resolve(onCreateComment({ from, to, text }));
+    if (id == null) return;
+    editor
+      .chain()
+      .focus()
+      .setTextSelection({ from, to })
+      .setComment(id)
+      .run();
+  };
+
   const enterSource = (target: 'html' | 'markdown') => {
     const currentHtml = editor.getHTML();
     const text = target === 'html' ? currentHtml : htmlToMarkdown(currentHtml);
@@ -218,7 +285,54 @@ export function MayaEditor({
         onInsertHtml={mode === 'full' ? toggleHtml : undefined}
         onInsertMarkdown={mode === 'full' ? toggleMarkdown : undefined}
         viewMode={viewMode}
+        onImage={mode === 'full' && uploadFile ? () => fileInputRef.current?.click() : undefined}
+        onImportDocx={mode === 'full' ? () => docxInputRef.current?.click() : undefined}
+        onExportDocx={mode === 'full' && onExportDocx ? onExportDocx : undefined}
+        onAddComment={mode === 'full' && onCreateComment ? handleCommentSelection : undefined}
+        onToggleFind={mode === 'full' ? () => setFindOpen((v) => !v) : undefined}
         labels={toolbarLabels}
+      />
+      {mode === 'full' && (
+        <FindReplaceBar
+          editor={editor}
+          open={findOpen}
+          onClose={() => setFindOpen(false)}
+          labels={{
+            findPlaceholder: toolbarLabels?.findPlaceholder ?? 'Find',
+            replacePlaceholder: toolbarLabels?.replacePlaceholder ?? 'Replace with',
+            findNext: toolbarLabels?.findNext ?? 'Next match',
+            findPrev: toolbarLabels?.findPrev ?? 'Previous match',
+            replace: toolbarLabels?.replace ?? 'Replace',
+            replaceAll: toolbarLabels?.replaceAll ?? 'Replace all',
+            close: toolbarLabels?.findClose ?? 'Close',
+            caseSensitive: toolbarLabels?.caseSensitive ?? 'Match case',
+            count: (a, b) => `${a}/${b}`,
+            none: toolbarLabels?.findNone ?? 'No matches',
+            replacedCount: (n) => `${n} replaced`,
+          }}
+        />
+      )}
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept="image/*"
+        className="maya-editor-hidden-input"
+        onChange={(e) => {
+          const f = e.target.files?.[0];
+          if (f) handlePickImage(f);
+          e.target.value = '';
+        }}
+      />
+      <input
+        ref={docxInputRef}
+        type="file"
+        accept=".docx,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+        className="maya-editor-hidden-input"
+        onChange={(e) => {
+          const f = e.target.files?.[0];
+          if (f) handlePickDocx(f);
+          e.target.value = '';
+        }}
       />
       {viewMode === 'wysiwyg' ? (
         <EditorContent editor={editor} />

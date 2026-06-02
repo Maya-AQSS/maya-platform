@@ -22,6 +22,7 @@ export { markdownToHtml } from './lib/markdownToHtml';
 export { htmlToMarkdown } from './lib/htmlToMarkdown';
 export { normalizeTableHtml } from './lib/normalizeTableHtml';
 export { SourceInputDialog } from './components/SourceInputDialog';
+export { FindReplaceBar } from './components/FindReplaceBar';
 
 export type {
   EditorMode,

@@ -10,6 +10,11 @@ interface EditorToolbarProps {
   onInsertHtml?: () => void;
   onInsertMarkdown?: () => void;
   viewMode?: 'wysiwyg' | 'html' | 'markdown';
+  onImage?: () => void;
+  onImportDocx?: () => void;
+  onExportDocx?: () => void;
+  onAddComment?: () => void;
+  onToggleFind?: () => void;
   labels?: ToolbarLabels;
 }
 
@@ -49,6 +54,22 @@ export interface ToolbarLabels {
   textColor: string;
   backgroundColor: string;
   colorDefault: string;
+  undo: string;
+  redo: string;
+  uploadImage: string;
+  importDocx: string;
+  exportDocx: string;
+  addComment: string;
+  find: string;
+  findPlaceholder?: string;
+  replacePlaceholder?: string;
+  findNext?: string;
+  findPrev?: string;
+  replace?: string;
+  replaceAll?: string;
+  findClose?: string;
+  caseSensitive?: string;
+  findNone?: string;
 }
 
 const DEFAULT_LABELS: ToolbarLabels = {
@@ -87,6 +108,22 @@ const DEFAULT_LABELS: ToolbarLabels = {
   textColor: 'Text color',
   backgroundColor: 'Highlight color',
   colorDefault: 'Default color',
+  undo: 'Undo',
+  redo: 'Redo',
+  uploadImage: 'Insert image',
+  importDocx: 'Import Word (.docx)',
+  exportDocx: 'Export Word (.docx)',
+  addComment: 'Comment selection',
+  find: 'Find and replace',
+  findPlaceholder: 'Find',
+  replacePlaceholder: 'Replace with',
+  findNext: 'Next match',
+  findPrev: 'Previous match',
+  replace: 'Replace',
+  replaceAll: 'Replace all',
+  findClose: 'Close find',
+  caseSensitive: 'Match case',
+  findNone: 'No matches',
 };
 
 function Btn({
@@ -125,6 +162,11 @@ export function EditorToolbar({
   onInsertHtml,
   onInsertMarkdown,
   viewMode = 'wysiwyg',
+  onImage,
+  onImportDocx,
+  onExportDocx,
+  onAddComment,
+  onToggleFind,
   labels,
 }: EditorToolbarProps) {
   if (!editor) return null;
@@ -151,6 +193,21 @@ export function EditorToolbar({
 
   return (
     <div className="maya-editor-toolbar" role="toolbar" aria-label="Editor toolbar">
+      <Btn
+        disabled={!editor.can().undo()}
+        onClick={() => editor.chain().focus().undo().run()}
+        title={L.undo}
+      >
+        ↶
+      </Btn>
+      <Btn
+        disabled={!editor.can().redo()}
+        onClick={() => editor.chain().focus().redo().run()}
+        title={L.redo}
+      >
+        ↷
+      </Btn>
+      <span className="maya-editor-toolbar__sep" aria-hidden />
       <Btn
         active={editor.isActive('bold')}
         onClick={() => editor.chain().focus().toggleBold().run()}
@@ -350,6 +407,39 @@ export function EditorToolbar({
           <Btn onClick={setIframe} title={L.iframe}>
             🖽
           </Btn>
+          {onImage && (
+            <Btn onClick={onImage} title={L.uploadImage}>
+              🖼
+            </Btn>
+          )}
+
+          <span className="maya-editor-toolbar__sep" aria-hidden />
+          {onImportDocx && (
+            <Btn onClick={onImportDocx} title={L.importDocx}>
+              <span style={{ fontFamily: 'ui-monospace, monospace', fontSize: 11 }}>↥W</span>
+            </Btn>
+          )}
+          {onExportDocx && (
+            <Btn onClick={onExportDocx} title={L.exportDocx}>
+              <span style={{ fontFamily: 'ui-monospace, monospace', fontSize: 11 }}>↧W</span>
+            </Btn>
+          )}
+          {onAddComment && (
+            <Btn
+              onClick={onAddComment}
+              disabled={editor.state.selection.empty}
+              title={L.addComment}
+            >
+              💬
+            </Btn>
+          )}
+          {onToggleFind && (
+            <Btn onClick={onToggleFind} title={L.find}>
+              🔍
+            </Btn>
+          )}
+
+          <span className="maya-editor-toolbar__sep" aria-hidden />
           {onInsertMarkdown && (
             <Btn
               onClick={onInsertMarkdown}

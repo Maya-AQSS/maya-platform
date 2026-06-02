@@ -83,6 +83,49 @@
   cursor: not-allowed;
 }
 
+/* Hidden file inputs reused by the toolbar (image, .docx) */
+.maya-editor-hidden-input { display: none; }
+
+/* ── Find / Replace bar ────────────────────────────────────── */
+.maya-editor-find {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 6px 8px;
+  background: var(--maya-editor-toolbar-bg, #f7f7f9);
+  border-bottom: 1px solid var(--maya-editor-border, #e3e3e8);
+}
+.maya-editor-find__row {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+.maya-editor-find__input {
+  flex: 1;
+  min-width: 160px;
+  height: 28px;
+  padding: 0 10px;
+  border: 1px solid var(--maya-editor-border, #d6d6df);
+  border-radius: 6px;
+  background: var(--maya-editor-bg, #fff);
+  color: inherit;
+  font-size: 13px;
+  outline: none;
+}
+.maya-editor-find__input:focus {
+  border-color: var(--maya-editor-link, #7c3aed);
+  box-shadow: 0 0 0 2px rgba(124, 58, 237, 0.18);
+}
+.maya-editor-find__counter {
+  font-size: 12px;
+  color: rgba(127, 127, 140, 0.95);
+  padding: 0 4px;
+  min-width: 50px;
+  text-align: center;
+}
+.maya-editor-find__hidden { display: none; }
+
 /* ── Color picker (text + highlight) ───────────────────────── */
 .maya-editor-color { position: relative; display: inline-flex; }
 .maya-editor-color__btn {
