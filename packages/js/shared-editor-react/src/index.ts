@@ -23,6 +23,8 @@ export { htmlToMarkdown } from './lib/htmlToMarkdown';
 export { normalizeTableHtml } from './lib/normalizeTableHtml';
 export { SourceInputDialog } from './components/SourceInputDialog';
 export { FindReplaceBar } from './components/FindReplaceBar';
+export { CommentHoverPopover } from './components/CommentHoverPopover';
+export type { CommentHoverData } from './components/CommentHoverPopover';
 
 export type {
   EditorMode,

@@ -29,6 +29,7 @@ import { normalizeTableHtml } from '../lib/normalizeTableHtml';
 import type { EditorMode, TiptapDoc } from '../types';
 import { EditorToolbar, type ToolbarLabels } from './EditorToolbar';
 import { FindReplaceBar } from './FindReplaceBar';
+import { CommentHoverPopover, type CommentHoverData } from './CommentHoverPopover';
 import '../styles/maya-editor.css';
 
 type ViewMode = 'wysiwyg' | 'html' | 'markdown';
@@ -74,6 +75,14 @@ export interface MayaEditorProps {
   }) => Promise<string | number | null | undefined> | string | number | null | undefined;
   /** Called when the user clicks "Export .docx". Consumer triggers the download. */
   onExportDocx?: () => void;
+  /**
+   * Lookup table for anchored-comment hover previews. The package itself
+   * doesn't know how comments are fetched — the consumer passes a dict
+   * keyed by `commentId` so the editor can render a `data-comment-id`
+   * span's contents in a portal popover on hover. Missing keys → no
+   * popover (silent).
+   */
+  commentsById?: Record<string, CommentHoverData>;
 }
 
 /**
@@ -101,6 +110,7 @@ export function MayaEditor({
   output,
   onCreateComment,
   onExportDocx,
+  commentsById,
 }: MayaEditorProps) {
   const effectiveOutput: EditorOutput = output ?? (mode === 'full' ? 'json' : 'html');
   const [isFullscreen, setIsFullscreen] = useState(false);
@@ -112,6 +122,10 @@ export function MayaEditor({
   // state) re-evaluate on cursor moves. TipTap v3's `useEditor` re-renders
   // on transactions but not selection-only changes.
   const [, setSelectionVersion] = useState(0);
+  const [hoveredComment, setHoveredComment] = useState<{
+    id: string;
+    rect: DOMRect;
+  } | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const docxInputRef = useRef<HTMLInputElement | null>(null);
 
@@ -186,6 +200,43 @@ export function MayaEditor({
       editor.off('transaction', bump);
     };
   }, [editor]);
+
+  // Hover detection on CommentMark spans (`data-comment-id`).
+  // Listens on the editor view DOM so we don't pay for delegated mouse
+  // events outside the editor surface. Closes when the pointer leaves
+  // the comment span and there's no replacement inside the same hover.
+  useEffect(() => {
+    if (!editor || !commentsById) return;
+    const root = editor.view.dom;
+    let hideTimer: ReturnType<typeof setTimeout> | null = null;
+
+    const handleEnter = (e: MouseEvent) => {
+      const target = e.target as HTMLElement | null;
+      const span = target?.closest?.('[data-comment-id]') as HTMLElement | null;
+      if (!span) return;
+      const id = span.getAttribute('data-comment-id');
+      if (!id || !commentsById[id]) return;
+      if (hideTimer) {
+        clearTimeout(hideTimer);
+        hideTimer = null;
+      }
+      setHoveredComment({ id, rect: span.getBoundingClientRect() });
+    };
+    const handleLeave = (e: MouseEvent) => {
+      const target = e.relatedTarget as HTMLElement | null;
+      if (target && target.closest?.('[data-comment-id]')) return;
+      if (target && target.closest?.('.maya-comment-popover')) return;
+      hideTimer = setTimeout(() => setHoveredComment(null), 80);
+    };
+
+    root.addEventListener('mouseover', handleEnter);
+    root.addEventListener('mouseout', handleLeave);
+    return () => {
+      root.removeEventListener('mouseover', handleEnter);
+      root.removeEventListener('mouseout', handleLeave);
+      if (hideTimer) clearTimeout(hideTimer);
+    };
+  }, [editor, commentsById]);
 
   useEffect(() => {
     if (editor) editor.setEditable(editable);
@@ -349,6 +400,11 @@ export function MayaEditor({
           if (f) handlePickDocx(f);
           e.target.value = '';
         }}
+      />
+      <CommentHoverPopover
+        comment={hoveredComment && commentsById ? commentsById[hoveredComment.id] ?? null : null}
+        anchorRect={hoveredComment?.rect ?? null}
+        isDark={isDark}
       />
       {viewMode === 'wysiwyg' ? (
         <EditorContent editor={editor} className="maya-editor-content" />

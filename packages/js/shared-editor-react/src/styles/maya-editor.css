@@ -86,6 +86,49 @@
 /* Hidden file inputs reused by the toolbar (image, .docx) */
 .maya-editor-hidden-input { display: none; }
 
+/* ── Comment hover popover ─────────────────────────────────── */
+.maya-comment-popover {
+  position: fixed;
+  z-index: 9998;
+  padding: 10px 12px;
+  background: #fff;
+  color: #1f1f23;
+  border: 1px solid #d6d6df;
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.16);
+  font-size: 13px;
+  line-height: 1.45;
+  pointer-events: none;
+  animation: maya-comment-popover-in 100ms ease-out;
+}
+.maya-comment-popover.is-dark {
+  background: #27272d;
+  color: #e6e6e8;
+  border-color: #3a3a42;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+}
+.maya-comment-popover__header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 4px;
+}
+.maya-comment-popover__author { font-weight: 600; font-size: 12px; }
+.maya-comment-popover__date {
+  font-size: 11px;
+  opacity: 0.7;
+}
+.maya-comment-popover__body {
+  white-space: pre-wrap;
+  word-break: break-word;
+  font-size: 13px;
+}
+@keyframes maya-comment-popover-in {
+  from { opacity: 0; transform: translateY(-2px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
 /* ── Find / Replace bar ────────────────────────────────────── */
 .maya-editor-find {
   display: flex;
