@@ -291,17 +291,21 @@ UI: añadir botón `Importar Word` al lado del existente `+ Añadir bloque`. Cli
 
 **Commit**: `feat(templates): DocxBlockSplitter modal for batch block import`
 
-### Fase 3 — Integración en WizardStep2Blocks (1h)
+### Fase 3 — Dropdown extensible + integración en WizardStep2Blocks (1.5h)
+
+**Archivos nuevos**:
+- `maya_dms/frontend/src/features/templates/blockSources.ts` — registro `BLOCK_SOURCES` (ver Anexo C)
 
 **Archivo modificado**:
 - `maya_dms/frontend/src/features/templates/components/WizardStep2Blocks.tsx`
-  - Import `DocxBlockSplitter` + `htmlToTiptapDoc`
+  - Sustituir botón `+ Añadir bloque` por `DropdownMenu` que itera `BLOCK_SOURCES`
+  - Import `DocxBlockSplitter` + `htmlToTiptapDoc` + `BLOCK_SOURCES`
   - State `docxSplitterOpen`
-  - Botón "Importar Word" junto a "+ Añadir bloque"
-  - Handler `handleImportDocx`
-  - Render `<DocxBlockSplitter open={docxSplitterOpen} … />`
+  - Construir `blockSourceCtx` con `{ templateId, createBlock, openDocxSplitter, setActiveDialog, hasPermission }`
+  - Handler `handleImportDocx(blocks)` que recorre y llama `createBlock` con `htmlToTiptapDoc(html)`
+  - Render `<DocxBlockSplitter open={docxSplitterOpen} … onConfirm={handleImportDocx} />`
 
-**Commit**: `feat(wizard): "Importar Word" button creates blocks from .docx selection`
+**Commit**: `feat(wizard): extensible BLOCK_SOURCES dropdown for "Add block" + docx import`
 
 ### Fase 4 — UX polish (3-4h) — opcional, iterativo
 
@@ -328,27 +332,32 @@ UI: añadir botón `Importar Word` al lado del existente `+ Añadir bloque`. Cli
 |---|---|---|
 | 1 | Utilidades shared + tests | 2h |
 | 2 | DocxBlockSplitter MVP | 5-7h |
-| 3 | Integración wizard | 1h |
-| **MVP total** | **Funcional, end-to-end** | **~10h** |
+| 3 | Dropdown extensible + wiring wizard | 1.5h |
+| **MVP total** | **Funcional, end-to-end** | **~10-11h** |
 | 4 | UX polish completo | 3-4h |
 | 5 | Tests E2E + docs | 2h |
-| **Production-ready total** | **Polished + tested** | **~14-16h** |
+| **Production-ready total** | **Polished + tested** | **~15-17h** |
 
 ## 8. Criterios de aceptación
 
 **MVP**:
-- [ ] Botón "Importar Word" visible en wizard
-- [ ] Click abre modal, file picker acepta `.docx`
+- [ ] Botón `+ Añadir bloque ▾` muestra dropdown con `Bloque simple` y `Importar desde Word`
+- [ ] "Bloque simple" mantiene el comportamiento actual (crea bloque vacío editable)
+- [ ] "Importar desde Word" abre modal con file picker `.docx`
 - [ ] Parsing falla con mensaje claro si el archivo está corrupto
-- [ ] Lista muestra los chunks con icono + texto
+- [ ] Lista muestra los chunks con icono + texto truncado por tipo
 - [ ] Multi-selección funciona (click, Ctrl, Shift)
-- [ ] Asignar selección a nuevo bloque crea entrada
-- [ ] Renombrar bloque inline persiste el cambio
-- [ ] Preview muestra HTML renderizado del bloque
-- [ ] "Crear" llama `createBlock` N veces y cierra el modal
-- [ ] Bloques aparecen en el sidebar del wizard
+- [ ] Asignar selección a nuevo bloque crea entrada en panel derecho
+- [ ] Renombrar bloque inline persiste el cambio en estado local
+- [ ] Preview muestra HTML renderizado del bloque destino
+- [ ] Botón "Crear N bloques" deshabilitado si hay bloques con 0 chunks
+- [ ] "Crear" llama `createBlock` N veces (estado `editable`) con barra de progreso `1/N`
+- [ ] Modal cierra automáticamente al terminar
+- [ ] Bloques importados aparecen al final del sidebar
+- [ ] Primer bloque importado queda seleccionado tras cerrar el modal
 - [ ] Cancel descarta toda la operación sin crear nada
 - [ ] Tema dark se aplica correctamente
+- [ ] Añadir un nuevo `BlockSource` en `BLOCK_SOURCES` lo hace aparecer en el dropdown sin tocar el wizard
 
 **Production-ready** (adicional):
 - [ ] Auto-split por H1 / H2 funciona
@@ -369,27 +378,43 @@ UI: añadir botón `Importar Word` al lado del existente `+ Añadir bloque`. Cli
 | Pattern modal portal + dark theme | `SourceInputDialog`, `CommentHoverPopover` |
 | `useCompletedBlocks` (localStorage pattern) | `maya_dms/features/documents/hooks` |
 
-## 10. Decisiones que requieren tu input antes de empezar
+## 10. Decisiones tomadas
 
-1. **Permiso** — ¿el botón "Importar Word" requiere permiso especial (`templates.import_docx`) o reutiliza `templates.create_block`? Recomendación: el segundo, ya cubre el caso.
+1. **Entry point — `+ Añadir bloque` se convierte en dropdown** ✅
+   - Click en `+ Añadir bloque ▾` despliega un menú con opciones:
+     - **"Bloque simple"** → comportamiento actual (crea bloque vacío editable)
+     - **"Importar desde Word"** → abre `DocxBlockSplitter`
+     - *(futuro: galería de plantillas, generador AI, etc. sin tocar el wizard)*
+   - **Decisión arquitectónica**: se introduce un registro extensible de "fuentes de bloque" (`BLOCK_SOURCES`) para que añadir un tipo nuevo sea declarativo — añadir entrada al array, listo (ver Anexo C).
 
-2. **Estado inicial de bloques importados** — ¿`editable`, `modificable` o `locked`? Recomendación: `editable` (default) para no constreñir al usuario.
+2. **Estado inicial de bloques importados** — `editable` ✅
+   - `block_state: 'editable'`, `mandatory: false`.
 
-3. **Auto-split por defecto** — ¿al cargar el doc, pre-asignar automáticamente por H1? Recomendación: NO en MVP — el usuario decide. Mostrar botón "Auto-split por H1" como atajo.
+3. **Auto-split por defecto** — NO ✅
+   - Al cargar el doc, ningún chunk está pre-asignado. El usuario decide manualmente cómo agrupar.
+   - Los botones "Auto-split por H1/H2" siguen siendo accesibles como atajo voluntario.
 
-4. **Bloques vacíos sin contenido** — ¿permitir crear un bloque con 0 elementos asignados? Recomendación: no, deshabilitar el botón "Crear" si algún bloque está vacío.
+4. **Bloques vacíos** — NO permitidos durante la importación ✅
+   - "Crear N bloques" queda deshabilitado si algún bloque destino tiene 0 chunks asignados.
+   - Si el usuario quiere bloques vacíos, los crea después con la opción **"Bloque simple"** del dropdown.
 
-5. **Modal vs página completa** — ¿modal o pantalla full screen para docs largos? Recomendación: modal con `max-height: 90vh` + scroll interno. Si el feedback muestra que es claustrofóbico, migrar a full screen.
+5. **UX del importador — formato preview, post-confirmar vuelve al wizard** ✅
+   - Modal con `max-height: 90vh` y scroll interno (mismo patrón que el preview actual).
+   - Al pulsar "Crear N bloques":
+     - Estado `creating` con barra de progreso `1/N`
+     - Llamadas secuenciales a `createBlock`
+     - Al terminar, modal se cierra automáticamente
+     - El sidebar del wizard refresca y los nuevos bloques aparecen al final
+     - El primer bloque importado se selecciona automáticamente para feedback visual.
 
 ## 11. Próximos pasos sugeridos
 
-1. **Validar UX con sketch** (opcional, 30min): hacer mockup más detallado del modal antes de codear
-2. **Fase 1** (2h): utilidades en shared-editor-react con tests
-3. **Demo interno** del helper splitHtmlIntoBlocks contra un doc real
-4. **Fase 2** (medio día): MVP del modal
-5. **Fase 3** (1h): wiring en wizard
-6. **Demo end-to-end** al usuario
-7. Iterar según feedback antes de meter polish (fase 4)
+1. **Fase 1** (2h): utilidades en shared-editor-react con tests
+2. **Demo interno** del helper `splitHtmlIntoBlocks` contra un doc real
+3. **Fase 2** (medio día): MVP del modal `DocxBlockSplitter` + registro extensible `BLOCK_SOURCES`
+4. **Fase 3** (1h): wiring en wizard — sustituir `+ Añadir bloque` por dropdown
+5. **Demo end-to-end** al usuario
+6. Iterar según feedback antes de meter polish (fase 4)
 
 ## Anexo A — Estructura de archivos resultante
 
@@ -431,3 +456,146 @@ interface DocxBlockSplitterProps {
 ```
 
 No hay cambios en API backend — se reutiliza el endpoint existente `POST /api/v1/templates/{id}/blocks`.
+
+## Anexo C — Registro extensible `BLOCK_SOURCES`
+
+Para que el dropdown `+ Añadir bloque ▾` sea extensible sin tocar el wizard cuando aparezcan nuevos tipos de bloque:
+
+```tsx
+// maya_dms/frontend/src/features/templates/blockSources.ts
+
+import type { TemplateBlock } from '../../types/blocks';
+import type { CreateBlockInput } from './api/blocks';
+
+export interface BlockSourceContext {
+  templateId: string;
+  createBlock: (input: CreateBlockInput) => Promise<TemplateBlock>;
+  openDocxSplitter: () => void;
+  /** Future modals/dialogs hook into this dispatcher. */
+  setActiveDialog: (id: string | null) => void;
+  hasPermission: (perm: string) => boolean;
+}
+
+export interface BlockSource {
+  /** Stable id used as dropdown menu key. */
+  id: string;
+  /** Label rendered in the dropdown item. */
+  label: string;
+  /** Optional helper text shown below the label. */
+  description?: string;
+  /** Optional glyph rendered to the left of the label. */
+  icon?: React.ReactNode;
+  /** Predicate that hides the entry when it returns false. */
+  isAvailable?: (ctx: BlockSourceContext) => boolean;
+  /** Click handler. */
+  onSelect: (ctx: BlockSourceContext) => void | Promise<void>;
+}
+
+export const BLOCK_SOURCES: BlockSource[] = [
+  {
+    id: 'simple',
+    label: 'Bloque simple',
+    description: 'Crear un bloque vacío editable',
+    icon: '+',
+    onSelect: async ({ createBlock }) => {
+      await createBlock({
+        title: 'Bloque sin nombre',
+        block_state: 'editable',
+        mandatory: false,
+        default_content: null,
+        description: null,
+      });
+    },
+  },
+  {
+    id: 'docx',
+    label: 'Importar desde Word',
+    description: 'Subir un .docx y dividir su contenido en bloques',
+    icon: '↥',
+    onSelect: ({ openDocxSplitter }) => openDocxSplitter(),
+  },
+  // Future entries (template gallery, AI-generated blocks, …) drop in here
+  // without touching the wizard.
+];
+```
+
+El wizard renderiza el dropdown iterando `BLOCK_SOURCES`:
+
+```tsx
+<DropdownMenu>
+  <DropdownMenuTrigger asChild>
+    <Button variant="primary" size="sm">+ Añadir bloque ▾</Button>
+  </DropdownMenuTrigger>
+  <DropdownMenuContent align="start">
+    {BLOCK_SOURCES
+      .filter(src => !src.isAvailable || src.isAvailable(blockSourceCtx))
+      .map(src => (
+        <DropdownMenuItem
+          key={src.id}
+          onSelect={() => void src.onSelect(blockSourceCtx)}
+          className="flex items-start gap-2 py-2"
+        >
+          {src.icon && <span aria-hidden className="mt-0.5">{src.icon}</span>}
+          <div>
+            <div className="font-medium leading-tight">{src.label}</div>
+            {src.description && (
+              <div className="text-xs text-text-muted mt-0.5">{src.description}</div>
+            )}
+          </div>
+        </DropdownMenuItem>
+      ))}
+  </DropdownMenuContent>
+</DropdownMenu>
+```
+
+Beneficios:
+- Añadir un tipo de bloque futuro = añadir una entrada al array
+- Permisos por entrada son declarativos (`isAvailable`)
+- El wizard no acumula `if (sourceX) … else if (sourceY)` con el tiempo
+- Tests unitarios por entrada en aislamiento
+
+## Anexo D — Flujo final del importador (post-decisiones)
+
+```
+1. Usuario en wizard step 2
+   │
+   ▼ click [+ Añadir bloque ▾]
+2. Dropdown abre:
+   • Bloque simple        ← crea uno vacío y cierra el dropdown
+   • Importar desde Word  ← abre modal DocxBlockSplitter
+   │
+   ▼ click "Importar desde Word"
+3. DocxBlockSplitter modal — estado `idle`, file picker visible
+   │
+   ▼ usuario elige .docx
+4. Estado `parsing` (~200ms — mammoth + splitHtmlIntoBlocks)
+   │
+   ▼ parsing OK
+5. Estado `ready` — lista de chunks visible, panel derecho vacío
+   │
+   ▼ usuario selecciona chunks 1, 2, 3 → "Asignar a → Nuevo bloque"
+   ▼ panel derecho muestra "Bloque 1" con 3 chunks
+   ▼ usuario selecciona chunks 4, 5 → "Asignar a → Nuevo bloque"
+   ▼ panel derecho muestra "Bloque 2" con 2 chunks
+   ▼ usuario renombra "Bloque 1" → "Introducción"
+   ▼ (botón "Crear N" deshabilitado mientras algún bloque tenga 0 chunks)
+   │
+   ▼ click "Crear 2 bloques"
+6. Estado `creating` — barra de progreso "1/2 creados…" → "2/2 creados"
+   │
+   ▼ todos OK
+7. Modal cierra automáticamente (sin toast — la presencia de los bloques
+   en el sidebar es feedback suficiente)
+   │
+   ▼ Wizard refresca sidebar
+8. Bloques importados visibles al final
+   El primer importado ("Introducción") queda seleccionado en el sidebar
+   y abierto en el panel principal — feedback de éxito implícito.
+```
+
+### Manejo de errores en el step 6
+
+- Si el primer `createBlock` falla → modal vuelve a estado `ready` con error visible: "No se pudo crear 'Introducción'. Inténtalo de nuevo." (no se llaman los siguientes).
+- Si falla a mitad (p.ej. 3 de 5) → modal queda en estado `partial-error` mostrando "3/5 bloques creados, 2 fallaron". Opciones:
+  - "Reintentar fallidos" → re-postea solo los pendientes
+  - "Cerrar" → cierra modal; los 3 creados quedan, el usuario re-importa el resto manualmente.
