@@ -1,6 +1,17 @@
 import type { Editor } from '@tiptap/react';
 import type { EditorMode } from '../types';
-import { ColorPicker } from './ColorPicker';
+import { Btn } from './EditorToolbarButton';
+import {
+  FormattingButtons,
+  AdvancedFormattingButtons,
+  AlignmentButtons,
+  IndentButtons,
+  HeadingButtons,
+  ListAndBlockButtons,
+  TableAndMediaButtons,
+  DocumentButtons,
+  ViewModeButtons,
+} from './EditorToolbarGroups';
 
 interface EditorToolbarProps {
   editor: Editor | null;
@@ -126,34 +137,11 @@ const DEFAULT_LABELS: ToolbarLabels = {
   findNone: 'No matches',
 };
 
-function Btn({
-  active,
-  disabled,
-  onClick,
-  title,
-  children,
-}: {
-  active?: boolean;
-  disabled?: boolean;
-  onClick: () => void;
-  title: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <button
-      type="button"
-      title={title}
-      aria-label={title}
-      aria-pressed={active ? 'true' : undefined}
-      disabled={disabled}
-      onClick={onClick}
-      className={`maya-editor-toolbar__btn${active ? ' is-active' : ''}`}
-    >
-      {children}
-    </button>
-  );
-}
-
+/**
+ * EditorToolbar is a wrapper component that composes focused button groups.
+ * Each group handles a logically distinct set of toolbar buttons, keeping
+ * individual files under the 400-line target per coding-style.md.
+ */
 export function EditorToolbar({
   editor,
   mode,
@@ -174,23 +162,6 @@ export function EditorToolbar({
 
   const isLite = mode === 'lite';
 
-  const setLink = () => {
-    const prev = editor.getAttributes('link').href as string | undefined;
-    const url = window.prompt(L.linkPrompt, prev ?? '');
-    if (url === null) return;
-    if (url === '') {
-      editor.chain().focus().unsetLink().run();
-      return;
-    }
-    editor.chain().focus().extendMarkRange('link').setLink({ href: url }).run();
-  };
-
-  const setIframe = () => {
-    const url = window.prompt(L.iframePrompt, '');
-    if (!url) return;
-    editor.chain().focus().setIframe({ src: url }).run();
-  };
-
   return (
     <div className="maya-editor-toolbar" role="toolbar" aria-label="Editor toolbar">
       <Btn
@@ -207,268 +178,46 @@ export function EditorToolbar({
       >
         ↷
       </Btn>
+
       <span className="maya-editor-toolbar__sep" aria-hidden />
-      <Btn
-        active={editor.isActive('bold')}
-        onClick={() => editor.chain().focus().toggleBold().run()}
-        title={L.bold}
-      >
-        <strong>B</strong>
-      </Btn>
-      <Btn
-        active={editor.isActive('italic')}
-        onClick={() => editor.chain().focus().toggleItalic().run()}
-        title={L.italic}
-      >
-        <em>I</em>
-      </Btn>
-      <Btn
-        active={editor.isActive('underline')}
-        onClick={() => editor.chain().focus().toggleUnderline().run()}
-        title={L.underline}
-      >
-        <u>U</u>
-      </Btn>
-      <Btn
-        active={editor.isActive('code')}
-        onClick={() => editor.chain().focus().toggleCode().run()}
-        title={L.code}
-      >
-        {'</>'}
-      </Btn>
-      <Btn active={editor.isActive('link')} onClick={setLink} title={L.link}>
-        🔗
-      </Btn>
+      <FormattingButtons editor={editor} labels={L} />
 
       {!isLite && (
         <>
           <span className="maya-editor-toolbar__sep" aria-hidden />
-          <Btn
-            active={editor.isActive('strike')}
-            onClick={() => editor.chain().focus().toggleStrike().run()}
-            title={L.strike}
-          >
-            <s>S</s>
-          </Btn>
+          <AdvancedFormattingButtons editor={editor} labels={L} />
 
           <span className="maya-editor-toolbar__sep" aria-hidden />
-          <ColorPicker
-            title={L.textColor}
-            value={(editor.getAttributes('textStyle').color as string | undefined) ?? null}
-            glyph={<span style={{ fontWeight: 700 }}>A</span>}
-            clearLabel={L.colorDefault}
-            onSelect={(c) => {
-              if (c === null) editor.chain().focus().unsetColor().run();
-              else editor.chain().focus().setColor(c).run();
-            }}
-          />
-          <ColorPicker
-            title={L.backgroundColor}
-            value={(editor.getAttributes('highlight').color as string | undefined) ?? null}
-            glyph={<span style={{ fontWeight: 700 }}>▮</span>}
-            clearLabel={L.colorDefault}
-            onSelect={(c) => {
-              if (c === null) editor.chain().focus().unsetHighlight().run();
-              else editor.chain().focus().setHighlight({ color: c }).run();
-            }}
+          <AlignmentButtons editor={editor} labels={L} />
+
+          <span className="maya-editor-toolbar__sep" aria-hidden />
+          <IndentButtons editor={editor} labels={L} />
+
+          <span className="maya-editor-toolbar__sep" aria-hidden />
+          <HeadingButtons editor={editor} labels={L} />
+          <ListAndBlockButtons editor={editor} labels={L} />
+          <TableAndMediaButtons editor={editor} labels={L} onImage={onImage} />
+
+          <span className="maya-editor-toolbar__sep" aria-hidden />
+          <DocumentButtons
+            editor={editor}
+            labels={L}
+            onImportDocx={onImportDocx}
+            onExportDocx={onExportDocx}
+            onAddComment={onAddComment}
+            onToggleFind={onToggleFind}
           />
 
           <span className="maya-editor-toolbar__sep" aria-hidden />
-          <Btn
-            active={editor.isActive({ textAlign: 'left' })}
-            onClick={() => editor.chain().focus().setTextAlign('left').run()}
-            title={L.alignLeft}
-          >
-            ⬱
-          </Btn>
-          <Btn
-            active={editor.isActive({ textAlign: 'center' })}
-            onClick={() => editor.chain().focus().setTextAlign('center').run()}
-            title={L.alignCenter}
-          >
-            ☱
-          </Btn>
-          <Btn
-            active={editor.isActive({ textAlign: 'right' })}
-            onClick={() => editor.chain().focus().setTextAlign('right').run()}
-            title={L.alignRight}
-          >
-            ⬲
-          </Btn>
-          <Btn
-            active={editor.isActive({ textAlign: 'justify' })}
-            onClick={() => editor.chain().focus().setTextAlign('justify').run()}
-            title={L.alignJustify}
-          >
-            ☰
-          </Btn>
-
-          <span className="maya-editor-toolbar__sep" aria-hidden />
-          <Btn
-            onClick={() => {
-              if (editor.isActive('listItem') || editor.isActive('taskItem')) {
-                editor.chain().focus().sinkListItem(
-                  editor.isActive('taskItem') ? 'taskItem' : 'listItem',
-                ).run();
-              } else {
-                editor.chain().focus().indent().run();
-              }
-            }}
-            title={L.indent}
-          >
-            ⇥
-          </Btn>
-          <Btn
-            onClick={() => {
-              if (editor.isActive('listItem') || editor.isActive('taskItem')) {
-                editor.chain().focus().liftListItem(
-                  editor.isActive('taskItem') ? 'taskItem' : 'listItem',
-                ).run();
-              } else {
-                editor.chain().focus().outdent().run();
-              }
-            }}
-            title={L.outdent}
-          >
-            ⇤
-          </Btn>
-
-          <span className="maya-editor-toolbar__sep" aria-hidden />
-          <Btn
-            active={editor.isActive('heading', { level: 1 })}
-            onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
-            title={L.heading1}
-          >
-            H1
-          </Btn>
-          <Btn
-            active={editor.isActive('heading', { level: 2 })}
-            onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
-            title={L.heading2}
-          >
-            H2
-          </Btn>
-          <Btn
-            active={editor.isActive('heading', { level: 3 })}
-            onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
-            title={L.heading3}
-          >
-            H3
-          </Btn>
-          <Btn
-            active={editor.isActive('bulletList')}
-            onClick={() => editor.chain().focus().toggleBulletList().run()}
-            title={L.bulletList}
-          >
-            • —
-          </Btn>
-          <Btn
-            active={editor.isActive('orderedList')}
-            onClick={() => editor.chain().focus().toggleOrderedList().run()}
-            title={L.orderedList}
-          >
-            1.
-          </Btn>
-          <Btn
-            active={editor.isActive('taskList')}
-            onClick={() => editor.chain().focus().toggleTaskList().run()}
-            title={L.taskList}
-          >
-            ☑
-          </Btn>
-          <Btn
-            active={editor.isActive('blockquote')}
-            onClick={() => editor.chain().focus().toggleBlockquote().run()}
-            title={L.blockquote}
-          >
-            ❝
-          </Btn>
-          <Btn
-            active={editor.isActive('codeBlock')}
-            onClick={() => editor.chain().focus().toggleCodeBlock().run()}
-            title={L.codeBlock}
-          >
-            {'{}'}
-          </Btn>
-          <Btn
-            onClick={() => editor.chain().focus().setHorizontalRule().run()}
-            title={L.horizontalRule}
-          >
-            —
-          </Btn>
-          <Btn
-            onClick={() =>
-              editor.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run()
-            }
-            title={L.table}
-          >
-            ⊞
-          </Btn>
-          <Btn onClick={setIframe} title={L.iframe}>
-            🖽
-          </Btn>
-          {onImage && (
-            <Btn onClick={onImage} title={L.uploadImage}>
-              🖼
-            </Btn>
-          )}
-
-          <span className="maya-editor-toolbar__sep" aria-hidden />
-          {onImportDocx && (
-            <Btn onClick={onImportDocx} title={L.importDocx}>
-              <span style={{ fontFamily: 'ui-monospace, monospace', fontSize: 11 }}>↥W</span>
-            </Btn>
-          )}
-          {onExportDocx && (
-            <Btn onClick={onExportDocx} title={L.exportDocx}>
-              <span style={{ fontFamily: 'ui-monospace, monospace', fontSize: 11 }}>↧W</span>
-            </Btn>
-          )}
-          {onAddComment && (
-            <Btn
-              onClick={onAddComment}
-              disabled={editor.state.selection.empty}
-              title={L.addComment}
-            >
-              💬
-            </Btn>
-          )}
-          {onToggleFind && (
-            <Btn onClick={onToggleFind} title={L.find}>
-              🔍
-            </Btn>
-          )}
-
-          <span className="maya-editor-toolbar__sep" aria-hidden />
-          {onInsertMarkdown && (
-            <Btn
-              onClick={onInsertMarkdown}
-              title={L.insertMarkdown}
-              active={viewMode === 'markdown'}
-            >
-              <span style={{ fontFamily: 'ui-monospace, monospace', fontSize: 11 }}>md</span>
-            </Btn>
-          )}
-          {onInsertHtml && (
-            <Btn
-              onClick={onInsertHtml}
-              title={L.insertHtml}
-              active={viewMode === 'html'}
-            >
-              <span style={{ fontFamily: 'ui-monospace, monospace', fontSize: 11 }}>{'<>'}</span>
-            </Btn>
-          )}
-          {onToggleFullscreen && (
-            <>
-              <span className="maya-editor-toolbar__sep" aria-hidden />
-              <Btn
-                onClick={onToggleFullscreen}
-                title={isFullscreen ? L.exitFullscreen : L.fullscreen}
-              >
-                {isFullscreen ? '⤓' : '⛶'}
-              </Btn>
-            </>
-          )}
+          <ViewModeButtons
+            editor={editor}
+            labels={L}
+            viewMode={viewMode}
+            isFullscreen={isFullscreen}
+            onInsertHtml={onInsertHtml}
+            onInsertMarkdown={onInsertMarkdown}
+            onToggleFullscreen={onToggleFullscreen}
+          />
         </>
       )}
     </div>
