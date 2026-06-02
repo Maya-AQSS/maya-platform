@@ -221,6 +221,10 @@
 }
 
 /* ── Source-input modal ────────────────────────────────────── */
+/* z-index is intentionally very high: the dialog portals to <body>, so it
+   sits next to the app root. Apps in the Maya ecosystem use values up to
+   ~1000 for popovers and ~9000 for the wizard's full-screen layer; 9999
+   keeps the source dialog above all of them without risk of restacking. */
 .maya-editor-dialog-overlay {
   position: fixed;
   inset: 0;
@@ -228,7 +232,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 1100;
+  z-index: 9999;
   padding: 24px;
 }
 

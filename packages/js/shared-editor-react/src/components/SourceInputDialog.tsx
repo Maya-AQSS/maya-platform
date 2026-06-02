@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 
 interface SourceInputDialogProps {
   open: boolean;
@@ -56,11 +57,24 @@ export function SourceInputDialog({
     return () => window.removeEventListener('keydown', onKey);
   }, [open, onCancel]);
 
-  if (!open) return null;
+  if (!open || typeof document === 'undefined') return null;
 
-  return (
-    <div className="maya-editor-dialog-overlay" role="dialog" aria-modal="true" aria-label={title}>
-      <div className="maya-editor-dialog">
+  // Portal to <body> so the dialog escapes any ancestor with `overflow:
+  // hidden`, `transform`, `will-change` or `filter` (which would otherwise
+  // turn `position: fixed` into a containing-block-relative position and
+  // clip / restack the overlay behind sibling UI).
+  return createPortal(
+    <div
+      className="maya-editor-dialog-overlay"
+      role="dialog"
+      aria-modal="true"
+      aria-label={title}
+      onMouseDown={(e) => {
+        // Click on the backdrop (not on the dialog itself) cancels.
+        if (e.target === e.currentTarget) onCancel();
+      }}
+    >
+      <div className="maya-editor-dialog" onMouseDown={(e) => e.stopPropagation()}>
         <header className="maya-editor-dialog__header">
           <h3 className="maya-editor-dialog__title">{title}</h3>
           <button
@@ -100,6 +114,7 @@ export function SourceInputDialog({
           </button>
         </footer>
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 }
