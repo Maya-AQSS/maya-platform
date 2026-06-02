@@ -14,13 +14,36 @@
 import { normalizeTableHtml } from './normalizeTableHtml';
 import { sanitizeEditorHtml } from './dompurifyConfig';
 
-export async function docxToHtml(file: File): Promise<string> {
+export interface DocxConversionMessage {
+  type: string;
+  message: string;
+}
+
+export interface DocxConversionResult {
+  /** Sanitised, editor-ready HTML. */
+  html: string;
+  /** Warnings/errors emitted by mammoth (unrecognised styles, dropped tags…). */
+  messages: DocxConversionMessage[];
+}
+
+type MammothConvert = (input: {
+  arrayBuffer: ArrayBuffer;
+}) => Promise<{ value: string; messages?: DocxConversionMessage[] }>;
+
+/** Full result including mammoth conversion messages. */
+export async function docxToHtmlResult(file: File): Promise<DocxConversionResult> {
   const mod = (await import('mammoth/mammoth.browser.js')) as unknown as {
-    convertToHtml: (input: { arrayBuffer: ArrayBuffer }) => Promise<{ value: string }>;
-    default?: { convertToHtml: (input: { arrayBuffer: ArrayBuffer }) => Promise<{ value: string }> };
+    convertToHtml: MammothConvert;
+    default?: { convertToHtml: MammothConvert };
   };
   const mammoth = mod.default ?? mod;
   const buffer = await file.arrayBuffer();
-  const { value: rawHtml } = await mammoth.convertToHtml({ arrayBuffer: buffer });
-  return sanitizeEditorHtml(normalizeTableHtml(rawHtml));
+  const { value: rawHtml, messages = [] } = await mammoth.convertToHtml({ arrayBuffer: buffer });
+  return { html: sanitizeEditorHtml(normalizeTableHtml(rawHtml)), messages };
+}
+
+/** Convenience wrapper that returns only the HTML. */
+export async function docxToHtml(file: File): Promise<string> {
+  const { html } = await docxToHtmlResult(file);
+  return html;
 }
