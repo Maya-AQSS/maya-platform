@@ -8,6 +8,7 @@ import { sanitizeEditorHtml } from '../lib/dompurifyConfig';
 import { markdownToHtml } from '../lib/markdownToHtml';
 import { htmlToMarkdown } from '../lib/htmlToMarkdown';
 import { normalizeTableHtml } from '../lib/normalizeTableHtml';
+import { docxToHtml } from '../lib/docxToHtml';
 import type { EditorMode, TiptapDoc } from '../types';
 import { EditorToolbar, type ToolbarLabels } from './EditorToolbar';
 import { FindReplaceBar } from './FindReplaceBar';
@@ -226,20 +227,8 @@ export function MayaEditor({
   };
 
   const handlePickDocx = async (file: File) => {
-    // Mammoth runs entirely client-side. Imported via dynamic `import()` so
-    // its ~430KB bundle only ships to apps that exercise the .docx flow.
-    // Note: `mammoth/mammoth.browser.js` is the browser entry — using the
-    // package root entry pulls Node-specific code that breaks in the
-    // browser when Vite tries to optimise it.
     try {
-      const mod = (await import('mammoth/mammoth.browser.js')) as unknown as {
-        convertToHtml: (input: { arrayBuffer: ArrayBuffer }) => Promise<{ value: string }>;
-        default?: { convertToHtml: typeof mod.convertToHtml };
-      };
-      const mammoth = mod.default ?? mod;
-      const buffer = await file.arrayBuffer();
-      const { value: rawHtml } = await mammoth.convertToHtml({ arrayBuffer: buffer });
-      const html = sanitizeEditorHtml(normalizeTableHtml(rawHtml));
+      const html = await docxToHtml(file);
       editor.commands.setContent(html, { emitUpdate: true });
     } catch (e) {
       console.error('[MayaEditor] docx import failed', e);

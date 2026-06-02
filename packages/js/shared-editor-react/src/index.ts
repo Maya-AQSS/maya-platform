@@ -25,6 +25,7 @@ export { splitHtmlIntoBlocks } from './lib/splitHtmlIntoBlocks';
 export type { BlockChunk, BlockChunkType } from './lib/splitHtmlIntoBlocks';
 export { htmlToTiptapDoc } from './lib/htmlToTiptapDoc';
 export { buildMayaEditorExtensions } from './lib/editorExtensions';
+export { docxToHtml } from './lib/docxToHtml';
 export { SourceInputDialog } from './components/SourceInputDialog';
 export { FindReplaceBar } from './components/FindReplaceBar';
 export { CommentHoverPopover } from './components/CommentHoverPopover';
