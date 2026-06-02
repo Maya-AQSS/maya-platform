@@ -131,9 +131,12 @@ export function MayaEditor({
 
   const extensions = useMemo(() => {
     const base = [
+      // StarterKit v3 already bundles Link + Underline (and other marks).
+      // Disable both so we can add our customised versions without
+      // tripping "Duplicate extension names" warnings.
       StarterKit.configure({
-        // We bring our own list/table/image extensions.
-        // Keep history, hardBreak, dropcursor, gapcursor, paragraph, heading, etc.
+        link: false,
+        underline: false,
       }),
       Underline,
       Link.configure({
@@ -207,6 +210,9 @@ export function MayaEditor({
   // the comment span and there's no replacement inside the same hover.
   useEffect(() => {
     if (!editor || !commentsById) return;
+    // Editor view is created asynchronously after mount in TipTap v3 —
+    // accessing it too early throws "editor view is not available".
+    if (!editor.view) return;
     const root = editor.view.dom;
     let hideTimer: ReturnType<typeof setTimeout> | null = null;
 
