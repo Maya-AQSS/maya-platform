@@ -22,10 +22,12 @@ import { CommentMark } from '../extensions/CommentMark';
 import { useEditorContent, type EditorOutput } from '../hooks/useEditorContent';
 import { sanitizeEditorHtml } from '../lib/dompurifyConfig';
 import { markdownToHtml } from '../lib/markdownToHtml';
+import { htmlToMarkdown } from '../lib/htmlToMarkdown';
 import type { EditorMode, TiptapDoc } from '../types';
 import { EditorToolbar, type ToolbarLabels } from './EditorToolbar';
-import { SourceInputDialog } from './SourceInputDialog';
 import '../styles/maya-editor.css';
+
+type ViewMode = 'wysiwyg' | 'html' | 'markdown';
 
 export interface MayaEditorProps {
   /** Initial HTML content (preferred) or a ProseMirror JSON doc. */
@@ -83,8 +85,8 @@ export function MayaEditor({
 }: MayaEditorProps) {
   const effectiveOutput: EditorOutput = output ?? (mode === 'full' ? 'json' : 'html');
   const [isFullscreen, setIsFullscreen] = useState(false);
-  const [htmlDialogOpen, setHtmlDialogOpen] = useState(false);
-  const [mdDialogOpen, setMdDialogOpen] = useState(false);
+  const [viewMode, setViewMode] = useState<ViewMode>('wysiwyg');
+  const [sourceText, setSourceText] = useState('');
 
   const extensions = useMemo(() => {
     const base = [
@@ -149,6 +151,43 @@ export function MayaEditor({
 
   if (!editor) return null;
 
+  const enterSource = (target: 'html' | 'markdown') => {
+    const currentHtml = editor.getHTML();
+    const text = target === 'html' ? currentHtml : htmlToMarkdown(currentHtml);
+    setSourceText(text);
+    setViewMode(target);
+  };
+
+  const exitSource = () => {
+    const html =
+      viewMode === 'markdown'
+        ? sanitizeEditorHtml(markdownToHtml(sourceText))
+        : sanitizeEditorHtml(sourceText);
+    if (editor && html != null) {
+      editor.commands.setContent(html, { emitUpdate: true });
+    }
+    setViewMode('wysiwyg');
+  };
+
+  const toggleHtml = () => {
+    if (viewMode === 'html') exitSource();
+    else if (viewMode === 'markdown') {
+      // markdown → html (switch source flavour without round-tripping the editor)
+      const html = sanitizeEditorHtml(markdownToHtml(sourceText));
+      setSourceText(html);
+      setViewMode('html');
+    } else enterSource('html');
+  };
+
+  const toggleMarkdown = () => {
+    if (viewMode === 'markdown') exitSource();
+    else if (viewMode === 'html') {
+      const md = htmlToMarkdown(sourceText);
+      setSourceText(md);
+      setViewMode('markdown');
+    } else enterSource('markdown');
+  };
+
   return (
     <div
       className={`maya-editor-wrapper${isFullscreen ? ' is-fullscreen' : ''}${isDark ? ' is-dark' : ''}`}
@@ -160,41 +199,26 @@ export function MayaEditor({
         onToggleFullscreen={
           mode === 'full' ? () => setIsFullscreen((v) => !v) : undefined
         }
-        onInsertHtml={mode === 'full' ? () => setHtmlDialogOpen(true) : undefined}
-        onInsertMarkdown={mode === 'full' ? () => setMdDialogOpen(true) : undefined}
+        onInsertHtml={mode === 'full' ? toggleHtml : undefined}
+        onInsertMarkdown={mode === 'full' ? toggleMarkdown : undefined}
+        viewMode={viewMode}
         labels={toolbarLabels}
       />
-      <EditorContent editor={editor} />
-
-      <SourceInputDialog
-        open={htmlDialogOpen}
-        title={toolbarLabels?.insertHtml ?? 'Insert HTML'}
-        description="Paste or type the HTML to insert. It will be sanitised before insertion."
-        placeholder="<p>...</p>"
-        confirmLabel="Insert"
-        cancelLabel="Cancel"
-        onCancel={() => setHtmlDialogOpen(false)}
-        onConfirm={(rawHtml) => {
-          const safe = sanitizeEditorHtml(rawHtml);
-          if (safe) editor.chain().focus().insertContent(safe).run();
-          setHtmlDialogOpen(false);
-        }}
-      />
-
-      <SourceInputDialog
-        open={mdDialogOpen}
-        title={toolbarLabels?.insertMarkdown ?? 'Insert Markdown'}
-        description="Headings, bold, italic, code, links, blockquotes, lists and task lists are supported."
-        placeholder="# Title&#10;**Bold** _italic_ `code`&#10;- Item"
-        confirmLabel="Insert"
-        cancelLabel="Cancel"
-        onCancel={() => setMdDialogOpen(false)}
-        onConfirm={(md) => {
-          const html = sanitizeEditorHtml(markdownToHtml(md));
-          if (html) editor.chain().focus().insertContent(html).run();
-          setMdDialogOpen(false);
-        }}
-      />
+      {viewMode === 'wysiwyg' ? (
+        <EditorContent editor={editor} />
+      ) : (
+        <textarea
+          className="maya-editor-source"
+          value={sourceText}
+          onChange={(e) => setSourceText(e.target.value)}
+          spellCheck={false}
+          aria-label={
+            viewMode === 'html'
+              ? (toolbarLabels?.insertHtml ?? 'HTML source')
+              : (toolbarLabels?.insertMarkdown ?? 'Markdown source')
+          }
+        />
+      )}
     </div>
   );
 }

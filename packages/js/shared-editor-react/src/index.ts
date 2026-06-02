@@ -16,6 +16,7 @@ export type { AnchorRange } from './lib/CommentAnchor';
 
 export { sanitizeEditorHtml, ALLOWED_TAGS, ALLOWED_ATTR } from './lib/dompurifyConfig';
 export { markdownToHtml } from './lib/markdownToHtml';
+export { htmlToMarkdown } from './lib/htmlToMarkdown';
 export { SourceInputDialog } from './components/SourceInputDialog';
 
 export type {

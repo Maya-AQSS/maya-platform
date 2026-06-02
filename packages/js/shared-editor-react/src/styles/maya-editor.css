@@ -220,6 +220,36 @@
   pointer-events: none;
 }
 
+/* ── Source view (HTML/Markdown toggle replaces EditorContent) ── */
+.maya-editor-wrapper .maya-editor-source {
+  flex: 1;
+  min-height: 240px;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 14px 18px;
+  border: 0;
+  outline: none;
+  resize: none;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 13px;
+  line-height: 1.55;
+  background: var(--maya-editor-bg, #fff);
+  color: var(--maya-editor-fg, inherit);
+  white-space: pre;
+  overflow: auto;
+}
+.maya-editor-wrapper.is-dark .maya-editor-source {
+  background: var(--maya-editor-bg, #1f1f23);
+  color: var(--maya-editor-fg, #e6e6e8);
+  caret-color: #e6e6e8;
+}
+.maya-editor-wrapper .maya-editor-source:focus {
+  background: var(--maya-editor-toolbar-bg, #f7f7f9);
+}
+.maya-editor-wrapper.is-dark .maya-editor-source:focus {
+  background: #27272d;
+}
+
 /* ── Source-input modal ────────────────────────────────────── */
 /* z-index is intentionally very high: the dialog portals to <body>, so it
    sits next to the app root. Apps in the Maya ecosystem use values up to

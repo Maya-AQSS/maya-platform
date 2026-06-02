@@ -8,6 +8,7 @@ interface EditorToolbarProps {
   onToggleFullscreen?: () => void;
   onInsertHtml?: () => void;
   onInsertMarkdown?: () => void;
+  viewMode?: 'wysiwyg' | 'html' | 'markdown';
   labels?: ToolbarLabels;
 }
 
@@ -104,6 +105,7 @@ export function EditorToolbar({
   onToggleFullscreen,
   onInsertHtml,
   onInsertMarkdown,
+  viewMode = 'wysiwyg',
   labels,
 }: EditorToolbarProps) {
   if (!editor) return null;
@@ -246,12 +248,20 @@ export function EditorToolbar({
             🖽
           </Btn>
           {onInsertMarkdown && (
-            <Btn onClick={onInsertMarkdown} title={L.insertMarkdown}>
+            <Btn
+              onClick={onInsertMarkdown}
+              title={L.insertMarkdown}
+              active={viewMode === 'markdown'}
+            >
               <span style={{ fontFamily: 'ui-monospace, monospace', fontSize: 11 }}>md</span>
             </Btn>
           )}
           {onInsertHtml && (
-            <Btn onClick={onInsertHtml} title={L.insertHtml}>
+            <Btn
+              onClick={onInsertHtml}
+              title={L.insertHtml}
+              active={viewMode === 'html'}
+            >
               <span style={{ fontFamily: 'ui-monospace, monospace', fontSize: 11 }}>{'<>'}</span>
             </Btn>
           )}
