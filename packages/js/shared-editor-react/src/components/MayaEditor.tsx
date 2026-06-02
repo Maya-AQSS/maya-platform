@@ -351,7 +351,7 @@ export function MayaEditor({
         }}
       />
       {viewMode === 'wysiwyg' ? (
-        <EditorContent editor={editor} />
+        <EditorContent editor={editor} className="maya-editor-content" />
       ) : (
         <textarea
           className="maya-editor-source"
