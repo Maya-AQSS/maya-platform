@@ -15,6 +15,8 @@ export { getAnchorRange, setAnchorRange, rebaseAnchors } from './lib/CommentAnch
 export type { AnchorRange } from './lib/CommentAnchor';
 
 export { sanitizeEditorHtml, ALLOWED_TAGS, ALLOWED_ATTR } from './lib/dompurifyConfig';
+export { markdownToHtml } from './lib/markdownToHtml';
+export { SourceInputDialog } from './components/SourceInputDialog';
 
 export type {
   EditorMode,

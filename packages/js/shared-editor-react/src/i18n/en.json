@@ -28,7 +28,9 @@
       "exitFullscreen": "Exit fullscreen",
       "addComment": "Comment selection",
       "importDocx": "Import .docx",
-      "exportDocx": "Export as .docx"
+      "exportDocx": "Export as .docx",
+      "insertHtml": "Insert HTML",
+      "insertMarkdown": "Insert Markdown"
     },
     "placeholder": "Start typing or press / for commands…",
     "errors": {

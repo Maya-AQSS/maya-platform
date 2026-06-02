@@ -20,8 +20,11 @@ import { IframeBlock } from '../extensions/IframeBlock';
 import { AlertBlock } from '../extensions/AlertBlock';
 import { CommentMark } from '../extensions/CommentMark';
 import { useEditorContent, type EditorOutput } from '../hooks/useEditorContent';
+import { sanitizeEditorHtml } from '../lib/dompurifyConfig';
+import { markdownToHtml } from '../lib/markdownToHtml';
 import type { EditorMode, TiptapDoc } from '../types';
 import { EditorToolbar, type ToolbarLabels } from './EditorToolbar';
+import { SourceInputDialog } from './SourceInputDialog';
 import '../styles/maya-editor.css';
 
 export interface MayaEditorProps {
@@ -80,6 +83,8 @@ export function MayaEditor({
 }: MayaEditorProps) {
   const effectiveOutput: EditorOutput = output ?? (mode === 'full' ? 'json' : 'html');
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const [htmlDialogOpen, setHtmlDialogOpen] = useState(false);
+  const [mdDialogOpen, setMdDialogOpen] = useState(false);
 
   const extensions = useMemo(() => {
     const base = [
@@ -155,9 +160,41 @@ export function MayaEditor({
         onToggleFullscreen={
           mode === 'full' ? () => setIsFullscreen((v) => !v) : undefined
         }
+        onInsertHtml={mode === 'full' ? () => setHtmlDialogOpen(true) : undefined}
+        onInsertMarkdown={mode === 'full' ? () => setMdDialogOpen(true) : undefined}
         labels={toolbarLabels}
       />
       <EditorContent editor={editor} />
+
+      <SourceInputDialog
+        open={htmlDialogOpen}
+        title={toolbarLabels?.insertHtml ?? 'Insert HTML'}
+        description="Paste or type the HTML to insert. It will be sanitised before insertion."
+        placeholder="<p>...</p>"
+        confirmLabel="Insert"
+        cancelLabel="Cancel"
+        onCancel={() => setHtmlDialogOpen(false)}
+        onConfirm={(rawHtml) => {
+          const safe = sanitizeEditorHtml(rawHtml);
+          if (safe) editor.chain().focus().insertContent(safe).run();
+          setHtmlDialogOpen(false);
+        }}
+      />
+
+      <SourceInputDialog
+        open={mdDialogOpen}
+        title={toolbarLabels?.insertMarkdown ?? 'Insert Markdown'}
+        description="Headings, bold, italic, code, links, blockquotes, lists and task lists are supported."
+        placeholder="# Title&#10;**Bold** _italic_ `code`&#10;- Item"
+        confirmLabel="Insert"
+        cancelLabel="Cancel"
+        onCancel={() => setMdDialogOpen(false)}
+        onConfirm={(md) => {
+          const html = sanitizeEditorHtml(markdownToHtml(md));
+          if (html) editor.chain().focus().insertContent(html).run();
+          setMdDialogOpen(false);
+        }}
+      />
     </div>
   );
 }

@@ -28,7 +28,9 @@
       "exitFullscreen": "Salir de pantalla completa",
       "addComment": "Comentar selección",
       "importDocx": "Importar .docx",
-      "exportDocx": "Exportar como .docx"
+      "exportDocx": "Exportar como .docx",
+      "insertHtml": "Insertar HTML",
+      "insertMarkdown": "Insertar Markdown"
     },
     "placeholder": "Empieza a escribir o pulsa / para comandos…",
     "errors": {

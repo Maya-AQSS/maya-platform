@@ -219,3 +219,114 @@
   height: 0;
   pointer-events: none;
 }
+
+/* ── Source-input modal ────────────────────────────────────── */
+.maya-editor-dialog-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(20, 20, 28, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1100;
+  padding: 24px;
+}
+
+.maya-editor-dialog {
+  width: min(640px, 100%);
+  max-height: min(80vh, 720px);
+  display: flex;
+  flex-direction: column;
+  background: var(--maya-editor-bg, #fff);
+  color: var(--maya-editor-fg, inherit);
+  border-radius: 10px;
+  border: 1px solid var(--maya-editor-border, #d6d6df);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25);
+  overflow: hidden;
+}
+
+.maya-editor-wrapper.is-dark + .maya-editor-dialog-overlay .maya-editor-dialog,
+.maya-editor-dialog.is-dark {
+  background: #1f1f23;
+  color: #e6e6e8;
+  border-color: #3a3a42;
+}
+
+.maya-editor-dialog__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--maya-editor-border, #e3e3e8);
+}
+.maya-editor-dialog__title { margin: 0; font-size: 15px; font-weight: 600; }
+.maya-editor-dialog__close {
+  background: transparent;
+  border: 0;
+  font-size: 16px;
+  cursor: pointer;
+  color: inherit;
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+.maya-editor-dialog__close:hover { background: var(--maya-editor-btn-hover, #ececf0); }
+
+.maya-editor-dialog__description {
+  margin: 12px 18px 0;
+  font-size: 13px;
+  color: rgba(127, 127, 140, 0.95);
+}
+
+.maya-editor-dialog__textarea {
+  margin: 12px 18px;
+  flex: 1;
+  resize: vertical;
+  min-height: 160px;
+  border: 1px solid var(--maya-editor-border, #d6d6df);
+  border-radius: 6px;
+  padding: 10px 12px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 13px;
+  line-height: 1.5;
+  background: var(--maya-editor-toolbar-bg, #f7f7f9);
+  color: inherit;
+  outline: none;
+}
+.maya-editor-dialog__textarea:focus {
+  border-color: var(--maya-editor-link, #7c3aed);
+  box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.18);
+}
+
+.maya-editor-dialog__footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  padding: 12px 18px;
+  border-top: 1px solid var(--maya-editor-border, #e3e3e8);
+}
+
+.maya-editor-dialog__btn {
+  height: 32px;
+  padding: 0 14px;
+  border-radius: 6px;
+  border: 1px solid transparent;
+  font-size: 13px;
+  cursor: pointer;
+}
+.maya-editor-dialog__btn:disabled { opacity: 0.45; cursor: not-allowed; }
+.maya-editor-dialog__btn--ghost {
+  background: transparent;
+  border-color: var(--maya-editor-border, #d6d6df);
+  color: inherit;
+}
+.maya-editor-dialog__btn--ghost:hover:not(:disabled) {
+  background: var(--maya-editor-btn-hover, #ececf0);
+}
+.maya-editor-dialog__btn--primary {
+  background: var(--maya-editor-link, #7c3aed);
+  color: #fff;
+  border-color: var(--maya-editor-link, #7c3aed);
+}
+.maya-editor-dialog__btn--primary:hover:not(:disabled) {
+  filter: brightness(1.08);
+}

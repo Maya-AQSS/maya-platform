@@ -6,6 +6,8 @@ interface EditorToolbarProps {
   mode: EditorMode;
   isFullscreen?: boolean;
   onToggleFullscreen?: () => void;
+  onInsertHtml?: () => void;
+  onInsertMarkdown?: () => void;
   labels?: ToolbarLabels;
 }
 
@@ -34,6 +36,8 @@ export interface ToolbarLabels {
   iframePrompt: string;
   fullscreen: string;
   exitFullscreen: string;
+  insertHtml: string;
+  insertMarkdown: string;
 }
 
 const DEFAULT_LABELS: ToolbarLabels = {
@@ -61,6 +65,8 @@ const DEFAULT_LABELS: ToolbarLabels = {
   iframePrompt: 'Iframe URL',
   fullscreen: 'Fullscreen',
   exitFullscreen: 'Exit fullscreen',
+  insertHtml: 'Insert HTML',
+  insertMarkdown: 'Insert Markdown',
 };
 
 function Btn({
@@ -96,6 +102,8 @@ export function EditorToolbar({
   mode,
   isFullscreen,
   onToggleFullscreen,
+  onInsertHtml,
+  onInsertMarkdown,
   labels,
 }: EditorToolbarProps) {
   if (!editor) return null;
@@ -237,6 +245,16 @@ export function EditorToolbar({
           <Btn onClick={setIframe} title={L.iframe}>
             🖽
           </Btn>
+          {onInsertMarkdown && (
+            <Btn onClick={onInsertMarkdown} title={L.insertMarkdown}>
+              <span style={{ fontFamily: 'ui-monospace, monospace', fontSize: 11 }}>md</span>
+            </Btn>
+          )}
+          {onInsertHtml && (
+            <Btn onClick={onInsertHtml} title={L.insertHtml}>
+              <span style={{ fontFamily: 'ui-monospace, monospace', fontSize: 11 }}>{'<>'}</span>
+            </Btn>
+          )}
           {onToggleFullscreen && (
             <>
               <span className="maya-editor-toolbar__sep" aria-hidden />
