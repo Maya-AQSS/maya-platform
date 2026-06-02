@@ -81,22 +81,56 @@ function isEmptyParagraph(el: Element): boolean {
   return Array.from(el.children).every((child) => child.tagName.toLowerCase() === 'br');
 }
 
+/**
+ * Wrap a single `<li>` back in its parent list tag so the chunk is still a
+ * valid, convertible list (a bare `<li>` is not a valid top-level block).
+ */
+function wrapListItem(listTag: string, li: Element): string {
+  return `<${listTag}>${li.outerHTML}</${listTag}>`;
+}
+
 export function splitHtmlIntoBlocks(html: string): BlockChunk[] {
   if (!html || !html.trim()) return [];
 
   const doc = new DOMParser().parseFromString(html, 'text/html');
   const children = Array.from(doc.body.children);
 
-  return children.map((el, index) => {
+  const chunks: BlockChunk[] = [];
+  let index = 0;
+
+  for (const el of children) {
     const { type, level } = classify(el.tagName);
+
+    // Explode lists: one chunk per <li> so the user can assign each bullet
+    // to a different block. Each chunk re-wraps the item in its list tag.
+    if (type === 'list') {
+      const tag = el.tagName.toLowerCase();
+      const items = Array.from(el.children).filter((c) => c.tagName.toLowerCase() === 'li');
+      if (items.length > 0) {
+        for (const li of items) {
+          chunks.push({
+            index: index++,
+            type: 'list',
+            html: wrapListItem(tag, li),
+            text: snippet(li.textContent ?? ''),
+            isEmpty: (li.textContent ?? '').trim() === '',
+          });
+        }
+        continue;
+      }
+      // Empty list — fall through to the generic single-chunk path.
+    }
+
     const isEmpty = type === 'paragraph' && isEmptyParagraph(el);
-    return {
-      index,
+    chunks.push({
+      index: index++,
       type,
       ...(level !== undefined ? { level } : {}),
       html: el.outerHTML,
       text: snippet(el.textContent ?? ''),
       isEmpty,
-    };
-  });
+    });
+  }
+
+  return chunks;
 }

@@ -37,6 +37,30 @@ describe('splitHtmlIntoBlocks', () => {
     expect(chunks[0].isEmpty).toBe(false);
   });
 
+  it('explodes a bullet list into one chunk per item', () => {
+    const html = '<ul><li>uno</li><li>dos</li><li>tres</li></ul>';
+    const chunks = splitHtmlIntoBlocks(html);
+    expect(chunks).toHaveLength(3);
+    expect(chunks.every((c) => c.type === 'list')).toBe(true);
+    expect(chunks.map((c) => c.text)).toEqual(['uno', 'dos', 'tres']);
+    // Each item stays a valid, convertible list.
+    expect(chunks[0].html).toBe('<ul><li>uno</li></ul>');
+    expect(chunks.map((c) => c.index)).toEqual([0, 1, 2]);
+  });
+
+  it('preserves ol vs ul tag when exploding list items', () => {
+    const chunks = splitHtmlIntoBlocks('<ol><li>a</li><li>b</li></ol>');
+    expect(chunks[0].html).toBe('<ol><li>a</li></ol>');
+    expect(chunks[1].html).toBe('<ol><li>b</li></ol>');
+  });
+
+  it('keeps document order across headings, paragraphs and exploded lists', () => {
+    const html = '<h1>T</h1><ul><li>p1</li><li>p2</li></ul><p>fin</p>';
+    const chunks = splitHtmlIntoBlocks(html);
+    expect(chunks.map((c) => c.type)).toEqual(['heading', 'list', 'list', 'paragraph']);
+    expect(chunks.map((c) => c.index)).toEqual([0, 1, 2, 3]);
+  });
+
   it('maps unknown / wrapper elements to "other"', () => {
     const chunks = splitHtmlIntoBlocks('<div><p>anidado</p></div>');
     expect(chunks).toHaveLength(1);
