@@ -1,0 +1,221 @@
+/* MayaEditor — minimum visual baseline shared across consumers.
+   Consumers (DMS, logs, dashboard) layer their own tailwind classes for
+   typography and spacing of *rendered* content; these styles cover the
+   editor chrome itself (toolbar, content padding, focus ring).            */
+
+.maya-editor-wrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  height: 100%;
+  border-radius: 8px;
+  background: var(--maya-editor-bg, #fff);
+  color: var(--maya-editor-fg, inherit);
+  overflow: hidden;
+}
+
+.maya-editor-wrapper.is-fullscreen {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  border-radius: 0;
+}
+
+.maya-editor-wrapper.is-dark {
+  --maya-editor-bg: #1f1f23;
+  --maya-editor-fg: #e6e6e8;
+  --maya-editor-toolbar-bg: #27272d;
+  --maya-editor-border: #3a3a42;
+  --maya-editor-btn-hover: #34343b;
+  --maya-editor-btn-active: #4a4a55;
+}
+
+/* ── Toolbar ──────────────────────────────────────────────────── */
+.maya-editor-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 8px;
+  border-bottom: 1px solid var(--maya-editor-border, #e3e3e8);
+  background: var(--maya-editor-toolbar-bg, #f7f7f9);
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+
+.maya-editor-toolbar__sep {
+  width: 1px;
+  align-self: stretch;
+  margin: 4px 4px;
+  background: var(--maya-editor-border, #e3e3e8);
+}
+
+.maya-editor-toolbar__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 28px;
+  height: 28px;
+  padding: 0 6px;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  background: transparent;
+  color: inherit;
+  font-size: 13px;
+  line-height: 1;
+  cursor: pointer;
+  user-select: none;
+  transition: background-color 80ms ease, border-color 80ms ease;
+}
+
+.maya-editor-toolbar__btn:hover:not(:disabled) {
+  background: var(--maya-editor-btn-hover, #ececf0);
+}
+
+.maya-editor-toolbar__btn.is-active {
+  background: var(--maya-editor-btn-active, #d6d6df);
+  border-color: var(--maya-editor-border, #d6d6df);
+}
+
+.maya-editor-toolbar__btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* ── Content ──────────────────────────────────────────────────── */
+.maya-editor-wrapper .ProseMirror {
+  flex: 1;
+  min-height: 200px;
+  padding: 16px 20px;
+  outline: none;
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+.maya-editor-wrapper .ProseMirror:focus {
+  outline: none;
+}
+
+.maya-editor-wrapper .ProseMirror p { margin: 0.5em 0; }
+.maya-editor-wrapper .ProseMirror p:first-child { margin-top: 0; }
+.maya-editor-wrapper .ProseMirror p:last-child { margin-bottom: 0; }
+
+.maya-editor-wrapper .ProseMirror h1 { font-size: 1.7em; font-weight: 700; margin: 0.8em 0 0.3em; line-height: 1.25; }
+.maya-editor-wrapper .ProseMirror h2 { font-size: 1.4em; font-weight: 700; margin: 0.8em 0 0.3em; line-height: 1.3; }
+.maya-editor-wrapper .ProseMirror h3 { font-size: 1.2em; font-weight: 600; margin: 0.7em 0 0.25em; }
+.maya-editor-wrapper .ProseMirror h4 { font-size: 1.05em; font-weight: 600; margin: 0.6em 0 0.2em; }
+
+.maya-editor-wrapper .ProseMirror ul,
+.maya-editor-wrapper .ProseMirror ol {
+  padding-left: 1.4em;
+  margin: 0.5em 0;
+}
+.maya-editor-wrapper .ProseMirror li { margin: 0.2em 0; }
+
+.maya-editor-wrapper .ProseMirror ul[data-type="taskList"] {
+  list-style: none;
+  padding-left: 0.25em;
+}
+.maya-editor-wrapper .ProseMirror li[data-type="taskItem"] {
+  display: flex;
+  gap: 6px;
+  align-items: flex-start;
+}
+.maya-editor-wrapper .ProseMirror li[data-type="taskItem"] > label {
+  flex-shrink: 0;
+  margin-top: 0.35em;
+}
+.maya-editor-wrapper .ProseMirror li[data-type="taskItem"] > div { flex: 1; }
+
+.maya-editor-wrapper .ProseMirror blockquote {
+  border-left: 3px solid var(--maya-editor-border, #d6d6df);
+  margin: 0.75em 0;
+  padding-left: 1em;
+  color: rgba(120, 120, 130, 0.95);
+}
+
+.maya-editor-wrapper .ProseMirror code {
+  background: rgba(127, 127, 140, 0.18);
+  border-radius: 3px;
+  padding: 0.05em 0.4em;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.92em;
+}
+
+.maya-editor-wrapper .ProseMirror pre {
+  background: rgba(127, 127, 140, 0.12);
+  border-radius: 6px;
+  padding: 0.8em 1em;
+  margin: 0.75em 0;
+  overflow-x: auto;
+}
+.maya-editor-wrapper .ProseMirror pre code {
+  background: transparent;
+  padding: 0;
+  font-size: 0.9em;
+}
+
+.maya-editor-wrapper .ProseMirror a {
+  color: var(--maya-editor-link, #7c3aed);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.maya-editor-wrapper.is-dark .ProseMirror a { color: #a78bfa; }
+
+.maya-editor-wrapper .ProseMirror table {
+  border-collapse: collapse;
+  margin: 0.8em 0;
+  width: 100%;
+  table-layout: fixed;
+}
+.maya-editor-wrapper .ProseMirror table th,
+.maya-editor-wrapper .ProseMirror table td {
+  border: 1px solid var(--maya-editor-border, #d6d6df);
+  padding: 0.5em 0.7em;
+  vertical-align: top;
+}
+.maya-editor-wrapper .ProseMirror table th {
+  background: rgba(127, 127, 140, 0.08);
+  text-align: left;
+  font-weight: 600;
+}
+
+.maya-editor-wrapper .ProseMirror img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 4px;
+}
+
+.maya-editor-wrapper .ProseMirror aside.alert {
+  border-left: 4px solid var(--maya-editor-link, #7c3aed);
+  border-radius: 4px;
+  background: rgba(124, 58, 237, 0.06);
+  padding: 0.75em 1em;
+  margin: 0.75em 0;
+}
+.maya-editor-wrapper .ProseMirror aside.alert-warning { border-left-color: #f59e0b; background: rgba(245,158,11,0.08); }
+.maya-editor-wrapper .ProseMirror aside.alert-success { border-left-color: #10b981; background: rgba(16,185,129,0.08); }
+.maya-editor-wrapper .ProseMirror aside.alert-danger  { border-left-color: #ef4444; background: rgba(239,68,68,0.08); }
+
+.maya-editor-wrapper .ProseMirror iframe {
+  display: block;
+  max-width: 100%;
+  margin: 0.5em 0;
+  border: 1px solid var(--maya-editor-border, #d6d6df);
+  border-radius: 6px;
+}
+
+.maya-editor-wrapper .ProseMirror .maya-anchored-comment {
+  background: rgba(245, 158, 11, 0.18);
+  border-bottom: 1px dashed #f59e0b;
+}
+
+/* Placeholder shown when the doc is empty */
+.maya-editor-wrapper .ProseMirror p.is-editor-empty:first-child::before {
+  color: rgba(127, 127, 140, 0.7);
+  content: attr(data-placeholder);
+  float: left;
+  height: 0;
+  pointer-events: none;
+}

@@ -19,9 +19,10 @@ import { Color } from '@tiptap/extension-color';
 import { IframeBlock } from '../extensions/IframeBlock';
 import { AlertBlock } from '../extensions/AlertBlock';
 import { CommentMark } from '../extensions/CommentMark';
-import { useEditorContent } from '../hooks/useEditorContent';
-import type { EditorMode } from '../types';
+import { useEditorContent, type EditorOutput } from '../hooks/useEditorContent';
+import type { EditorMode, TiptapDoc } from '../types';
 import { EditorToolbar, type ToolbarLabels } from './EditorToolbar';
+import '../styles/maya-editor.css';
 
 export interface MayaEditorProps {
   /** Initial HTML content (preferred) or a ProseMirror JSON doc. */
@@ -32,8 +33,15 @@ export interface MayaEditorProps {
   isDark?: boolean;
   /** Editor mode: 'lite' (minimal toolbar) | 'full' (BlockNote parity). */
   mode?: EditorMode;
-  /** Debounced HTML change callback (300ms by default). */
-  onChange?: (html: string) => void;
+  /** Debounced change callback (300ms). Payload depends on `output`. */
+  onChange?: (payload: string | TiptapDoc) => void;
+  /**
+   * Output shape: `'html'` (default) emits a sanitisation-ready string;
+   * `'json'` emits the full ProseMirror doc `{type:'doc', content:[…]}`,
+   * structurally equivalent to BlockNote's legacy block array and a
+   * better fit for backends that still validate as JSON object/array.
+   */
+  output?: EditorOutput;
   /** Fullscreen toggle callback (only meaningful in 'full' mode). */
   onFullscreenChange?: (isFullscreen: boolean) => void;
   /** Optional file uploader; returns the URL to embed. */
@@ -68,7 +76,9 @@ export function MayaEditor({
   toolbarLabels,
   placeholder,
   onEditorReady,
+  output,
 }: MayaEditorProps) {
+  const effectiveOutput: EditorOutput = output ?? (mode === 'full' ? 'json' : 'html');
   const [isFullscreen, setIsFullscreen] = useState(false);
 
   const extensions = useMemo(() => {
@@ -117,7 +127,7 @@ export function MayaEditor({
     },
   });
 
-  useEditorContent(editor, onChange);
+  useEditorContent(editor, onChange, { output: effectiveOutput });
 
   useEffect(() => {
     if (editor && onEditorReady) onEditorReady(editor);

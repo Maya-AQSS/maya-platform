@@ -1,17 +1,26 @@
 import { useEffect, useRef } from 'react';
 import type { Editor } from '@tiptap/react';
+import type { TiptapDoc } from '../types';
+
+export type EditorOutput = 'html' | 'json';
 
 /**
  * Debounced onChange wiring for a TipTap editor instance.
  *
- * Calls `onChange(html)` 300ms after the last edit, so React state
- * updates and persistence calls don't fire on every keystroke.
+ * The payload shape is selected by `output`:
+ *   - 'html' (default for `<MayaEditor mode="lite">`) — string HTML, fed
+ *     straight to a sanitiser before persistence.
+ *   - 'json' (default for `<MayaEditor mode="full">`) — full ProseMirror
+ *     doc object `{ type: 'doc', content: [...] }`, structurally equivalent
+ *     to BlockNote's legacy block array so backends that stored BlockNote
+ *     JSON can keep their `array | object` validation rules.
  */
 export function useEditorContent(
   editor: Editor | null,
-  onChange: ((html: string) => void) | undefined,
-  delayMs: number = 300,
+  onChange: ((payload: string | TiptapDoc) => void) | undefined,
+  options: { output?: EditorOutput; delayMs?: number } = {},
 ): void {
+  const { output = 'html', delayMs = 300 } = options;
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const handlerRef = useRef(onChange);
   handlerRef.current = onChange;
@@ -22,8 +31,10 @@ export function useEditorContent(
     const handleUpdate = () => {
       if (timeoutRef.current) clearTimeout(timeoutRef.current);
       timeoutRef.current = setTimeout(() => {
-        const html = editor.getHTML();
-        handlerRef.current?.(html);
+        const payload = output === 'json'
+          ? (editor.getJSON() as TiptapDoc)
+          : editor.getHTML();
+        handlerRef.current?.(payload);
       }, delayMs);
     };
 
@@ -32,5 +43,5 @@ export function useEditorContent(
       editor.off('update', handleUpdate);
       if (timeoutRef.current) clearTimeout(timeoutRef.current);
     };
-  }, [editor, delayMs]);
+  }, [editor, delayMs, output]);
 }
