@@ -8,6 +8,9 @@ export { IframeBlock } from './extensions/IframeBlock';
 export { AlertBlock } from './extensions/AlertBlock';
 export type { AlertVariant } from './extensions/AlertBlock';
 export { CommentMark } from './extensions/CommentMark';
+export { Indent } from './extensions/Indent';
+export type { IndentOptions } from './extensions/Indent';
+export { ColorPicker } from './components/ColorPicker';
 
 export { convertBlockNoteToTiptap } from './serializers/BlockNoteToTiptap';
 export { useEditorContent } from './hooks/useEditorContent';

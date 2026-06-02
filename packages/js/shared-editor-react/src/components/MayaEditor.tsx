@@ -15,10 +15,12 @@ import { TaskItem } from '@tiptap/extension-task-item';
 import { Highlight } from '@tiptap/extension-highlight';
 import { TextStyle } from '@tiptap/extension-text-style';
 import { Color } from '@tiptap/extension-color';
+import { TextAlign } from '@tiptap/extension-text-align';
 
 import { IframeBlock } from '../extensions/IframeBlock';
 import { AlertBlock } from '../extensions/AlertBlock';
 import { CommentMark } from '../extensions/CommentMark';
+import { Indent } from '../extensions/Indent';
 import { useEditorContent, type EditorOutput } from '../hooks/useEditorContent';
 import { sanitizeEditorHtml } from '../lib/dompurifyConfig';
 import { markdownToHtml } from '../lib/markdownToHtml';
@@ -108,6 +110,12 @@ export function MayaEditor({
     ];
     if (mode === 'full') {
       base.push(
+        TextAlign.configure({
+          types: ['heading', 'paragraph'],
+          alignments: ['left', 'center', 'right', 'justify'],
+          defaultAlignment: 'left',
+        }),
+        Indent,
         Table.configure({ resizable: true }),
         TableRow,
         TableHeader,

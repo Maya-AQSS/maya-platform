@@ -1,5 +1,6 @@
 import type { Editor } from '@tiptap/react';
 import type { EditorMode } from '../types';
+import { ColorPicker } from './ColorPicker';
 
 interface EditorToolbarProps {
   editor: Editor | null;
@@ -39,6 +40,15 @@ export interface ToolbarLabels {
   exitFullscreen: string;
   insertHtml: string;
   insertMarkdown: string;
+  alignLeft: string;
+  alignCenter: string;
+  alignRight: string;
+  alignJustify: string;
+  indent: string;
+  outdent: string;
+  textColor: string;
+  backgroundColor: string;
+  colorDefault: string;
 }
 
 const DEFAULT_LABELS: ToolbarLabels = {
@@ -68,6 +78,15 @@ const DEFAULT_LABELS: ToolbarLabels = {
   exitFullscreen: 'Exit fullscreen',
   insertHtml: 'Insert HTML',
   insertMarkdown: 'Insert Markdown',
+  alignLeft: 'Align left',
+  alignCenter: 'Align center',
+  alignRight: 'Align right',
+  alignJustify: 'Justify',
+  indent: 'Increase indent',
+  outdent: 'Decrease indent',
+  textColor: 'Text color',
+  backgroundColor: 'Highlight color',
+  colorDefault: 'Default color',
 };
 
 function Btn({
@@ -174,6 +193,90 @@ export function EditorToolbar({
           >
             <s>S</s>
           </Btn>
+
+          <span className="maya-editor-toolbar__sep" aria-hidden />
+          <ColorPicker
+            title={L.textColor}
+            value={(editor.getAttributes('textStyle').color as string | undefined) ?? null}
+            glyph={<span style={{ fontWeight: 700 }}>A</span>}
+            clearLabel={L.colorDefault}
+            onSelect={(c) => {
+              if (c === null) editor.chain().focus().unsetColor().run();
+              else editor.chain().focus().setColor(c).run();
+            }}
+          />
+          <ColorPicker
+            title={L.backgroundColor}
+            value={(editor.getAttributes('highlight').color as string | undefined) ?? null}
+            glyph={<span style={{ fontWeight: 700 }}>▮</span>}
+            clearLabel={L.colorDefault}
+            onSelect={(c) => {
+              if (c === null) editor.chain().focus().unsetHighlight().run();
+              else editor.chain().focus().setHighlight({ color: c }).run();
+            }}
+          />
+
+          <span className="maya-editor-toolbar__sep" aria-hidden />
+          <Btn
+            active={editor.isActive({ textAlign: 'left' })}
+            onClick={() => editor.chain().focus().setTextAlign('left').run()}
+            title={L.alignLeft}
+          >
+            ⬱
+          </Btn>
+          <Btn
+            active={editor.isActive({ textAlign: 'center' })}
+            onClick={() => editor.chain().focus().setTextAlign('center').run()}
+            title={L.alignCenter}
+          >
+            ☱
+          </Btn>
+          <Btn
+            active={editor.isActive({ textAlign: 'right' })}
+            onClick={() => editor.chain().focus().setTextAlign('right').run()}
+            title={L.alignRight}
+          >
+            ⬲
+          </Btn>
+          <Btn
+            active={editor.isActive({ textAlign: 'justify' })}
+            onClick={() => editor.chain().focus().setTextAlign('justify').run()}
+            title={L.alignJustify}
+          >
+            ☰
+          </Btn>
+
+          <span className="maya-editor-toolbar__sep" aria-hidden />
+          <Btn
+            onClick={() => {
+              if (editor.isActive('listItem') || editor.isActive('taskItem')) {
+                editor.chain().focus().sinkListItem(
+                  editor.isActive('taskItem') ? 'taskItem' : 'listItem',
+                ).run();
+              } else {
+                editor.chain().focus().indent().run();
+              }
+            }}
+            title={L.indent}
+          >
+            ⇥
+          </Btn>
+          <Btn
+            onClick={() => {
+              if (editor.isActive('listItem') || editor.isActive('taskItem')) {
+                editor.chain().focus().liftListItem(
+                  editor.isActive('taskItem') ? 'taskItem' : 'listItem',
+                ).run();
+              } else {
+                editor.chain().focus().outdent().run();
+              }
+            }}
+            title={L.outdent}
+          >
+            ⇤
+          </Btn>
+
+          <span className="maya-editor-toolbar__sep" aria-hidden />
           <Btn
             active={editor.isActive('heading', { level: 1 })}
             onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}

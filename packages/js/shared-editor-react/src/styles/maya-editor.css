@@ -83,6 +83,52 @@
   cursor: not-allowed;
 }
 
+/* ── Color picker (text + highlight) ───────────────────────── */
+.maya-editor-color { position: relative; display: inline-flex; }
+.maya-editor-color__btn {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1px;
+  padding: 2px 5px;
+}
+.maya-editor-color__glyph { font-size: 13px; line-height: 1; }
+.maya-editor-color__swatch {
+  width: 18px;
+  height: 4px;
+  border-radius: 2px;
+  background: currentColor;
+  opacity: 0.95;
+}
+.maya-editor-color__panel {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  z-index: 5;
+  display: grid;
+  grid-template-columns: repeat(6, 18px);
+  gap: 4px;
+  padding: 8px;
+  background: var(--maya-editor-bg, #fff);
+  border: 1px solid var(--maya-editor-border, #d6d6df);
+  border-radius: 6px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.18);
+}
+.maya-editor-color__cell {
+  width: 18px;
+  height: 18px;
+  border-radius: 4px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  background-clip: padding-box;
+  cursor: pointer;
+  padding: 0;
+}
+.maya-editor-color__cell.is-active {
+  outline: 2px solid var(--maya-editor-link, #7c3aed);
+  outline-offset: 1px;
+}
+
 /* ── Content ──────────────────────────────────────────────────── */
 .maya-editor-wrapper .ProseMirror {
   flex: 1;
@@ -100,6 +146,16 @@
 .maya-editor-wrapper .ProseMirror p { margin: 0.5em 0; }
 .maya-editor-wrapper .ProseMirror p:first-child { margin-top: 0; }
 .maya-editor-wrapper .ProseMirror p:last-child { margin-bottom: 0; }
+
+/* Indent attribute (Indent extension) — applied to paragraph/heading/blockquote. */
+.maya-editor-wrapper .ProseMirror [data-indent="1"] { margin-left: 2em; }
+.maya-editor-wrapper .ProseMirror [data-indent="2"] { margin-left: 4em; }
+.maya-editor-wrapper .ProseMirror [data-indent="3"] { margin-left: 6em; }
+.maya-editor-wrapper .ProseMirror [data-indent="4"] { margin-left: 8em; }
+.maya-editor-wrapper .ProseMirror [data-indent="5"] { margin-left: 10em; }
+.maya-editor-wrapper .ProseMirror [data-indent="6"] { margin-left: 12em; }
+.maya-editor-wrapper .ProseMirror [data-indent="7"] { margin-left: 14em; }
+.maya-editor-wrapper .ProseMirror [data-indent="8"] { margin-left: 16em; }
 
 .maya-editor-wrapper .ProseMirror h1 { font-size: 1.7em; font-weight: 700; margin: 0.8em 0 0.3em; line-height: 1.25; }
 .maya-editor-wrapper .ProseMirror h2 { font-size: 1.4em; font-weight: 700; margin: 0.8em 0 0.3em; line-height: 1.3; }
