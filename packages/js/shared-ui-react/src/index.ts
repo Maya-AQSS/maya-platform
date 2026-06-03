@@ -47,7 +47,12 @@ export { StatCard } from './StatCard'
 export { ApplicationTile } from './ApplicationTile'
 
 // — Formatters (Intl, es-ES) —
-export { formatDate, formatDateTime } from './date'
+export {
+  formatDate,
+  formatDateTime,
+  toDatetimeLocalValue,
+  datetimeLocalToIso,
+} from './date'
 
 // — Form controls avanzados —
 export { MultiSelect, type MultiSelectOption } from './MultiSelect'
