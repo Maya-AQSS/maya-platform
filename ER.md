@@ -100,8 +100,8 @@ erDiagram
     }
 
     USER_RESOLVED_PERMISSIONS {
-        varchar_255 user_id FK "Keycloak UUID (lógico)"
-        varchar_191 permission_slug "nombre permiso (ej: 'audit.login')"
+        varchar_255 user_id PK "Keycloak UUID (lógico, FK)"
+        varchar_191 permission_slug PK "nombre permiso (ej: 'audit.login')"
     }
 
     JOBS {
