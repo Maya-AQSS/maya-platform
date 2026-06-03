@@ -406,23 +406,38 @@ final class TiptapHtmlRendererTest extends TestCase
 
     // ─── test_17: XSS in image URL ──────────────────────────────────────────
 
-    public function test_17_xss_in_image_url_is_escaped(): void
+    public function test_17_dangerous_image_src_is_dropped(): void
     {
-        $doc = [
+        // Quote-injection / non-URL garbage → image is dropped entirely.
+        $bad = self::render([
             'type' => 'doc',
             'content' => [[
                 'type' => 'image',
-                'attrs' => [
-                    'src' => '" onerror="alert(1)',
-                    'alt' => '',
-                    'caption' => 'cap',
-                ],
+                'attrs' => ['src' => '" onerror="alert(1)', 'alt' => '', 'caption' => 'cap'],
             ]],
-        ];
+        ]);
+        $this->assertStringNotContainsString('onerror=', $bad);
+        $this->assertStringNotContainsString('<img', $bad);
 
-        $html = self::render($doc);
-        $this->assertStringNotContainsString('onerror=', $html);
-        $this->assertMatchesRegularExpression('/src="&quot;[^"]*"/', $html);
+        // javascript: image src is also dropped.
+        $js = self::render([
+            'type' => 'doc',
+            'content' => [['type' => 'image', 'attrs' => ['src' => 'javascript:alert(1)']]],
+        ]);
+        $this->assertStringNotContainsString('<img', $js);
+
+        // Legitimate srcs (https + inline data:image) still render.
+        $https = self::render([
+            'type' => 'doc',
+            'content' => [['type' => 'image', 'attrs' => ['src' => 'https://example.com/a.png', 'alt' => 'a']]],
+        ]);
+        $this->assertStringContainsString('<img src="https://example.com/a.png"', $https);
+
+        $dataImg = self::render([
+            'type' => 'doc',
+            'content' => [['type' => 'image', 'attrs' => ['src' => 'data:image/png;base64,iVBORw0KGgo=']]],
+        ]);
+        $this->assertStringContainsString('data:image/png;base64', $dataImg);
     }
 
     // ─── test_18: list item with bold + code ────────────────────────────────
