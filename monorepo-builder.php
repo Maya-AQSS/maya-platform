@@ -18,6 +18,11 @@ return static function (MBConfig $mbConfig): void {
         __DIR__ . '/packages/php',
     ]);
 
+    // El repo usa `main`; sin esto monorepo-builder hereda el default 'master'
+    // y `PushNextDevReleaseWorker` falla con
+    // "git push origin master → src refspec master does not match any".
+    $mbConfig->defaultBranch('main');
+
     // Keep dev dependencies in sync across all PHP packages.
     $mbConfig->dataToAppend([
         'require-dev' => [
