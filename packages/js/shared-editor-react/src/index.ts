@@ -12,7 +12,6 @@ export { Indent } from './extensions/Indent';
 export type { IndentOptions } from './extensions/Indent';
 export { ColorPicker } from './components/ColorPicker';
 
-export { convertBlockNoteToTiptap } from './serializers/BlockNoteToTiptap';
 export { useEditorContent } from './hooks/useEditorContent';
 export { getAnchorRange, setAnchorRange, rebaseAnchors } from './lib/CommentAnchor';
 export type { AnchorRange } from './lib/CommentAnchor';
@@ -38,9 +37,6 @@ export type {
   TiptapNode,
   TiptapDoc,
   AnchoredComment,
-  BlockNoteBlock,
-  BlockNoteInline,
-  BlockNoteStyles,
 } from './types';
 
 export { default as esTranslations } from './i18n/es.json';

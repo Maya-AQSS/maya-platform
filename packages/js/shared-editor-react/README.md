@@ -4,7 +4,7 @@ Unified TipTap editor for the Maya ecosystem.
 
 ## Components
 
-- **`<MayaEditor mode="lite" | "full" />`** — single editor with two visual modes. `lite` for short comments and alerts; `full` for templates and documents (BlockNote parity).
+- **`<MayaEditor mode="lite" | "full" />`** — single editor with two visual modes. `lite` for short comments and alerts; `full` for templates and documents.
 - **`<EditorContentHtml html />`** — read-only renderer with DOMPurify sanitisation (aligned with the server-side `TiptapHtmlRenderer`).
 - **`<EditorToolbar />`** — toolbar builder, used internally by `MayaEditor` and exposed for custom integrations.
 
@@ -13,10 +13,6 @@ Unified TipTap editor for the Maya ecosystem.
 - `IframeBlock` — sandboxed iframe block with optional domain allowlist.
 - `AlertBlock` — variants info / warning / success / danger.
 - `CommentMark` — anchored-comment mark (paired with `AnchoredCommentController` server-side).
-
-## Conversion
-
-- `convertBlockNoteToTiptap(blocks)` — legacy → ProseMirror conversion. Mirror of the PHP `Maya\Editor\Renderers\BlockNoteToTiptap`.
 
 ## Document import & block splitting
 

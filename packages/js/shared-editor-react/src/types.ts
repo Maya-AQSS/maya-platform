@@ -29,28 +29,3 @@ export interface AnchoredComment {
   anchorIsValid: boolean;
   anchorLastSyncedAt: string | null;
 }
-
-export interface BlockNoteStyles {
-  bold?: boolean;
-  italic?: boolean;
-  underline?: boolean;
-  strike?: boolean;
-  code?: boolean;
-  textColor?: string;
-  backgroundColor?: string;
-}
-
-export interface BlockNoteInline {
-  type: string;
-  text?: string;
-  styles?: BlockNoteStyles;
-  href?: string;
-  content?: BlockNoteInline[];
-}
-
-export interface BlockNoteBlock {
-  type: string;
-  props?: Record<string, unknown>;
-  content?: BlockNoteInline[] | { rows?: Array<{ cells: unknown[] }> };
-  children?: BlockNoteBlock[];
-}

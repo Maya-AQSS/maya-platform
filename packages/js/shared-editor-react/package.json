@@ -57,12 +57,11 @@
   "publishConfig": {
     "access": "public"
   },
-  "description": "Unified rich-text editor for Maya: MayaEditor (TipTap) with lite/full modes, BlockNote→TipTap converter, HTML SSR renderer, anchored-comments support.",
+  "description": "Unified rich-text editor for Maya: MayaEditor (TipTap) with lite/full modes, HTML SSR renderer, anchored-comments support.",
   "keywords": [
     "react",
     "tiptap",
     "prosemirror",
-    "blocknote",
     "editor",
     "wysiwyg",
     "ceedcv",
