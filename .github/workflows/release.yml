@@ -1,7 +1,13 @@
 name: Release
 
-# Manual release: bumps mutual deps, tags, pushes. Triggered via Actions UI.
-# After this tags, the `split` workflow propagates the tag to every read-only repo.
+# Manual release: aligns JS package versions, bumps PHP mutual deps, tags, pushes.
+# Triggered via Actions UI.
+#
+# monorepo-builder only manages PHP (packageDirectories(['packages/php'])), so the
+# "Align JS packages" step below bumps packages/js/* to the same version BEFORE the
+# tag is created. Without it the tag's tree carries stale JS versions and
+# publish-npm.yml leaves npm behind. After this tags, the `split` workflow
+# propagates the tag to every read-only repo and publish-npm.yml ships JS to npm.
 
 on:
   workflow_dispatch:
@@ -40,5 +46,30 @@ jobs:
           git config user.name  'maya_platform-bot'
           git config user.email 'bot@maya-aqss.org'
 
+      # pnpm version comes from `packageManager` in root package.json
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+
+      - name: Align JS packages to ${{ inputs.version }}
+        run: node scripts/bump-js-version.mjs "${{ inputs.version }}"
+
+      - name: Refresh pnpm lockfile
+        run: pnpm install --lockfile-only
+
+      - name: Commit JS version alignment
+        run: |
+          if git diff --quiet -- packages/js pnpm-lock.yaml; then
+            echo "JS packages already at ${{ inputs.version }} — nothing to commit"
+          else
+            git add packages/js/*/package.json pnpm-lock.yaml
+            git commit -m "chore(release): align JS packages to ${{ inputs.version }}"
+          fi
+
+      # Tags the current HEAD (which now includes the JS alignment commit), bumps
+      # PHP mutual deps, and pushes both the tag and the branch.
       - name: Release
         run: vendor/bin/monorepo-builder release ${{ inputs.version }}

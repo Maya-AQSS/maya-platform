@@ -3,6 +3,12 @@ name: Publish JS packages to npm
 # Triggered on tag push. Each tag matching v*.*.* publishes every JS package
 # under @ceedcv-maya/* to the public npm registry.
 #
+# The git tag is the single source of truth for the published version: the
+# "Stamp version from tag" step rewrites each package.json (own version + internal
+# @ceedcv-maya/* ranges) to the tag version right before publishing. So even a tag
+# pushed by hand (or one where the committed JS versions drifted) can never leave
+# npm desynced. release.yml keeps the committed tree in sync for the normal path.
+#
 # REQUIRES org-level secret NPM_TOKEN (an npm automation token with publish
 # rights on the @ceedcv-maya scope).
 #
@@ -53,17 +59,30 @@ jobs:
           registry-url: 'https://registry.npmjs.org'
           scope: '@ceedcv-maya'
 
-      - name: Verify version matches tag
+      - name: Stamp version from tag
         if: github.event_name == 'push'
         working-directory: packages/js/${{ matrix.package }}
+        env:
+          TAG_VERSION: ${{ github.ref_name }}
         run: |
-          tag_version="${GITHUB_REF_NAME#v}"
-          pkg_version=$(node -p "require('./package.json').version")
-          if [ "$tag_version" != "$pkg_version" ]; then
-            echo "::error::Tag $GITHUB_REF_NAME does not match package.json version $pkg_version in ${{ matrix.package }}"
-            exit 1
-          fi
-          echo "Tag $GITHUB_REF_NAME matches package version $pkg_version ✓"
+          node -e '
+            const fs = require("fs");
+            const version = process.env.TAG_VERSION.replace(/^v/, "");
+            const range = "^" + version;
+            const pkg = JSON.parse(fs.readFileSync("package.json", "utf8"));
+            pkg.version = version;
+            for (const key of ["dependencies", "devDependencies", "peerDependencies", "optionalDependencies"]) {
+              const deps = pkg[key];
+              if (!deps) continue;
+              for (const name of Object.keys(deps)) {
+                if (name.startsWith("@ceedcv-maya/") && !String(deps[name]).startsWith("workspace:")) {
+                  deps[name] = range;
+                }
+              }
+            }
+            fs.writeFileSync("package.json", JSON.stringify(pkg, null, 2) + "\n");
+            console.log("Stamped " + pkg.name + " -> " + version);
+          '
 
       - name: Publish
         working-directory: packages/js/${{ matrix.package }}
