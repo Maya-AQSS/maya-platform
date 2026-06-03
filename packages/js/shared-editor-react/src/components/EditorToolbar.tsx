@@ -198,7 +198,8 @@ export function EditorToolbar({
           <ListAndBlockButtons editor={editor} labels={L} />
           <TableAndMediaButtons editor={editor} labels={L} onImage={onImage} />
 
-          <span className="maya-editor-toolbar__sep" aria-hidden />
+
+          <div className="flex items-end gap-0.5 shrink-0 pl-1 border-l border-ui-border dark:border-ui-dark-border ml-auto">
           <DocumentButtons
             editor={editor}
             labels={L}
@@ -218,6 +219,7 @@ export function EditorToolbar({
             onInsertMarkdown={onInsertMarkdown}
             onToggleFullscreen={onToggleFullscreen}
           />
+          </div>
         </>
       )}
     </div>

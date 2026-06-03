@@ -388,13 +388,14 @@ export function ViewModeButtons({
           <span style={{ fontFamily: 'ui-monospace, monospace', fontSize: 11 }}>{'<>'}</span>
         </Btn>
       )}
+      <span className="maya-editor-toolbar__sep" aria-hidden />
       {onToggleFullscreen && (
-        <Btn
-          onClick={onToggleFullscreen}
-          title={isFullscreen ? L.exitFullscreen : L.fullscreen}
-        >
-          {isFullscreen ? '⤓' : '⛶'}
-        </Btn>
+          <Btn
+            onClick={onToggleFullscreen}
+            title={isFullscreen ? L.exitFullscreen : L.fullscreen}
+          >
+            {isFullscreen ? '🗗' : '🗖'}
+          </Btn>
       )}
     </>
   );
