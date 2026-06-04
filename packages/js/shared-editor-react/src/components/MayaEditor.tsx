@@ -1,8 +1,9 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { EditorContent, useEditor } from '@tiptap/react';
 import type { Editor } from '@tiptap/react';
 
 import { buildMayaEditorExtensions } from '../lib/editorExtensions';
+import { normalizeTiptapDocPayload } from '../lib/tiptapContentSemantics';
 import { isEditorReady } from '../lib/isEditorReady';
 import { useEditorContent, type EditorOutput } from '../hooks/useEditorContent';
 import { sanitizeEditorHtml } from '../lib/dompurifyConfig';
@@ -29,6 +30,11 @@ export interface MayaEditorProps {
   mode?: EditorMode;
   /** Debounced change callback (300ms). Payload depends on `output`. */
   onChange?: (payload: string | TiptapDoc) => void;
+  /**
+   * Llamado al perder el foco del editor, antes de HTML/Markdown o al destruir
+   * la instancia. El padre suele enlazarlo a `forceSave` del autoguardado.
+   */
+  onFlush?: () => void;
   /**
    * Output shape: `'html'` (default) emits a sanitisation-ready string;
    * `'json'` emits the full ProseMirror doc `{type:'doc', content:[…]}`,
@@ -95,6 +101,7 @@ export function MayaEditor({
   onCreateComment,
   onExportDocx,
   commentsById,
+  onFlush,
 }: MayaEditorProps) {
   const effectiveOutput: EditorOutput = output ?? (mode === 'full' ? 'json' : 'html');
   const [isFullscreen, setIsFullscreen] = useState(false);
@@ -116,6 +123,11 @@ export function MayaEditor({
   const [viewReady, setViewReady] = useState(false);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const docxInputRef = useRef<HTMLInputElement | null>(null);
+  const wrapperRef = useRef<HTMLDivElement | null>(null);
+  const onChangeRef = useRef(onChange);
+  const onFlushRef = useRef(onFlush);
+  onChangeRef.current = onChange;
+  onFlushRef.current = onFlush;
 
   const extensions = useMemo(() => buildMayaEditorExtensions(mode), [mode]);
 
@@ -136,9 +148,38 @@ export function MayaEditor({
 
   useEditorContent(editor, onChange, { output: effectiveOutput });
 
+  const syncContentToParent = useCallback(() => {
+    if (!editor) return;
+    const handler = onChangeRef.current;
+    if (!handler) return;
+    const rawPayload =
+      effectiveOutput === 'json'
+        ? (editor.getJSON() as TiptapDoc)
+        : editor.getHTML();
+    const payload =
+      effectiveOutput === 'json'
+        ? normalizeTiptapDocPayload(rawPayload)
+        : rawPayload;
+    handler(payload);
+  }, [editor, effectiveOutput]);
+
+  const requestFlush = useCallback(() => {
+    syncContentToParent();
+    onFlushRef.current?.();
+  }, [syncContentToParent]);
+
   useEffect(() => {
     if (editor && onEditorReady) onEditorReady(editor);
   }, [editor, onEditorReady]);
+
+  useEffect(() => {
+    if (!editor || !onFlush) return;
+    const onDestroy = () => requestFlush();
+    editor.on('destroy', onDestroy);
+    return () => {
+      editor.off('destroy', onDestroy);
+    };
+  }, [editor, onFlush, requestFlush]);
 
   useEffect(() => {
     setViewReady(false);
@@ -266,6 +307,7 @@ export function MayaEditor({
   };
 
   const enterSource = (target: 'html' | 'markdown') => {
+    requestFlush();
     const currentHtml = editor.getHTML();
     const text = target === 'html' ? currentHtml : htmlToMarkdown(currentHtml);
     setSourceText(text);
@@ -308,7 +350,14 @@ export function MayaEditor({
 
   return (
     <div
+      ref={wrapperRef}
       className={`maya-editor-wrapper${isFullscreen ? ' is-fullscreen' : ''}${isDark ? ' is-dark' : ''}`}
+      onBlur={(e) => {
+        if (!onFlush) return;
+        const next = e.relatedTarget as Node | null;
+        if (next && wrapperRef.current?.contains(next)) return;
+        requestFlush();
+      }}
     >
       {editorReady && (
       <EditorToolbar
