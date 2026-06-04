@@ -24,6 +24,7 @@ export { splitHtmlIntoBlocks } from './lib/splitHtmlIntoBlocks';
 export type { BlockChunk, BlockChunkType } from './lib/splitHtmlIntoBlocks';
 export { htmlToTiptapDoc } from './lib/htmlToTiptapDoc';
 export { buildMayaEditorExtensions } from './lib/editorExtensions';
+export { isEditorReady } from './lib/isEditorReady';
 export { docxToHtml, docxToHtmlResult } from './lib/docxToHtml';
 export type { DocxConversionMessage, DocxConversionResult } from './lib/docxToHtml';
 export { SourceInputDialog } from './components/SourceInputDialog';

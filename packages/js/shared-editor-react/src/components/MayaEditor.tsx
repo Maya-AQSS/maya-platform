@@ -3,6 +3,7 @@ import { EditorContent, useEditor } from '@tiptap/react';
 import type { Editor } from '@tiptap/react';
 
 import { buildMayaEditorExtensions } from '../lib/editorExtensions';
+import { isEditorReady } from '../lib/isEditorReady';
 import { useEditorContent, type EditorOutput } from '../hooks/useEditorContent';
 import { sanitizeEditorHtml } from '../lib/dompurifyConfig';
 import { markdownToHtml } from '../lib/markdownToHtml';
@@ -140,21 +141,33 @@ export function MayaEditor({
   }, [editor, onEditorReady]);
 
   useEffect(() => {
+    setViewReady(false);
     if (!editor) return;
-    const bump = () => setSelectionVersion((v) => v + 1);
+
+    const bump = () => {
+      if (!isEditorReady(editor)) return;
+      setSelectionVersion((v) => v + 1);
+    };
     const markReady = () => setViewReady(true);
+    const markNotReady = () => setViewReady(false);
+
     editor.on('selectionUpdate', bump);
     editor.on('transaction', bump);
     editor.on('create', markReady);
-    // The editor may have already fired `create` before we got here
-    // (useEditor sometimes returns an instance that's already mounted).
+    editor.on('destroy', markNotReady);
+
     try {
-      if (editor.view && editor.view.dom) setViewReady(true);
-    } catch { /* view not ready yet — markReady will fire it */ }
+      if (editor.view?.dom) setViewReady(true);
+    } catch {
+      /* view not ready yet — markReady will fire on create */
+    }
+
     return () => {
       editor.off('selectionUpdate', bump);
       editor.off('transaction', bump);
       editor.off('create', markReady);
+      editor.off('destroy', markNotReady);
+      setViewReady(false);
     };
   }, [editor]);
 
@@ -213,6 +226,8 @@ export function MayaEditor({
   }, [isFullscreen, onFullscreenChange]);
 
   if (!editor) return null;
+
+  const editorReady = viewReady && isEditorReady(editor);
 
   const handlePickImage = async (file: File) => {
     if (!uploadFile) return;
@@ -295,6 +310,7 @@ export function MayaEditor({
     <div
       className={`maya-editor-wrapper${isFullscreen ? ' is-fullscreen' : ''}${isDark ? ' is-dark' : ''}`}
     >
+      {editorReady && (
       <EditorToolbar
         editor={editor}
         mode={mode}
@@ -312,7 +328,8 @@ export function MayaEditor({
         onToggleFind={mode === 'full' ? () => setFindOpen((v) => !v) : undefined}
         labels={toolbarLabels}
       />
-      {mode === 'full' && (
+      )}
+      {mode === 'full' && editorReady && (
         <FindReplaceBar
           editor={editor}
           open={findOpen}
