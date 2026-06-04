@@ -25,6 +25,16 @@ export type { BlockChunk, BlockChunkType } from './lib/splitHtmlIntoBlocks';
 export { htmlToTiptapDoc } from './lib/htmlToTiptapDoc';
 export { buildMayaEditorExtensions } from './lib/editorExtensions';
 export { isEditorReady } from './lib/isEditorReady';
+export {
+  canonicalTiptapContentJson,
+  htmlVisibleTextLength,
+  isEmptyTiptapBlockNode,
+  isSemanticallyEmptyEditorHtml,
+  isSemanticallyEmptyTiptapContent,
+  normalizeTiptapContentForCompare,
+  normalizeTiptapDocPayload,
+  tiptapContentEquals,
+} from './lib/tiptapContentSemantics';
 export { docxToHtml, docxToHtmlResult } from './lib/docxToHtml';
 export type { DocxConversionMessage, DocxConversionResult } from './lib/docxToHtml';
 export { SourceInputDialog } from './components/SourceInputDialog';
