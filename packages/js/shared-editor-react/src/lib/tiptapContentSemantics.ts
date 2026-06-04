@@ -80,12 +80,38 @@ function toContentArray(value: unknown): unknown[] {
   return [];
 }
 
+/** Atributos que TipTap añade al abrir/guardar y no representan edición del usuario. */
+const VOLATILE_NODE_ATTR_KEYS = new Set([
+  'colwidth',
+  'columnSizing',
+  'data-colwidth',
+]);
+
+function canonicalizeNodeForCompare(node: unknown): unknown {
+  const n = asNode(node);
+  if (!n?.type) return node;
+
+  let attrs = isRecord(n.attrs) ? { ...n.attrs } : undefined;
+  if (attrs) {
+    for (const key of VOLATILE_NODE_ATTR_KEYS) {
+      delete attrs[key];
+    }
+    if (Object.keys(attrs).length === 0) attrs = undefined;
+  }
+
+  const content = Array.isArray(n.content)
+    ? n.content.map(canonicalizeNodeForCompare)
+    : n.content;
+
+  return { ...n, ...(attrs ? { attrs } : {}), content };
+}
+
 /**
  * Strips trailing empty paragraphs TipTap adds for cursor placement.
  * Returns a new array; does not mutate the input.
  */
 export function normalizeTiptapContentForCompare(value: unknown): unknown[] {
-  const nodes = [...toContentArray(value)];
+  const nodes = [...toContentArray(value)].map(canonicalizeNodeForCompare);
   while (nodes.length > 0 && isEmptyTiptapBlockNode(nodes[nodes.length - 1])) {
     nodes.pop();
   }

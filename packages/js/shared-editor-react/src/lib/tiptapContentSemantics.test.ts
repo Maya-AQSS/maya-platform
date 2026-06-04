@@ -33,4 +33,41 @@ describe('tiptapContentSemantics', () => {
     const nodes = [{ type: 'image', attrs: { src: 'https://example.com/x.png' } }];
     expect(isSemanticallyEmptyTiptapContent(nodes)).toBe(false);
   });
+
+  it('ignores table colwidth attrs added by the editor on open', () => {
+    const fromTemplate = [
+      {
+        type: 'table',
+        content: [
+          {
+            type: 'tableRow',
+            content: [
+              {
+                type: 'tableCell',
+                content: [{ type: 'paragraph', content: [{ type: 'text', text: 'A' }] }],
+              },
+            ],
+          },
+        ],
+      },
+    ];
+    const afterEditor = [
+      {
+        type: 'table',
+        content: [
+          {
+            type: 'tableRow',
+            content: [
+              {
+                type: 'tableCell',
+                attrs: { colwidth: [120] },
+                content: [{ type: 'paragraph', content: [{ type: 'text', text: 'A' }] }],
+              },
+            ],
+          },
+        ],
+      },
+    ];
+    expect(tiptapContentEquals(fromTemplate, afterEditor)).toBe(true);
+  });
 });
