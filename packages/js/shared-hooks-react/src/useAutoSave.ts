@@ -14,11 +14,12 @@ export interface UseAutoSaveResult {
  * Hook de autoguardado con debounce unificado.
  * Reutilizable en WizardStep2Blocks, TemplateEditor y DocumentWizard.
  *
- * @param saveFn  Función async que realiza el guardado.
+ * @param saveFn  Función async que realiza el guardado. Devuelve `false` si no hubo
+ *                persistencia real (sin cambios); cualquier otro valor marca éxito.
  * @param delay   Milisegundos de debounce (por defecto 1500ms).
  */
 export function useAutoSave(
-  saveFn: () => Promise<void>,
+  saveFn: () => Promise<boolean | void>,
   delay = 1500,
 ): UseAutoSaveResult {
   const [saveStatus, setSaveStatus] = useState<SaveStatus>('idle');
@@ -32,7 +33,11 @@ export function useAutoSave(
   const executeSave = useCallback(async () => {
     setSaveStatus('saving');
     try {
-      await saveFnRef.current();
+      const persisted = await saveFnRef.current();
+      if (persisted === false) {
+        setSaveStatus('idle');
+        return;
+      }
       setLastSaved(new Date());
       setSaveStatus('saved');
       if (savedClearRef.current) clearTimeout(savedClearRef.current);
