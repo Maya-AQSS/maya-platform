@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState, type MutableRefObject } from 'react';
 import { EditorContent, useEditor } from '@tiptap/react';
 import type { Editor } from '@tiptap/react';
 
@@ -31,10 +31,15 @@ export interface MayaEditorProps {
   /** Debounced change callback (300ms). Payload depends on `output`. */
   onChange?: (payload: string | TiptapDoc) => void;
   /**
-   * Llamado al perder el foco del editor, antes de HTML/Markdown o al destruir
-   * la instancia. El padre suele enlazarlo a `forceSave` del autoguardado.
+   * Llamado tras sincronizar el contenido (blur, cambio de bloque, destroy).
+   * Recibe el payload ya leído del editor; el padre suele enlazarlo a `forceSave`.
    */
-  onFlush?: () => void;
+  onFlush?: (payload?: string | TiptapDoc) => void | Promise<void>;
+  /**
+   * Ref opcional para invocar flush+sync desde fuera (p. ej. antes de cambiar de bloque),
+   * evitando perder el último keystroke por el debounce de `onChange`.
+   */
+  editorFlushRef?: MutableRefObject<(() => void | Promise<void>) | null>;
   /**
    * Output shape: `'html'` (default) emits a sanitisation-ready string;
    * `'json'` emits the full ProseMirror doc `{type:'doc', content:[…]}`,
@@ -102,6 +107,7 @@ export function MayaEditor({
   onExportDocx,
   commentsById,
   onFlush,
+  editorFlushRef,
 }: MayaEditorProps) {
   const effectiveOutput: EditorOutput = output ?? (mode === 'full' ? 'json' : 'html');
   const [isFullscreen, setIsFullscreen] = useState(false);
@@ -126,8 +132,12 @@ export function MayaEditor({
   const wrapperRef = useRef<HTMLDivElement | null>(null);
   const onChangeRef = useRef(onChange);
   const onFlushRef = useRef(onFlush);
+  const viewModeRef = useRef(viewMode);
+  const sourceTextRef = useRef(sourceText);
   onChangeRef.current = onChange;
   onFlushRef.current = onFlush;
+  viewModeRef.current = viewMode;
+  sourceTextRef.current = sourceText;
 
   const extensions = useMemo(() => buildMayaEditorExtensions(mode), [mode]);
 
@@ -148,25 +158,49 @@ export function MayaEditor({
 
   useEditorContent(editor, onChange, { output: effectiveOutput });
 
-  const syncContentToParent = useCallback(() => {
-    if (!editor) return;
-    const handler = onChangeRef.current;
-    if (!handler) return;
+  const readPayloadFromEditor = useCallback((): string | TiptapDoc | undefined => {
+    if (!editor) return undefined;
     const rawPayload =
       effectiveOutput === 'json'
         ? (editor.getJSON() as TiptapDoc)
         : editor.getHTML();
-    const payload =
-      effectiveOutput === 'json'
-        ? normalizeTiptapDocPayload(rawPayload)
-        : rawPayload;
-    handler(payload);
+    return effectiveOutput === 'json'
+      ? normalizeTiptapDocPayload(rawPayload)
+      : rawPayload;
   }, [editor, effectiveOutput]);
 
-  const requestFlush = useCallback(() => {
-    syncContentToParent();
-    onFlushRef.current?.();
-  }, [syncContentToParent]);
+  const syncContentToParent = useCallback((): string | TiptapDoc | undefined => {
+    const payload = readPayloadFromEditor();
+    if (payload === undefined) return undefined;
+    onChangeRef.current?.(payload);
+    return payload;
+  }, [readPayloadFromEditor]);
+
+  const requestFlush = useCallback(async () => {
+    if (!editor) return;
+
+    const mode = viewModeRef.current;
+    if (mode !== 'wysiwyg') {
+      const rawHtml =
+        mode === 'markdown'
+          ? markdownToHtml(sourceTextRef.current)
+          : sourceTextRef.current;
+      const html = sanitizeEditorHtml(normalizeTableHtml(rawHtml));
+      editor.commands.setContent(html, { emitUpdate: false });
+      setViewMode('wysiwyg');
+    }
+
+    const payload = syncContentToParent();
+    await onFlushRef.current?.(payload);
+  }, [editor, syncContentToParent]);
+
+  useEffect(() => {
+    if (!editorFlushRef) return;
+    editorFlushRef.current = requestFlush;
+    return () => {
+      editorFlushRef.current = null;
+    };
+  }, [editorFlushRef, requestFlush]);
 
   useEffect(() => {
     if (editor && onEditorReady) onEditorReady(editor);
@@ -174,7 +208,9 @@ export function MayaEditor({
 
   useEffect(() => {
     if (!editor || !onFlush) return;
-    const onDestroy = () => requestFlush();
+    const onDestroy = () => {
+      void requestFlush();
+    };
     editor.on('destroy', onDestroy);
     return () => {
       editor.off('destroy', onDestroy);
@@ -306,8 +342,8 @@ export function MayaEditor({
       .run();
   };
 
-  const enterSource = (target: 'html' | 'markdown') => {
-    requestFlush();
+  const enterSource = async (target: 'html' | 'markdown') => {
+    syncContentToParent();
     const currentHtml = editor.getHTML();
     const text = target === 'html' ? currentHtml : htmlToMarkdown(currentHtml);
     setSourceText(text);
@@ -336,7 +372,7 @@ export function MayaEditor({
       const html = sanitizeEditorHtml(markdownToHtml(sourceText));
       setSourceText(html);
       setViewMode('html');
-    } else enterSource('html');
+    } else void enterSource('html');
   };
 
   const toggleMarkdown = () => {
@@ -345,7 +381,7 @@ export function MayaEditor({
       const md = htmlToMarkdown(sourceText);
       setSourceText(md);
       setViewMode('markdown');
-    } else enterSource('markdown');
+    } else void enterSource('markdown');
   };
 
   return (
@@ -356,7 +392,7 @@ export function MayaEditor({
         if (!onFlush) return;
         const next = e.relatedTarget as Node | null;
         if (next && wrapperRef.current?.contains(next)) return;
-        requestFlush();
+        void requestFlush();
       }}
     >
       {editorReady && (

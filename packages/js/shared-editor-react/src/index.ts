@@ -32,6 +32,7 @@ export {
   isSemanticallyEmptyEditorHtml,
   isSemanticallyEmptyTiptapContent,
   normalizeTiptapContentForCompare,
+  normalizeTiptapContentForPersistence,
   normalizeTiptapDocPayload,
   tiptapContentEquals,
 } from './lib/tiptapContentSemantics';
