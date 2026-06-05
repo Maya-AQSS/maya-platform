@@ -1,0 +1,96 @@
+{
+  "permissions": {
+    "changed": {
+      "title": "Tus permisos han cambiado",
+      "body": "Se ha actualizado tu configuración de permisos."
+    }
+  },
+  "role": {
+    "assigned": {
+      "title": "Nuevo rol asignado",
+      "body": "Se te ha asignado el rol {{role_name}}."
+    },
+    "revoked": {
+      "title": "Rol revocado",
+      "body": "Se te ha retirado el rol {{role_name}}."
+    },
+    "permissions": {
+      "changed": {
+        "title": "Permisos de rol actualizados",
+        "body": "Han cambiado los permisos de un rol que tienes asignado."
+      }
+    }
+  },
+  "permission": {
+    "override_set": {
+      "title": "Permiso concedido",
+      "body": "Se te ha concedido un permiso específico."
+    },
+    "override_removed": {
+      "title": "Permiso retirado",
+      "body": "Se te ha retirado un permiso específico."
+    }
+  },
+  "document": {
+    "validation_requested": {
+      "title": "Validación de documento solicitada",
+      "body": "El documento {{document_title}} requiere tu validación."
+    },
+    "published": {
+      "title": "Documento publicado",
+      "body": "El documento {{document_title}} ha sido publicado."
+    },
+    "rejected": {
+      "title": "Documento rechazado",
+      "body": "El documento {{document_title}} ha sido rechazado."
+    }
+  },
+  "template": {
+    "validation_requested": {
+      "title": "Validación de plantilla solicitada",
+      "body": "La plantilla {{template_name}} requiere tu validación."
+    },
+    "rejected": {
+      "title": "Plantilla rechazada",
+      "body": "La plantilla {{template_name}} ha sido rechazada."
+    },
+    "published": {
+      "title": "Plantilla publicada",
+      "body": "La plantilla {{template_name}} ha sido publicada."
+    },
+    "version": {
+      "affects_my_document": {
+        "title": "Nueva versión de plantilla",
+        "body": "Una nueva versión de la plantilla {{template_name}} afecta a tu documento."
+      }
+    }
+  },
+  "log": {
+    "comment_added": {
+      "title": "Nuevo comentario",
+      "body": "Se ha añadido un comentario a un registro de tu propiedad."
+    }
+  },
+  "attendance": {
+    "not_clocked_in": {
+      "title": "No has fichado hoy",
+      "body": "Recuerda fichar tu entrada."
+    }
+  },
+  "dms": {
+    "validation_deadline_approaching": {
+      "title": "Fecha límite de validación próxima",
+      "body": "El documento {{document_title}} vence el {{deadline}}."
+    },
+    "pending_validations_threshold": {
+      "title": "Documentos pendientes de validar",
+      "body": "Tienes {{count}} documentos pendientes de validar."
+    }
+  },
+  "logs": {
+    "error_spike": {
+      "title": "Pico de errores críticos",
+      "body": "Se han detectado {{count}} errores críticos en la última ventana."
+    }
+  }
+}

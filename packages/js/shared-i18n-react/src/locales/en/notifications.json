@@ -1,0 +1,96 @@
+{
+  "permissions": {
+    "changed": {
+      "title": "Your permissions have changed",
+      "body": "Your permission settings have been updated."
+    }
+  },
+  "role": {
+    "assigned": {
+      "title": "New role assigned",
+      "body": "You have been assigned the role {{role_name}}."
+    },
+    "revoked": {
+      "title": "Role revoked",
+      "body": "The role {{role_name}} has been removed from you."
+    },
+    "permissions": {
+      "changed": {
+        "title": "Role permissions updated",
+        "body": "The permissions of a role assigned to you have changed."
+      }
+    }
+  },
+  "permission": {
+    "override_set": {
+      "title": "Permission granted",
+      "body": "You have been granted a specific permission."
+    },
+    "override_removed": {
+      "title": "Permission removed",
+      "body": "A specific permission has been removed from you."
+    }
+  },
+  "document": {
+    "validation_requested": {
+      "title": "Document validation requested",
+      "body": "The document {{document_title}} requires your validation."
+    },
+    "published": {
+      "title": "Document published",
+      "body": "The document {{document_title}} has been published."
+    },
+    "rejected": {
+      "title": "Document rejected",
+      "body": "The document {{document_title}} has been rejected."
+    }
+  },
+  "template": {
+    "validation_requested": {
+      "title": "Template validation requested",
+      "body": "The template {{template_name}} requires your validation."
+    },
+    "rejected": {
+      "title": "Template rejected",
+      "body": "The template {{template_name}} has been rejected."
+    },
+    "published": {
+      "title": "Template published",
+      "body": "The template {{template_name}} has been published."
+    },
+    "version": {
+      "affects_my_document": {
+        "title": "New template version",
+        "body": "A new version of the template {{template_name}} affects your document."
+      }
+    }
+  },
+  "log": {
+    "comment_added": {
+      "title": "New comment",
+      "body": "A comment has been added to a record you own."
+    }
+  },
+  "attendance": {
+    "not_clocked_in": {
+      "title": "You have not clocked in today",
+      "body": "Remember to clock in."
+    }
+  },
+  "dms": {
+    "validation_deadline_approaching": {
+      "title": "Validation deadline approaching",
+      "body": "The document {{document_title}} is due on {{deadline}}."
+    },
+    "pending_validations_threshold": {
+      "title": "Documents pending validation",
+      "body": "You have {{count}} documents pending validation."
+    }
+  },
+  "logs": {
+    "error_spike": {
+      "title": "Critical error spike",
+      "body": "{{count}} critical errors were detected in the last window."
+    }
+  }
+}

@@ -1,0 +1,96 @@
+{
+  "permissions": {
+    "changed": {
+      "title": "Els teus permisos han canviat",
+      "body": "S'ha actualitzat la teua configuració de permisos."
+    }
+  },
+  "role": {
+    "assigned": {
+      "title": "Nou rol assignat",
+      "body": "Se t'ha assignat el rol {{role_name}}."
+    },
+    "revoked": {
+      "title": "Rol revocat",
+      "body": "Se t'ha retirat el rol {{role_name}}."
+    },
+    "permissions": {
+      "changed": {
+        "title": "Permisos de rol actualitzats",
+        "body": "Han canviat els permisos d'un rol que tens assignat."
+      }
+    }
+  },
+  "permission": {
+    "override_set": {
+      "title": "Permís concedit",
+      "body": "Se t'ha concedit un permís específic."
+    },
+    "override_removed": {
+      "title": "Permís retirat",
+      "body": "Se t'ha retirat un permís específic."
+    }
+  },
+  "document": {
+    "validation_requested": {
+      "title": "Validació de document sol·licitada",
+      "body": "El document {{document_title}} requerix la teua validació."
+    },
+    "published": {
+      "title": "Document publicat",
+      "body": "El document {{document_title}} ha sigut publicat."
+    },
+    "rejected": {
+      "title": "Document rebutjat",
+      "body": "El document {{document_title}} ha sigut rebutjat."
+    }
+  },
+  "template": {
+    "validation_requested": {
+      "title": "Validació de plantilla sol·licitada",
+      "body": "La plantilla {{template_name}} requerix la teua validació."
+    },
+    "rejected": {
+      "title": "Plantilla rebutjada",
+      "body": "La plantilla {{template_name}} ha sigut rebutjada."
+    },
+    "published": {
+      "title": "Plantilla publicada",
+      "body": "La plantilla {{template_name}} ha sigut publicada."
+    },
+    "version": {
+      "affects_my_document": {
+        "title": "Nova versió de plantilla",
+        "body": "Una nova versió de la plantilla {{template_name}} afecta el teu document."
+      }
+    }
+  },
+  "log": {
+    "comment_added": {
+      "title": "Nou comentari",
+      "body": "S'ha afegit un comentari a un registre de la teua propietat."
+    }
+  },
+  "attendance": {
+    "not_clocked_in": {
+      "title": "Hui no has fitxat",
+      "body": "Recorda fitxar la teua entrada."
+    }
+  },
+  "dms": {
+    "validation_deadline_approaching": {
+      "title": "Data límit de validació pròxima",
+      "body": "El document {{document_title}} venç el {{deadline}}."
+    },
+    "pending_validations_threshold": {
+      "title": "Documents pendents de validar",
+      "body": "Tens {{count}} documents pendents de validar."
+    }
+  },
+  "logs": {
+    "error_spike": {
+      "title": "Pic d'errors crítics",
+      "body": "S'han detectat {{count}} errors crítics en l'última finestra."
+    }
+  }
+}
