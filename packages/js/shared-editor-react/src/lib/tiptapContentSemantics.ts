@@ -118,10 +118,8 @@ const VOLATILE_NODE_ATTR_KEYS = new Set([
 const IMAGE_COMPARE_ATTR_KEYS = ['src', 'alt'] as const;
 
 function stripTrailingEmptyBlocks(nodes: unknown[]): unknown[] {
-  const out = [...nodes];
-  while (out.length > 0 && isEmptyTiptapBlockNode(out[out.length - 1])) {
-    out.pop();
-  }
+  const out = JSON.parse(JSON.stringify(nodes));
+
   return out;
 }
 
@@ -181,7 +179,7 @@ function canonicalizeNodeForCompare(node: unknown): unknown | null {
     if (rawType === 'bulletList' || rawType === 'orderedList' || rawType === 'taskList') {
       children = children.filter((child) => !isEmptyTiptapBlockNode(child));
     }
-
+      
     children = stripTrailingEmptyBlocks(children);
     content = children.length > 0 ? children : undefined;
   }
