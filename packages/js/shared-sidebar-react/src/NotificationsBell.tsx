@@ -15,16 +15,49 @@ import {
  * que siempre se muestren en el idioma activo (sincronizado desde `me.locale`).
  * Contrato espejo de `App\Support\NotificationContent::resolve` (backend).
  */
+type LocalizedMap = Record<string, string | undefined>
+
 function useNotificationText() {
   const { t, i18n } = useTranslation('notifications')
-  return (key: string | null, fallback: string, params: Record<string, unknown>): string => {
+  const currentLocale = (i18n.resolvedLanguage ?? i18n.language ?? '').split('-')[0]
+  return (
+    key: string | null,
+    fallback: string,
+    params: Record<string, unknown>,
+    localized?: LocalizedMap | null,
+    localizedDefault?: string | null,
+  ): string => {
     if (key) {
       const k = key.startsWith('notifications.') ? key.slice('notifications.'.length) : key
       if (i18n.exists(k, { ns: 'notifications' })) {
         return t(k, { ns: 'notifications', ...params }) as string
       }
     }
+    if (localized) {
+      const hit = localized[currentLocale]
+      if (hit != null && hit !== '') return hit
+      if (localizedDefault) {
+        const fb = localized[localizedDefault]
+        if (fb != null && fb !== '') return fb
+      }
+    }
     return fallback
+  }
+}
+
+/** Lee metadata.i18n de una notificación de alerta manual (title/body por locale). */
+function readI18nMeta(metadata: Record<string, unknown> | undefined): {
+  title?: LocalizedMap
+  body?: LocalizedMap
+  default?: string
+} {
+  const i18n = metadata?.i18n
+  if (i18n == null || typeof i18n !== 'object') return {}
+  const m = i18n as Record<string, unknown>
+  return {
+    title: (m.title as LocalizedMap | undefined) ?? undefined,
+    body: (m.body as LocalizedMap | undefined) ?? undefined,
+    default: typeof m.default_locale === 'string' ? m.default_locale : undefined,
   }
 }
 
@@ -136,8 +169,9 @@ export function NotificationsBell({
               </div>
             )}
             {notifications.map((n) => {
-              const title = resolveText(n.title_key, n.title, n.params)
-              const body = resolveText(n.body_key, n.body, n.params)
+              const i18nMeta = readI18nMeta(n.metadata)
+              const title = resolveText(n.title_key, n.title, n.params, i18nMeta.title, i18nMeta.default)
+              const body = resolveText(n.body_key, n.body, n.params, i18nMeta.body, i18nMeta.default)
               return (
               <button
                 key={n.id}
