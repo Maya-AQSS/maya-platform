@@ -44,10 +44,6 @@
             "providers": [
                 "Maya\\Editor\\Providers\\SharedEditorServiceProvider"
             ]
-        },
-        "branch-alias": {
-            "dev-main": "0.7.x-dev",
-            "dev-feat/tiptap-static-renderer": "0.7.x-dev"
         }
     },
     "minimum-stability": "stable",

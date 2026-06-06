@@ -37,6 +37,7 @@
   "devDependencies": {
     "@tiptap/static-renderer": "^3.0.0",
     "@types/dompurify": "^3.0.0",
+    "@types/node": "^25.9.2",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
     "jsdom": "^29.1.1",

@@ -14,7 +14,7 @@ function isRecord(value: unknown): value is Record<string, unknown> {
 }
 
 function asNode(value: unknown): TiptapNode | null {
-  return isRecord(value) && typeof value.type === 'string' ? (value as TiptapNode) : null;
+  return isRecord(value) && typeof value.type === 'string' ? (value as unknown as TiptapNode) : null;
 }
 
 function inlineTextLength(nodes: unknown): number {
