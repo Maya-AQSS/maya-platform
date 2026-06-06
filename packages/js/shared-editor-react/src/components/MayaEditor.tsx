@@ -9,6 +9,7 @@ import { useEditorContent, type EditorOutput } from '../hooks/useEditorContent';
 import { sanitizeEditorHtml } from '../lib/dompurifyConfig';
 import { markdownToHtml } from '../lib/markdownToHtml';
 import { htmlToMarkdown } from '../lib/htmlToMarkdown';
+import { looksLikeMarkdown } from '../lib/looksLikeMarkdown';
 import { normalizeTableHtml } from '../lib/normalizeTableHtml';
 import { docxToHtml } from '../lib/docxToHtml';
 import type { EditorMode, TiptapDoc } from '../types';
@@ -141,6 +142,10 @@ export function MayaEditor({
 
   const extensions = useMemo(() => buildMayaEditorExtensions(mode), [mode]);
 
+  // Stable handle to the editor for use inside editorProps callbacks, which are
+  // defined before `useEditor` returns.
+  const editorRef = useRef<Editor | null>(null);
+
   const editor = useEditor({
     extensions,
     content: initialContent ?? '',
@@ -153,8 +158,27 @@ export function MayaEditor({
       // Reshape pasted HTML so complex tables (caption/tfoot/colgroup)
       // survive TipTap's parser. See `normalizeTableHtml` for details.
       transformPastedHTML: (html) => normalizeTableHtml(html),
+      // Plain-text paste that is actually Markdown is converted to structured
+      // nodes instead of being stored as a literal text node (which would show
+      // "## " / "**bold**" verbatim in previews). Rich paste carries text/html
+      // and is left to `transformPastedHTML` / the default handler.
+      handlePaste: (_view, event) => {
+        const cb = event.clipboardData;
+        if (!cb) return false;
+        if (cb.getData('text/html')) return false;
+        const text = cb.getData('text/plain');
+        if (!text || !looksLikeMarkdown(text)) return false;
+        const activeEditor = editorRef.current;
+        if (!activeEditor) return false;
+        const html = sanitizeEditorHtml(normalizeTableHtml(markdownToHtml(text)));
+        if (!html) return false;
+        activeEditor.commands.insertContent(html);
+        return true;
+      },
     },
   });
+
+  editorRef.current = editor;
 
   useEditorContent(editor, onChange, { output: effectiveOutput });
 

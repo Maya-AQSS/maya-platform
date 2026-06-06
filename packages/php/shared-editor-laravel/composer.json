@@ -10,7 +10,8 @@
     },
     "require": {
         "php": "^8.4",
-        "illuminate/support": "^11.0 || ^12.0 || ^13.0"
+        "illuminate/support": "^11.0 || ^12.0 || ^13.0",
+        "league/commonmark": "^2.8"
     },
     "require-dev": {
         "pestphp/pest": "^3.0",
@@ -43,6 +44,10 @@
             "providers": [
                 "Maya\\Editor\\Providers\\SharedEditorServiceProvider"
             ]
+        },
+        "branch-alias": {
+            "dev-main": "0.7.x-dev",
+            "dev-feat/tiptap-static-renderer": "0.7.x-dev"
         }
     },
     "minimum-stability": "stable",

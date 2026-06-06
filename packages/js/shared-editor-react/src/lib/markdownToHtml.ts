@@ -43,7 +43,10 @@ function applyInline(text: string): string {
   out = out.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
   out = out.replace(/__([^_]+)__/g, '<strong>$1</strong>');
   out = out.replace(/(?<!\*)\*([^*\n]+)\*(?!\*)/g, '<em>$1</em>');
-  out = out.replace(/(?<!_)_([^_\n]+)_(?!_)/g, '<em>$1</em>');
+  // Underscore emphasis must not fire intra-word (CommonMark): `a_b_c` stays
+  // literal, so placeholders like `NOMBRE_DEL_CICLO` survive. Require a
+  // non-word boundary on both sides.
+  out = out.replace(/(?<![\w_])_([^_\n]+?)_(?![\w_])/g, '<em>$1</em>');
   // Strikethrough.
   out = out.replace(/~~([^~]+)~~/g, '<s>$1</s>');
   // Links — only http/https/mailto/tel; reject `javascript:` etc.
