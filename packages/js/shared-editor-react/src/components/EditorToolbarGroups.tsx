@@ -7,6 +7,7 @@ import type { Editor } from '@tiptap/react';
 import type { ToolbarLabels } from './EditorToolbar';
 import { ColorPicker } from './ColorPicker';
 import { Btn } from './EditorToolbarButton';
+import { EditorIcon } from './EditorIcons';
 import { tableMenuActions } from '../lib/tableMenuActions';
 
 export interface ToolbarGroupProps {
@@ -37,31 +38,31 @@ export function FormattingButtons({ editor, labels: L }: ToolbarGroupProps) {
         onClick={() => editor.chain().focus().toggleBold().run()}
         title={L.bold}
       >
-        <strong>B</strong>
+        <EditorIcon name="bold" />
       </Btn>
       <Btn
         active={editor.isActive('italic')}
         onClick={() => editor.chain().focus().toggleItalic().run()}
         title={L.italic}
       >
-        <em>I</em>
+        <EditorIcon name="italic" />
       </Btn>
       <Btn
         active={editor.isActive('underline')}
         onClick={() => editor.chain().focus().toggleUnderline().run()}
         title={L.underline}
       >
-        <u>U</u>
+        <EditorIcon name="underline" />
       </Btn>
       <Btn
         active={editor.isActive('code')}
         onClick={() => editor.chain().focus().toggleCode().run()}
         title={L.code}
       >
-        {'</>'}
+        <EditorIcon name="code" />
       </Btn>
       <Btn active={editor.isActive('link')} onClick={setLink} title={L.link}>
-        🔗
+        <EditorIcon name="link" />
       </Btn>
     </>
   );
@@ -78,13 +79,13 @@ export function AdvancedFormattingButtons({ editor, labels: L }: ToolbarGroupPro
         onClick={() => editor.chain().focus().toggleStrike().run()}
         title={L.strike}
       >
-        <s>S</s>
+        <EditorIcon name="strike" />
       </Btn>
 
       <ColorPicker
         title={L.textColor}
         value={(editor.getAttributes('textStyle').color as string | undefined) ?? null}
-        glyph={<span style={{ fontWeight: 700 }}>A</span>}
+        glyph={<EditorIcon name="textColor" />}
         clearLabel={L.colorDefault}
         onSelect={(c) => {
           if (c === null) editor.chain().focus().unsetColor().run();
@@ -94,7 +95,7 @@ export function AdvancedFormattingButtons({ editor, labels: L }: ToolbarGroupPro
       <ColorPicker
         title={L.backgroundColor}
         value={(editor.getAttributes('highlight').color as string | undefined) ?? null}
-        glyph={<span style={{ fontWeight: 700 }}>▮</span>}
+        glyph={<EditorIcon name="highlight" />}
         clearLabel={L.colorDefault}
         onSelect={(c) => {
           if (c === null) editor.chain().focus().unsetHighlight().run();
@@ -116,28 +117,28 @@ export function AlignmentButtons({ editor, labels: L }: ToolbarGroupProps) {
         onClick={() => editor.chain().focus().setTextAlign('left').run()}
         title={L.alignLeft}
       >
-        ⬱
+        <EditorIcon name="alignLeft" />
       </Btn>
       <Btn
         active={editor.isActive({ textAlign: 'center' })}
         onClick={() => editor.chain().focus().setTextAlign('center').run()}
         title={L.alignCenter}
       >
-        ☱
+        <EditorIcon name="alignCenter" />
       </Btn>
       <Btn
         active={editor.isActive({ textAlign: 'right' })}
         onClick={() => editor.chain().focus().setTextAlign('right').run()}
         title={L.alignRight}
       >
-        ⬲
+        <EditorIcon name="alignRight" />
       </Btn>
       <Btn
         active={editor.isActive({ textAlign: 'justify' })}
         onClick={() => editor.chain().focus().setTextAlign('justify').run()}
         title={L.alignJustify}
       >
-        ☰
+        <EditorIcon name="alignJustify" />
       </Btn>
     </>
   );
@@ -161,7 +162,7 @@ export function IndentButtons({ editor, labels: L }: ToolbarGroupProps) {
         }}
         title={L.indent}
       >
-        ⇥
+        <EditorIcon name="indent" />
       </Btn>
       <Btn
         onClick={() => {
@@ -175,7 +176,7 @@ export function IndentButtons({ editor, labels: L }: ToolbarGroupProps) {
         }}
         title={L.outdent}
       >
-        ⇤
+        <EditorIcon name="outdent" />
       </Btn>
     </>
   );
@@ -223,41 +224,41 @@ export function ListAndBlockButtons({ editor, labels: L }: ToolbarGroupProps) {
         onClick={() => editor.chain().focus().toggleBulletList().run()}
         title={L.bulletList}
       >
-        • —
+        <EditorIcon name="bulletList" />
       </Btn>
       <Btn
         active={editor.isActive('orderedList')}
         onClick={() => editor.chain().focus().toggleOrderedList().run()}
         title={L.orderedList}
       >
-        1.
+        <EditorIcon name="orderedList" />
       </Btn>
       <Btn
         active={editor.isActive('taskList')}
         onClick={() => editor.chain().focus().toggleTaskList().run()}
         title={L.taskList}
       >
-        ☑
+        <EditorIcon name="taskList" />
       </Btn>
       <Btn
         active={editor.isActive('blockquote')}
         onClick={() => editor.chain().focus().toggleBlockquote().run()}
         title={L.blockquote}
       >
-        ❝
+        <EditorIcon name="blockquote" />
       </Btn>
       <Btn
         active={editor.isActive('codeBlock')}
         onClick={() => editor.chain().focus().toggleCodeBlock().run()}
         title={L.codeBlock}
       >
-        {'{}'}
+        <EditorIcon name="codeBlock" />
       </Btn>
       <Btn
         onClick={() => editor.chain().focus().setHorizontalRule().run()}
         title={L.horizontalRule}
       >
-        —
+        <EditorIcon name="horizontalRule" />
       </Btn>
     </>
   );
@@ -289,14 +290,14 @@ export function TableAndMediaButtons({
         }
         title={L.table}
       >
-        ⊞
+        <EditorIcon name="table" />
       </Btn>
       <Btn onClick={setIframe} title={L.iframe}>
-        🖽
+        <EditorIcon name="iframe" />
       </Btn>
       {onImage && (
         <Btn onClick={onImage} title={L.uploadImage}>
-          🖼
+          <EditorIcon name="image" />
         </Btn>
       )}
     </>
@@ -316,7 +317,7 @@ export function TableButtons({ editor, labels: L }: ToolbarGroupProps) {
         <Fragment key={a.key}>
           {a.separatorBefore && <span className="maya-editor-toolbar__sep" aria-hidden />}
           <Btn onClick={a.run} title={a.title} disabled={a.disabled}>
-            {a.icon}
+            <EditorIcon name={a.icon} />
           </Btn>
         </Fragment>
       ))}
@@ -346,12 +347,12 @@ export function DocumentButtons({
     <>
       {onImportDocx && (
         <Btn onClick={onImportDocx} title={L.importDocx}>
-          <span style={{ fontFamily: 'ui-monospace, monospace', fontSize: 11 }}>↥W</span>
+          <EditorIcon name="importDocx" />
         </Btn>
       )}
       {onExportDocx && (
         <Btn onClick={onExportDocx} title={L.exportDocx}>
-          <span style={{ fontFamily: 'ui-monospace, monospace', fontSize: 11 }}>↧W</span>
+          <EditorIcon name="exportDocx" />
         </Btn>
       )}
       {onAddComment && (
@@ -360,12 +361,12 @@ export function DocumentButtons({
           disabled={editor.state.selection.empty}
           title={L.addComment}
         >
-          💬
+          <EditorIcon name="comment" />
         </Btn>
       )}
       {onToggleFind && (
         <Btn onClick={onToggleFind} title={L.find}>
-          🔍
+          <EditorIcon name="find" />
         </Btn>
       )}
     </>
@@ -408,7 +409,7 @@ export function ViewModeButtons({
           title={L.insertHtml}
           active={viewMode === 'html'}
         >
-          <span style={{ fontFamily: 'ui-monospace, monospace', fontSize: 11 }}>{'<>'}</span>
+          <EditorIcon name="htmlSource" />
         </Btn>
       )}
       <span className="maya-editor-toolbar__sep" aria-hidden />
@@ -417,7 +418,7 @@ export function ViewModeButtons({
             onClick={onToggleFullscreen}
             title={isFullscreen ? L.exitFullscreen : L.fullscreen}
           >
-            {isFullscreen ? '🗗' : '🗖'}
+            <EditorIcon name={isFullscreen ? 'exitFullscreen' : 'fullscreen'} />
           </Btn>
       )}
     </>

@@ -1,6 +1,8 @@
+import type { ReactNode } from 'react';
 import type { Editor } from '@tiptap/react';
 import type { EditorMode } from '../types';
 import { Btn } from './EditorToolbarButton';
+import { EditorIcon } from './EditorIcons';
 import {
   FormattingButtons,
   AdvancedFormattingButtons,
@@ -90,6 +92,14 @@ export interface ToolbarLabels {
   tableDeleteRow?: string;
   tableToggleHeaderRow?: string;
   tableDelete?: string;
+  groupHistory?: string;
+  groupFont?: string;
+  groupParagraph?: string;
+  groupStyles?: string;
+  groupInsert?: string;
+  groupTable?: string;
+  groupTools?: string;
+  groupView?: string;
 }
 
 const DEFAULT_LABELS: ToolbarLabels = {
@@ -152,6 +162,14 @@ const DEFAULT_LABELS: ToolbarLabels = {
   tableDeleteRow: 'Delete row',
   tableToggleHeaderRow: 'Toggle header row',
   tableDelete: 'Delete table',
+  groupHistory: 'History',
+  groupFont: 'Font',
+  groupParagraph: 'Paragraph',
+  groupStyles: 'Styles',
+  groupInsert: 'Insert',
+  groupTable: 'Table',
+  groupTools: 'Tools',
+  groupView: 'View',
 };
 
 /**
@@ -179,73 +197,116 @@ export function EditorToolbar({
 
   const isLite = mode === 'lite';
 
+  // Lite mode: a single flat row (no captions), as before.
+  if (isLite) {
+    return (
+      <div className="maya-editor-toolbar" role="toolbar" aria-label="Editor toolbar">
+        <Btn
+          disabled={!editor.can().undo()}
+          onClick={() => editor.chain().focus().undo().run()}
+          title={L.undo}
+        >
+          <EditorIcon name="undo" />
+        </Btn>
+        <Btn
+          disabled={!editor.can().redo()}
+          onClick={() => editor.chain().focus().redo().run()}
+          title={L.redo}
+        >
+          <EditorIcon name="redo" />
+        </Btn>
+        <span className="maya-editor-toolbar__sep" aria-hidden />
+        <FormattingButtons editor={editor} labels={L} />
+      </div>
+    );
+  }
+
+  // Full mode: Word-style ribbon — each group is captioned and separated.
   return (
-    <div className="maya-editor-toolbar" role="toolbar" aria-label="Editor toolbar">
-      <Btn
-        disabled={!editor.can().undo()}
-        onClick={() => editor.chain().focus().undo().run()}
-        title={L.undo}
-      >
-        ↶
-      </Btn>
-      <Btn
-        disabled={!editor.can().redo()}
-        onClick={() => editor.chain().focus().redo().run()}
-        title={L.redo}
-      >
-        ↷
-      </Btn>
+    <div
+      className="maya-editor-toolbar maya-editor-ribbon"
+      role="toolbar"
+      aria-label="Editor toolbar"
+    >
+      <RibbonGroup label={L.groupHistory ?? 'History'}>
+        <Btn
+          disabled={!editor.can().undo()}
+          onClick={() => editor.chain().focus().undo().run()}
+          title={L.undo}
+        >
+          <EditorIcon name="undo" />
+        </Btn>
+        <Btn
+          disabled={!editor.can().redo()}
+          onClick={() => editor.chain().focus().redo().run()}
+          title={L.redo}
+        >
+          <EditorIcon name="redo" />
+        </Btn>
+      </RibbonGroup>
 
-      <span className="maya-editor-toolbar__sep" aria-hidden />
-      <FormattingButtons editor={editor} labels={L} />
+      <RibbonGroup label={L.groupFont ?? 'Font'}>
+        <FormattingButtons editor={editor} labels={L} />
+        <AdvancedFormattingButtons editor={editor} labels={L} />
+      </RibbonGroup>
 
-      {!isLite && (
-        <>
-          <span className="maya-editor-toolbar__sep" aria-hidden />
-          <AdvancedFormattingButtons editor={editor} labels={L} />
+      <RibbonGroup label={L.groupParagraph ?? 'Paragraph'}>
+        <AlignmentButtons editor={editor} labels={L} />
+        <span className="maya-editor-toolbar__sep" aria-hidden />
+        <IndentButtons editor={editor} labels={L} />
+        <span className="maya-editor-toolbar__sep" aria-hidden />
+        <ListAndBlockButtons editor={editor} labels={L} />
+      </RibbonGroup>
 
-          <span className="maya-editor-toolbar__sep" aria-hidden />
-          <AlignmentButtons editor={editor} labels={L} />
+      <RibbonGroup label={L.groupStyles ?? 'Styles'}>
+        <HeadingButtons editor={editor} labels={L} />
+      </RibbonGroup>
 
-          <span className="maya-editor-toolbar__sep" aria-hidden />
-          <IndentButtons editor={editor} labels={L} />
+      <RibbonGroup label={L.groupInsert ?? 'Insert'}>
+        <TableAndMediaButtons editor={editor} labels={L} onImage={onImage} />
+      </RibbonGroup>
 
-          <span className="maya-editor-toolbar__sep" aria-hidden />
-          <HeadingButtons editor={editor} labels={L} />
-          <ListAndBlockButtons editor={editor} labels={L} />
-          <TableAndMediaButtons editor={editor} labels={L} onImage={onImage} />
-
-          {editor.isActive('table') && (
-            <>
-              <span className="maya-editor-toolbar__sep" aria-hidden />
-              <TableButtons editor={editor} labels={L} />
-            </>
-          )}
-
-
-          <div className="flex items-end gap-0.5 shrink-0 pl-1 border-l border-ui-border dark:border-ui-dark-border ml-auto">
-          <DocumentButtons
-            editor={editor}
-            labels={L}
-            onImportDocx={onImportDocx}
-            onExportDocx={onExportDocx}
-            onAddComment={onAddComment}
-            onToggleFind={onToggleFind}
-          />
-
-          <span className="maya-editor-toolbar__sep" aria-hidden />
-          <ViewModeButtons
-            editor={editor}
-            labels={L}
-            viewMode={viewMode}
-            isFullscreen={isFullscreen}
-            onInsertHtml={onInsertHtml}
-            onInsertMarkdown={onInsertMarkdown}
-            onToggleFullscreen={onToggleFullscreen}
-          />
-          </div>
-        </>
+      {editor.isActive('table') && (
+        <RibbonGroup label={L.groupTable ?? 'Table'}>
+          <TableButtons editor={editor} labels={L} />
+        </RibbonGroup>
       )}
+
+      <RibbonGroup label={L.groupTools ?? 'Tools'}>
+        <DocumentButtons
+          editor={editor}
+          labels={L}
+          onImportDocx={onImportDocx}
+          onExportDocx={onExportDocx}
+          onAddComment={onAddComment}
+          onToggleFind={onToggleFind}
+        />
+      </RibbonGroup>
+
+      <RibbonGroup label={L.groupView ?? 'View'}>
+        <ViewModeButtons
+          editor={editor}
+          labels={L}
+          viewMode={viewMode}
+          isFullscreen={isFullscreen}
+          onInsertHtml={onInsertHtml}
+          onInsertMarkdown={onInsertMarkdown}
+          onToggleFullscreen={onToggleFullscreen}
+        />
+      </RibbonGroup>
+    </div>
+  );
+}
+
+/**
+ * One captioned ribbon section: a row of buttons with a small grey label
+ * beneath, mirroring Word's ribbon groups (Font, Paragraph, …).
+ */
+function RibbonGroup({ label, children }: { label: string; children: ReactNode }) {
+  return (
+    <div className="maya-editor-ribbon-group">
+      <div className="maya-editor-ribbon-group__row">{children}</div>
+      <div className="maya-editor-ribbon-group__label">{label}</div>
     </div>
   );
 }

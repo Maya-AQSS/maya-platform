@@ -7,14 +7,15 @@
  */
 import type { Editor } from '@tiptap/core';
 import type { ToolbarLabels } from '../components/EditorToolbar';
+import type { EditorIconName } from '../components/EditorIcons';
 
 export interface TableMenuAction {
   /** Stable key for React lists. */
   key: string;
   /** Tooltip / aria-label. */
   title: string;
-  /** Compact glyph shown on the button. */
-  icon: string;
+  /** Name of the SVG icon shown on the button. */
+  icon: EditorIconName;
   /** Runs the command. */
   run: () => void;
   /** True when the command can't apply to the current selection. */
@@ -38,21 +39,21 @@ export function tableMenuActions(
     {
       key: 'addColumnBefore',
       title: L.tableAddColumnBefore ?? 'Insert column left',
-      icon: '⊞◀',
+      icon: 'columnAddBefore',
       run: () => chain().addColumnBefore().run(),
       disabled: !editor.can().addColumnBefore(),
     },
     {
       key: 'addColumnAfter',
       title: L.tableAddColumnAfter ?? 'Insert column right',
-      icon: '⊞▶',
+      icon: 'columnAddAfter',
       run: () => chain().addColumnAfter().run(),
       disabled: !editor.can().addColumnAfter(),
     },
     {
       key: 'addRowBefore',
       title: L.tableAddRowBefore ?? 'Insert row above',
-      icon: '⊞▲',
+      icon: 'rowAddBefore',
       run: () => chain().addRowBefore().run(),
       disabled: !editor.can().addRowBefore(),
       separatorBefore: true,
@@ -60,14 +61,14 @@ export function tableMenuActions(
     {
       key: 'addRowAfter',
       title: L.tableAddRowAfter ?? 'Insert row below',
-      icon: '⊞▼',
+      icon: 'rowAddAfter',
       run: () => chain().addRowAfter().run(),
       disabled: !editor.can().addRowAfter(),
     },
     {
       key: 'deleteColumn',
       title: L.tableDeleteColumn ?? 'Delete column',
-      icon: '✕│',
+      icon: 'columnDelete',
       run: () => chain().deleteColumn().run(),
       disabled: !editor.can().deleteColumn(),
       separatorBefore: true,
@@ -75,14 +76,14 @@ export function tableMenuActions(
     {
       key: 'deleteRow',
       title: L.tableDeleteRow ?? 'Delete row',
-      icon: '✕─',
+      icon: 'rowDelete',
       run: () => chain().deleteRow().run(),
       disabled: !editor.can().deleteRow(),
     },
     {
       key: 'toggleHeaderRow',
       title: L.tableToggleHeaderRow ?? 'Toggle header row',
-      icon: '⊤',
+      icon: 'headerRow',
       run: () => chain().toggleHeaderRow().run(),
       disabled: !editor.can().toggleHeaderRow(),
       separatorBefore: true,
@@ -90,7 +91,7 @@ export function tableMenuActions(
     {
       key: 'deleteTable',
       title: L.tableDelete ?? 'Delete table',
-      icon: '🗑',
+      icon: 'tableDelete',
       run: () => chain().deleteTable().run(),
       disabled: !editor.can().deleteTable(),
     },
