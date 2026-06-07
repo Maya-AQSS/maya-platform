@@ -1,0 +1,160 @@
+/**
+ * Read-only content typography for rendered TipTap/ProseMirror HTML.
+ *
+ * The live editor styles its content via `.maya-editor-wrapper .ProseMirror …`
+ * (see maya-editor.css), which only matches inside the editor view. Read-only
+ * previews (`EditorContentHtml` / `EditorContentJson`) render a plain
+ * `.maya-editor-content` container with no `.ProseMirror`, so without these
+ * rules headings, lists, quotes, code and tables collapse to base size —
+ * especially under Tailwind Preflight, which resets `h1`–`h6` to inherit.
+ *
+ * These rules mirror the editor's scale but are scoped to `.maya-editor-content`
+ * (specificity 0,1,1) — strictly lower than the editor's `.maya-editor-wrapper
+ * .ProseMirror h1` (0,2,1) — so the live editor's appearance is unchanged while
+ * every read-only consumer gets matching typography.
+ */
+
+.maya-editor-content {
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+.maya-editor-content p { margin: 0.5em 0; }
+.maya-editor-content p:first-child { margin-top: 0; }
+.maya-editor-content p:last-child { margin-bottom: 0; }
+.maya-editor-content > :first-child { margin-top: 0; }
+.maya-editor-content > :last-child { margin-bottom: 0; }
+
+.maya-editor-content h1 { font-size: 1.7em; font-weight: 700; margin: 0.8em 0 0.3em; line-height: 1.25; }
+.maya-editor-content h2 { font-size: 1.4em; font-weight: 700; margin: 0.8em 0 0.3em; line-height: 1.3; }
+.maya-editor-content h3 { font-size: 1.2em; font-weight: 600; margin: 0.7em 0 0.25em; }
+.maya-editor-content h4 { font-size: 1.05em; font-weight: 600; margin: 0.6em 0 0.2em; }
+.maya-editor-content h5 { font-size: 1em; font-weight: 600; margin: 0.6em 0 0.2em; }
+.maya-editor-content h6 { font-size: 0.9em; font-weight: 600; margin: 0.6em 0 0.2em; text-transform: uppercase; letter-spacing: 0.03em; }
+
+.maya-editor-content ul,
+.maya-editor-content ol {
+  padding-left: 1.4em;
+  margin: 0.5em 0;
+}
+.maya-editor-content ul { list-style: disc; }
+.maya-editor-content ol { list-style: decimal; }
+.maya-editor-content li { margin: 0.2em 0; }
+.maya-editor-content li > p { margin: 0; }
+
+/* Task lists (taskList / taskItem) */
+.maya-editor-content ul[data-type="taskList"] {
+  list-style: none;
+  padding-left: 0.25em;
+}
+.maya-editor-content li[data-type="taskItem"] {
+  display: flex;
+  gap: 6px;
+  align-items: flex-start;
+  list-style: none;
+}
+.maya-editor-content li[data-type="taskItem"] > label { flex-shrink: 0; margin-top: 0.2em; }
+.maya-editor-content li[data-type="taskItem"] > div { flex: 1; }
+
+/* Indent attribute (Indent extension) */
+.maya-editor-content [data-indent="1"] { margin-left: 2em; }
+.maya-editor-content [data-indent="2"] { margin-left: 4em; }
+.maya-editor-content [data-indent="3"] { margin-left: 6em; }
+.maya-editor-content [data-indent="4"] { margin-left: 8em; }
+.maya-editor-content [data-indent="5"] { margin-left: 10em; }
+.maya-editor-content [data-indent="6"] { margin-left: 12em; }
+.maya-editor-content [data-indent="7"] { margin-left: 14em; }
+.maya-editor-content [data-indent="8"] { margin-left: 16em; }
+
+.maya-editor-content blockquote {
+  border-left: 3px solid var(--maya-editor-border, #d6d6df);
+  margin: 0.75em 0;
+  padding-left: 1em;
+  color: rgba(120, 120, 130, 0.95);
+}
+
+.maya-editor-content code {
+  background: rgba(127, 127, 140, 0.18);
+  border-radius: 3px;
+  padding: 0.05em 0.4em;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.92em;
+}
+
+.maya-editor-content pre {
+  background: rgba(127, 127, 140, 0.12);
+  border-radius: 6px;
+  padding: 0.8em 1em;
+  margin: 0.75em 0;
+  overflow-x: auto;
+}
+.maya-editor-content pre code {
+  background: transparent;
+  padding: 0;
+  font-size: 0.9em;
+}
+
+.maya-editor-content hr {
+  border: 0;
+  border-top: 1px solid var(--maya-editor-border, #d6d6df);
+  margin: 1.2em 0;
+}
+
+.maya-editor-content a {
+  color: var(--maya-editor-link, #7c3aed);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.maya-editor-content table {
+  border-collapse: collapse;
+  margin: 0.8em 0;
+  width: 100%;
+}
+.maya-editor-content table th,
+.maya-editor-content table td {
+  border: 1px solid var(--maya-editor-border, #d6d6df);
+  padding: 0.5em 0.7em;
+  vertical-align: top;
+}
+.maya-editor-content table th {
+  background: rgba(127, 127, 140, 0.08);
+  text-align: left;
+  font-weight: 600;
+}
+
+.maya-editor-content img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 4px;
+}
+
+.maya-editor-content aside.alert {
+  border-left: 4px solid var(--maya-editor-link, #7c3aed);
+  border-radius: 4px;
+  background: rgba(124, 58, 237, 0.06);
+  padding: 0.75em 1em;
+  margin: 0.75em 0;
+}
+.maya-editor-content aside.alert-warning { border-left-color: #f59e0b; background: rgba(245, 158, 11, 0.08); }
+.maya-editor-content aside.alert-success { border-left-color: #10b981; background: rgba(16, 185, 129, 0.08); }
+.maya-editor-content aside.alert-danger  { border-left-color: #ef4444; background: rgba(239, 68, 68, 0.08); }
+
+.maya-editor-content iframe {
+  display: block;
+  max-width: 100%;
+  margin: 0.5em 0;
+  border: 1px solid var(--maya-editor-border, #d6d6df);
+  border-radius: 6px;
+}
+
+/* Page break (PDF/export semantics) — show a subtle separator in previews. */
+.maya-editor-content .page-break,
+.maya-editor-content [data-page-break],
+.maya-editor-content hr[data-type="pageBreak"] {
+  border: 0;
+  border-top: 2px dashed var(--maya-editor-border, #c9c9d2);
+  margin: 1.5em 0;
+  page-break-after: always;
+  break-after: page;
+}

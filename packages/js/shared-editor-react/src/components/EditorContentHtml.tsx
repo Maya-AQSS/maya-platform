@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 import { sanitizeEditorHtml } from '../lib/dompurifyConfig';
+import '../styles/maya-content.css';
 
 interface EditorContentHtmlProps {
   /** Pre-rendered HTML (typically from server-side TiptapHtmlRenderer). */
