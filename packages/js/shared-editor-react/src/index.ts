@@ -54,6 +54,3 @@ export type {
   TiptapDoc,
   AnchoredComment,
 } from './types';
-
-export { default as esTranslations } from './i18n/es.json';
-export { default as enTranslations } from './i18n/en.json';
