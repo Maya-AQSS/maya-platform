@@ -326,6 +326,18 @@ export function MayaEditor({
     onFullscreenChange(isFullscreen);
   }, [isFullscreen, onFullscreenChange]);
 
+  // Mirror fullscreen to a global `editor-fullscreen` class on <html> so the
+  // host AppLayout can hide its fixed sidebar and drop the content margin while
+  // the editor covers the viewport. Self-contained: works even when the host
+  // doesn't handle `onFullscreenChange` (e.g. the inline editors in the
+  // continuous document view) — otherwise the fixed editor sits *under* the
+  // still-visible sidebar and the left half is hidden.
+  useEffect(() => {
+    const root = document.documentElement;
+    root.classList.toggle('editor-fullscreen', isFullscreen);
+    return () => root.classList.remove('editor-fullscreen');
+  }, [isFullscreen]);
+
   if (!editor) return null;
 
   const editorReady = viewReady && isEditorReady(editor);
