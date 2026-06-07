@@ -6,8 +6,14 @@ name: Release
 # monorepo-builder only manages PHP (packageDirectories(['packages/php'])), so the
 # "Align JS packages" step below bumps packages/js/* to the same version BEFORE the
 # tag is created. Without it the tag's tree carries stale JS versions and
-# publish-npm.yml leaves npm behind. After this tags, the `split` workflow
-# propagates the tag to every read-only repo and publish-npm.yml ships JS to npm.
+# publish-npm.yml leaves npm behind.
+#
+# After the release job tags + pushes, the `publish-npm` and `split` jobs invoke
+# those workflows directly (workflow_call). This is deliberate: the tag the
+# release job pushes with GITHUB_TOKEN does NOT trigger their `on: push` handlers
+# (GitHub blocks token-pushed events from starting new runs), so the deploy used
+# to need a manual tag re-push. Calling them as reusable workflows runs the whole
+# release → publish → split chain in one click, with no extra PAT.
 
 on:
   workflow_dispatch:
@@ -22,6 +28,8 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+    outputs:
+      version: ${{ inputs.version }}
     steps:
       # Usamos GITHUB_TOKEN (auto-provisto por Actions) en lugar de SPLIT_TOKEN.
       # SPLIT_TOKEN es un PAT con scope sobre los repos hijos `shared-*` para
@@ -73,3 +81,35 @@ jobs:
       # PHP mutual deps, and pushes both the tag and the branch.
       - name: Release
         run: vendor/bin/monorepo-builder release ${{ inputs.version }}
+
+      # monorepo-builder tags the release commit WITHOUT a leading "v"
+      # (e.g. "0.11.0"), but the whole platform — publish-npm.yml, split.yml,
+      # Packagist, and every consumer's range — keys off the "v*.*.*" tag. Mint
+      # that canonical tag at the same commit so the deploy jobs below have a real
+      # ref to check out and propagate.
+      - name: Create v-prefixed release tag
+        run: |
+          git tag "v${{ inputs.version }}" "${{ inputs.version }}"
+          git push origin "v${{ inputs.version }}"
+
+  # Ship JS to npm from the tag the release job just created. Runs in the same
+  # workflow, so it does not depend on the (blocked) token-pushed tag event.
+  publish-npm:
+    needs: release
+    permissions:
+      contents: read
+      id-token: write   # npm provenance
+    uses: ./.github/workflows/publish-npm.yml
+    with:
+      version: ${{ needs.release.outputs.version }}
+    secrets: inherit
+
+  # Propagate the tag (and main) to the read-only mirror repos → Packagist.
+  split:
+    needs: release
+    permissions:
+      contents: read
+    uses: ./.github/workflows/split.yml
+    with:
+      tag: v${{ needs.release.outputs.version }}
+    secrets: inherit

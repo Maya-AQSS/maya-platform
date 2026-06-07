@@ -6,11 +6,22 @@ name: Split packages to read-only repos
 #
 # REQUIRES org-level secret SPLIT_TOKEN (a fine-grained PAT with `contents:write`
 # on every Maya-AQSS/shared-* target repo).
+#
+# The `workflow_call` trigger lets release.yml propagate the freshly created tag
+# within the same run: a tag pushed by the release job's GITHUB_TOKEN does NOT
+# trigger `on: push` workflows, so the tag branch of the push trigger below only
+# fires for hand-pushed tags.
 
 on:
   push:
     branches: [main]
     tags: ['v*.*.*']
+  workflow_call:
+    inputs:
+      tag:
+        description: 'Tag to split to the mirror repos (e.g. v0.11.0).'
+        required: true
+        type: string
 
 jobs:
   matrix:
@@ -45,7 +56,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.SPLIT_TOKEN }}
         with:
-          tag: ${{ github.ref_type == 'tag' && github.ref_name || '' }}
+          tag: ${{ inputs.tag || (github.ref_type == 'tag' && github.ref_name) || '' }}
           branch: ${{ github.ref_type == 'branch' && github.ref_name || 'main' }}
           package_directory: 'packages/php/${{ matrix.package }}'
           repository_organization: 'Maya-AQSS'
@@ -70,7 +81,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.SPLIT_TOKEN }}
         with:
-          tag: ${{ github.ref_type == 'tag' && github.ref_name || '' }}
+          tag: ${{ inputs.tag || (github.ref_type == 'tag' && github.ref_name) || '' }}
           branch: ${{ github.ref_type == 'branch' && github.ref_name || 'main' }}
           package_directory: 'packages/js/${{ matrix.package }}'
           repository_organization: 'Maya-AQSS'
