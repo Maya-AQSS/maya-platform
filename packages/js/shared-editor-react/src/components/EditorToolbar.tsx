@@ -9,6 +9,7 @@ import {
   HeadingButtons,
   ListAndBlockButtons,
   TableAndMediaButtons,
+  TableButtons,
   DocumentButtons,
   ViewModeButtons,
 } from './EditorToolbarGroups';
@@ -81,6 +82,14 @@ export interface ToolbarLabels {
   findClose?: string;
   caseSensitive?: string;
   findNone?: string;
+  tableAddColumnBefore?: string;
+  tableAddColumnAfter?: string;
+  tableAddRowBefore?: string;
+  tableAddRowAfter?: string;
+  tableDeleteColumn?: string;
+  tableDeleteRow?: string;
+  tableToggleHeaderRow?: string;
+  tableDelete?: string;
 }
 
 const DEFAULT_LABELS: ToolbarLabels = {
@@ -135,6 +144,14 @@ const DEFAULT_LABELS: ToolbarLabels = {
   findClose: 'Close find',
   caseSensitive: 'Match case',
   findNone: 'No matches',
+  tableAddColumnBefore: 'Insert column left',
+  tableAddColumnAfter: 'Insert column right',
+  tableAddRowBefore: 'Insert row above',
+  tableAddRowAfter: 'Insert row below',
+  tableDeleteColumn: 'Delete column',
+  tableDeleteRow: 'Delete row',
+  tableToggleHeaderRow: 'Toggle header row',
+  tableDelete: 'Delete table',
 };
 
 /**
@@ -197,6 +214,13 @@ export function EditorToolbar({
           <HeadingButtons editor={editor} labels={L} />
           <ListAndBlockButtons editor={editor} labels={L} />
           <TableAndMediaButtons editor={editor} labels={L} onImage={onImage} />
+
+          {editor.isActive('table') && (
+            <>
+              <span className="maya-editor-toolbar__sep" aria-hidden />
+              <TableButtons editor={editor} labels={L} />
+            </>
+          )}
 
 
           <div className="flex items-end gap-0.5 shrink-0 pl-1 border-l border-ui-border dark:border-ui-dark-border ml-auto">

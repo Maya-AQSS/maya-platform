@@ -2,10 +2,12 @@
  * EditorToolbar button groups extracted into focused subcomponents.
  * Each group handles a logically distinct set of formatting or block operations.
  */
+import { Fragment } from 'react';
 import type { Editor } from '@tiptap/react';
 import type { ToolbarLabels } from './EditorToolbar';
 import { ColorPicker } from './ColorPicker';
 import { Btn } from './EditorToolbarButton';
+import { tableMenuActions } from '../lib/tableMenuActions';
 
 export interface ToolbarGroupProps {
   editor: Editor;
@@ -297,6 +299,27 @@ export function TableAndMediaButtons({
           🖼
         </Btn>
       )}
+    </>
+  );
+}
+
+/**
+ * Contextual table-editing buttons: add/delete rows & columns, toggle header,
+ * delete table. Rendered in the main toolbar only while the selection is inside
+ * a table (the caller gates on `editor.isActive('table')`), so it appears and
+ * hides in place instead of floating over the content.
+ */
+export function TableButtons({ editor, labels: L }: ToolbarGroupProps) {
+  return (
+    <>
+      {tableMenuActions(editor, L).map((a) => (
+        <Fragment key={a.key}>
+          {a.separatorBefore && <span className="maya-editor-toolbar__sep" aria-hidden />}
+          <Btn onClick={a.run} title={a.title} disabled={a.disabled}>
+            {a.icon}
+          </Btn>
+        </Fragment>
+      ))}
     </>
   );
 }
