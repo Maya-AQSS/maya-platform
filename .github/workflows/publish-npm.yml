@@ -14,10 +14,21 @@ name: Publish JS packages to npm
 #
 # PHP packages are published to Packagist via its GitHub webhook integration
 # (no CI action needed — Packagist auto-detects new tags on each split repo).
+#
+# The `workflow_call` trigger lets release.yml invoke this within the same run
+# after it creates the tag. That is the reliable path: a tag pushed by the
+# release job's GITHUB_TOKEN does NOT trigger `on: push` workflows (GitHub's
+# recursion guard), so the push trigger below only fires for hand-pushed tags.
 
 on:
   push:
     tags: ['v*.*.*']
+  workflow_call:
+    inputs:
+      version:
+        description: 'Version to publish (no leading v), e.g. 0.11.0'
+        required: true
+        type: string
   workflow_dispatch:
     inputs:
       dry_run:
@@ -52,6 +63,11 @@ jobs:
         package: ${{ fromJson(needs.matrix.outputs.packages) }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          # When called by release.yml, check out the freshly created tag so we
+          # publish the released tree. For a tag push, github.ref already is the
+          # tag; for workflow_dispatch it stays on the dispatched branch.
+          ref: ${{ github.event_name == 'workflow_call' && format('v{0}', inputs.version) || github.ref }}
 
       - uses: actions/setup-node@v4
         with:
@@ -59,11 +75,11 @@ jobs:
           registry-url: 'https://registry.npmjs.org'
           scope: '@ceedcv-maya'
 
-      - name: Stamp version from tag
-        if: github.event_name == 'push'
+      - name: Stamp version
+        if: github.event_name != 'workflow_dispatch'
         working-directory: packages/js/${{ matrix.package }}
         env:
-          TAG_VERSION: ${{ github.ref_name }}
+          TAG_VERSION: ${{ github.event_name == 'workflow_call' && inputs.version || github.ref_name }}
         run: |
           node -e '
             const fs = require("fs");
