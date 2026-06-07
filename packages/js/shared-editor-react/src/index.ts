@@ -2,8 +2,10 @@ export { MayaEditor } from './components/MayaEditor';
 export type { MayaEditorProps } from './components/MayaEditor';
 export { EditorContentHtml } from './components/EditorContentHtml';
 export { EditorContentJson } from './components/EditorContentJson';
-export { EditorToolbar } from './components/EditorToolbar';
+export { EditorToolbar, DEFAULT_LABELS } from './components/EditorToolbar';
 export type { ToolbarLabels } from './components/EditorToolbar';
+export { buildToolbarLabels } from './lib/buildToolbarLabels';
+export type { TranslateFn } from './lib/buildToolbarLabels';
 
 export { IframeBlock } from './extensions/IframeBlock';
 export { AlertBlock } from './extensions/AlertBlock';

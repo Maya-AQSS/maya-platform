@@ -102,7 +102,7 @@ export interface ToolbarLabels {
   groupView?: string;
 }
 
-const DEFAULT_LABELS: ToolbarLabels = {
+export const DEFAULT_LABELS: ToolbarLabels = {
   bold: 'Bold',
   italic: 'Italic',
   underline: 'Underline',
