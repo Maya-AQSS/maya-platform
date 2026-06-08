@@ -223,78 +223,80 @@ export function EditorToolbar({
 
   // Full mode: Word-style ribbon — each group is captioned and separated.
   return (
-    <div
-      className="maya-editor-toolbar maya-editor-ribbon"
-      role="toolbar"
-      aria-label="Editor toolbar"
-    >
-      <RibbonGroup label={L.groupHistory ?? 'History'}>
-        <Btn
-          disabled={!editor.can().undo()}
-          onClick={() => editor.chain().focus().undo().run()}
-          title={L.undo}
-        >
-          <EditorIcon name="undo" />
-        </Btn>
-        <Btn
-          disabled={!editor.can().redo()}
-          onClick={() => editor.chain().focus().redo().run()}
-          title={L.redo}
-        >
-          <EditorIcon name="redo" />
-        </Btn>
-      </RibbonGroup>
-
-      <RibbonGroup label={L.groupFont ?? 'Font'}>
-        <FormattingButtons editor={editor} labels={L} />
-        <AdvancedFormattingButtons editor={editor} labels={L} />
-      </RibbonGroup>
-
-      <RibbonGroup label={L.groupParagraph ?? 'Paragraph'}>
-        <AlignmentButtons editor={editor} labels={L} />
-        <span className="maya-editor-toolbar__sep" aria-hidden />
-        <IndentButtons editor={editor} labels={L} />
-        <span className="maya-editor-toolbar__sep" aria-hidden />
-        <ListAndBlockButtons editor={editor} labels={L} />
-      </RibbonGroup>
-
-      <RibbonGroup label={L.groupStyles ?? 'Styles'}>
-        <HeadingButtons editor={editor} labels={L} />
-      </RibbonGroup>
-
-      <RibbonGroup label={L.groupInsert ?? 'Insert'}>
-        <TableAndMediaButtons editor={editor} labels={L} onImage={onImage} />
-      </RibbonGroup>
-
-      {editor.isActive('table') && (
-        <RibbonGroup label={L.groupTable ?? 'Table'}>
-          <TableButtons editor={editor} labels={L} />
+      <div
+        className="maya-editor-toolbar maya-editor-ribbon"
+        role="toolbar"
+        aria-label="Editor toolbar"
+      >
+        <RibbonGroup label={L.groupHistory ?? 'History'}>
+          <Btn
+            disabled={!editor.can().undo()}
+            onClick={() => editor.chain().focus().undo().run()}
+            title={L.undo}
+          >
+            <EditorIcon name="undo" />
+          </Btn>
+          <Btn
+            disabled={!editor.can().redo()}
+            onClick={() => editor.chain().focus().redo().run()}
+            title={L.redo}
+          >
+            <EditorIcon name="redo" />
+          </Btn>
         </RibbonGroup>
-      )}
 
-      <RibbonGroup label={L.groupTools ?? 'Tools'}>
-        <DocumentButtons
-          editor={editor}
-          labels={L}
-          onImportDocx={onImportDocx}
-          onExportDocx={onExportDocx}
-          onAddComment={onAddComment}
-          onToggleFind={onToggleFind}
-        />
-      </RibbonGroup>
+        <RibbonGroup label={L.groupFont ?? 'Font'}>
+          <FormattingButtons editor={editor} labels={L} />
+          <AdvancedFormattingButtons editor={editor} labels={L} />
+        </RibbonGroup>
 
-      <RibbonGroup label={L.groupView ?? 'View'}>
-        <ViewModeButtons
-          editor={editor}
-          labels={L}
-          viewMode={viewMode}
-          isFullscreen={isFullscreen}
-          onInsertHtml={onInsertHtml}
-          onInsertMarkdown={onInsertMarkdown}
-          onToggleFullscreen={onToggleFullscreen}
-        />
-      </RibbonGroup>
+        <RibbonGroup label={L.groupParagraph ?? 'Paragraph'}>
+          <AlignmentButtons editor={editor} labels={L} />
+          <span className="maya-editor-toolbar__sep" aria-hidden />
+          <IndentButtons editor={editor} labels={L} />
+          <span className="maya-editor-toolbar__sep" aria-hidden />
+          <ListAndBlockButtons editor={editor} labels={L} />
+        </RibbonGroup>
+
+        <RibbonGroup label={L.groupStyles ?? 'Styles'}>
+          <HeadingButtons editor={editor} labels={L} />
+        </RibbonGroup>
+
+        <RibbonGroup label={L.groupInsert ?? 'Insert'}>
+          <TableAndMediaButtons editor={editor} labels={L} onImage={onImage} />
+        </RibbonGroup>
+
+        {editor.isActive('table') && (
+          <RibbonGroup label={L.groupTable ?? 'Table'}>
+            <TableButtons editor={editor} labels={L} />
+          </RibbonGroup>
+        )}
+
+        <RibbonGroup label={L.groupTools ?? 'Tools'}>
+          <DocumentButtons
+            editor={editor}
+            labels={L}
+            onImportDocx={onImportDocx}
+            onExportDocx={onExportDocx}
+            onAddComment={onAddComment}
+            onToggleFind={onToggleFind}
+          />
+        </RibbonGroup>
+      <div className="flex items-end ml-auto">
+        <RibbonGroup label={L.groupView ?? 'View'}>
+          <ViewModeButtons
+            editor={editor}
+            labels={L}
+            viewMode={viewMode}
+            isFullscreen={isFullscreen}
+            onInsertHtml={onInsertHtml}
+            onInsertMarkdown={onInsertMarkdown}
+            onToggleFullscreen={onToggleFullscreen}
+          />
+        </RibbonGroup>
+      </div>
     </div>
+    
   );
 }
 
