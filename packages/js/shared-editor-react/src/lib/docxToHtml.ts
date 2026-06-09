@@ -11,6 +11,7 @@
  * a TipTap doc (see {@link htmlToTiptapDoc}) or split into block chunks
  * (see {@link splitHtmlIntoBlocks}).
  */
+/// <reference path="../mammoth-browser.d.ts" />
 import { normalizeTableHtml } from './normalizeTableHtml';
 import { sanitizeEditorHtml } from './dompurifyConfig';
 
