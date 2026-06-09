@@ -73,58 +73,58 @@ importers:
         specifier: ^5.0.0
         version: 5.100.14(react@19.2.6)
       '@tiptap/core':
-        specifier: ^3.26.0
+        specifier: ^3.0.0
         version: 3.26.0(@tiptap/pm@3.26.0)
       '@tiptap/extension-color':
-        specifier: ^3.26.0
+        specifier: ^3.0.0
         version: 3.26.0(@tiptap/extension-text-style@3.26.0(@tiptap/core@3.26.0(@tiptap/pm@3.26.0)))
       '@tiptap/extension-highlight':
-        specifier: ^3.26.0
+        specifier: ^3.0.0
         version: 3.26.0(@tiptap/core@3.26.0(@tiptap/pm@3.26.0))
       '@tiptap/extension-image':
-        specifier: ^3.26.0
+        specifier: ^3.0.0
         version: 3.26.0(@tiptap/core@3.26.0(@tiptap/pm@3.26.0))
       '@tiptap/extension-link':
-        specifier: ^3.26.0
+        specifier: ^3.0.0
         version: 3.26.0(@tiptap/core@3.26.0(@tiptap/pm@3.26.0))(@tiptap/pm@3.26.0)
       '@tiptap/extension-table':
-        specifier: ^3.26.0
+        specifier: ^3.0.0
         version: 3.26.0(@tiptap/core@3.26.0(@tiptap/pm@3.26.0))(@tiptap/pm@3.26.0)
       '@tiptap/extension-table-cell':
-        specifier: ^3.26.0
+        specifier: ^3.0.0
         version: 3.26.0(@tiptap/extension-table@3.26.0(@tiptap/core@3.26.0(@tiptap/pm@3.26.0))(@tiptap/pm@3.26.0))
       '@tiptap/extension-table-header':
-        specifier: ^3.26.0
+        specifier: ^3.0.0
         version: 3.26.0(@tiptap/extension-table@3.26.0(@tiptap/core@3.26.0(@tiptap/pm@3.26.0))(@tiptap/pm@3.26.0))
       '@tiptap/extension-table-row':
-        specifier: ^3.26.0
+        specifier: ^3.0.0
         version: 3.26.0(@tiptap/extension-table@3.26.0(@tiptap/core@3.26.0(@tiptap/pm@3.26.0))(@tiptap/pm@3.26.0))
       '@tiptap/extension-task-item':
-        specifier: ^3.26.0
+        specifier: ^3.0.0
         version: 3.26.0(@tiptap/extension-list@3.26.0(@tiptap/core@3.26.0(@tiptap/pm@3.26.0))(@tiptap/pm@3.26.0))
       '@tiptap/extension-task-list':
-        specifier: ^3.26.0
+        specifier: ^3.0.0
         version: 3.26.0(@tiptap/extension-list@3.26.0(@tiptap/core@3.26.0(@tiptap/pm@3.26.0))(@tiptap/pm@3.26.0))
       '@tiptap/extension-text-align':
-        specifier: ^3.26.0
+        specifier: ^3.0.0
         version: 3.26.0(@tiptap/core@3.26.0(@tiptap/pm@3.26.0))
       '@tiptap/extension-text-style':
-        specifier: ^3.26.0
+        specifier: ^3.0.0
         version: 3.26.0(@tiptap/core@3.26.0(@tiptap/pm@3.26.0))
       '@tiptap/extension-underline':
-        specifier: ^3.26.0
+        specifier: ^3.0.0
         version: 3.26.0(@tiptap/core@3.26.0(@tiptap/pm@3.26.0))
       '@tiptap/pm':
-        specifier: ^3.26.0
+        specifier: ^3.0.0
         version: 3.26.0
       '@tiptap/react':
-        specifier: ^3.26.0
+        specifier: ^3.0.0
         version: 3.26.0(@floating-ui/dom@1.7.6)(@tiptap/core@3.26.0(@tiptap/pm@3.26.0))(@tiptap/pm@3.26.0)(@types/react-dom@19.2.3(@types/react@19.2.15))(@types/react@19.2.15)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
       '@tiptap/starter-kit':
-        specifier: ^3.26.0
+        specifier: ^3.0.0
         version: 3.26.0
       '@tiptap/static-renderer':
-        specifier: ^3.26.0
+        specifier: ^3.0.0
         version: 3.26.0(@tiptap/core@3.26.0(@tiptap/pm@3.26.0))(@tiptap/pm@3.26.0)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
       dompurify:
         specifier: ^3.0.0
@@ -173,7 +173,7 @@ importers:
   packages/js/shared-i18n-react:
     dependencies:
       '@ceedcv-maya/shared-auth-react':
-        specifier: ^0.11.2
+        specifier: ^0.11.3
         version: link:../shared-auth-react
     devDependencies:
       '@types/react':
@@ -198,10 +198,10 @@ importers:
   packages/js/shared-layout-react:
     dependencies:
       '@ceedcv-maya/shared-auth-react':
-        specifier: ^0.11.2
+        specifier: ^0.11.3
         version: link:../shared-auth-react
       '@ceedcv-maya/shared-ui-react':
-        specifier: ^0.11.2
+        specifier: ^0.11.3
         version: link:../shared-ui-react
     devDependencies:
       '@types/react':
@@ -232,10 +232,10 @@ importers:
   packages/js/shared-profile-react:
     dependencies:
       '@ceedcv-maya/shared-auth-react':
-        specifier: ^0.11.2
+        specifier: ^0.11.3
         version: link:../shared-auth-react
       '@ceedcv-maya/shared-ui-react':
-        specifier: ^0.11.2
+        specifier: ^0.11.3
         version: link:../shared-ui-react
     devDependencies:
       '@types/react':
@@ -281,13 +281,13 @@ importers:
   packages/js/shared-sidebar-react:
     dependencies:
       '@ceedcv-maya/shared-auth-react':
-        specifier: ^0.11.2
+        specifier: ^0.11.3
         version: link:../shared-auth-react
       '@ceedcv-maya/shared-editor-react':
-        specifier: ^0.11.2
+        specifier: ^0.11.3
         version: link:../shared-editor-react
       '@ceedcv-maya/shared-layout-react':
-        specifier: ^0.11.2
+        specifier: ^0.11.3
         version: link:../shared-layout-react
       laravel-echo:
         specifier: ^1.16.1
