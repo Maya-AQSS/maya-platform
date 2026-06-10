@@ -369,6 +369,44 @@ final class TiptapHtmlRendererTest extends TestCase
         $this->assertStringContainsString('Programación', $html);
     }
 
+    // ─── test_13b: header row wrapped in <thead> (repeats on page breaks) ────
+
+    public function test_13b_header_row_is_wrapped_in_thead(): void
+    {
+        $doc = [
+            'type' => 'doc',
+            'content' => [[
+                'type' => 'table',
+                'content' => [
+                    [
+                        'type' => 'tableRow',
+                        'content' => [[
+                            'type' => 'tableHeader',
+                            'attrs' => ['colspan' => 1, 'rowspan' => 1],
+                            'content' => [['type' => 'paragraph', 'content' => [['type' => 'text', 'text' => 'Cabecera']]]],
+                        ]],
+                    ],
+                    [
+                        'type' => 'tableRow',
+                        'content' => [[
+                            'type' => 'tableCell',
+                            'attrs' => ['colspan' => 1, 'rowspan' => 1],
+                            'content' => [['type' => 'paragraph', 'content' => [['type' => 'text', 'text' => 'Cuerpo']]]],
+                        ]],
+                    ],
+                ],
+            ]],
+        ];
+
+        $html = self::render($doc);
+        // La cabecera va en <thead> para que WeasyPrint (display: table-header-group)
+        // la repita al partir la tabla entre páginas, evitando páginas en blanco.
+        $this->assertStringContainsString('<thead><tr><th>', $html);
+        $this->assertStringContainsString('<tbody><tr><td>', $html);
+        $this->assertStringContainsString('Cabecera', $html);
+        $this->assertStringContainsString('Cuerpo', $html);
+    }
+
     // ─── test_14: empty table ───────────────────────────────────────────────
 
     public function test_14_empty_table_produces_empty_output(): void
