@@ -302,7 +302,14 @@ final class TiptapHtmlRenderer
             $text = '<em>'.$text.'</em>';
         }
         if ($hasUnderline) {
-            $text = '<u>'.$text.'</u>';
+            // El subrayado debe heredar el color del texto. Como el `<u>` envuelve
+            // por FUERA del span de color, `text-decoration-color` cae al color por
+            // defecto (negro) si no se fija explícitamente. Lo propagamos desde
+            // `textStyle.color` para que el subrayado a color se renderice.
+            $deco = ($textColor !== null && $textColor !== '')
+                ? ' style="text-decoration-color:'.self::sanitizeColor($textColor).'"'
+                : '';
+            $text = '<u'.$deco.'>'.$text.'</u>';
         }
         if ($hasStrike) {
             $text = '<s>'.$text.'</s>';

@@ -149,6 +149,45 @@ final class TiptapHtmlRendererTest extends TestCase
         $this->assertStringContainsString('<u><em><strong>foo</strong></em></u>', $html);
     }
 
+    public function test_06b_colored_underline_carries_text_decoration_color(): void
+    {
+        // Subrayado + color de texto: el `<u>` debe fijar `text-decoration-color`
+        // con el color del texto, si no la línea sale negra (no hereda del span hijo).
+        $doc = [
+            'type' => 'doc',
+            'content' => [[
+                'type' => 'paragraph',
+                'attrs' => ['backgroundColor' => '#ffff00'],
+                'content' => [[
+                    'type' => 'text',
+                    'text' => 'rojo',
+                    'marks' => [
+                        ['type' => 'underline'],
+                        ['type' => 'textStyle', 'attrs' => ['color' => '#ff0000']],
+                    ],
+                ]],
+            ]],
+        ];
+
+        $html = self::render($doc);
+        $this->assertStringContainsString('<u style="text-decoration-color:#ff0000">', $html);
+        $this->assertStringContainsString('background-color:#ffff00', $html);
+    }
+
+    public function test_06c_plain_underline_without_color_stays_bare(): void
+    {
+        $doc = [
+            'type' => 'doc',
+            'content' => [[
+                'type' => 'paragraph',
+                'attrs' => [],
+                'content' => [['type' => 'text', 'text' => 'plano', 'marks' => [['type' => 'underline']]]],
+            ]],
+        ];
+
+        $this->assertStringContainsString('<u>plano</u>', self::render($doc));
+    }
+
     // ─── test_07: bullet list ───────────────────────────────────────────────
 
     public function test_07_renders_bullet_list_item(): void
