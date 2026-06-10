@@ -9,13 +9,17 @@
     "react-router-dom": "^6.0.0 || ^7.0.0"
   },
   "devDependencies": {
+    "@testing-library/react": "^16.1.0",
     "@types/react": "^19.0.0",
+    "jsdom": "^29.1.1",
     "react": "^19.0.0",
-    "react-router-dom": "^7.0.0"
+    "react-dom": "^19.0.0",
+    "react-router-dom": "^7.0.0",
+    "vitest": "^4.1.8"
   },
   "scripts": {
     "build": "tsc --noEmit",
-    "test": "echo \"no tests yet\" && exit 0",
+    "test": "vitest run",
     "typecheck": "tsc --noEmit",
     "lint": "echo \"no linter configured\""
   },
