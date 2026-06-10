@@ -4,8 +4,11 @@ declare(strict_types=1);
 
 namespace Maya\Translations\Concerns;
 
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Maya\Translations\Models\Translation;
+use Maya\Translations\Relations\StringKeyMorphMany;
 
 /**
  * Da a un modelo Eloquent traducciones polimórficas por campo y locale.
@@ -42,6 +45,27 @@ trait HasTranslations
     public function translations(): MorphMany
     {
         return $this->morphMany(Translation::class, 'translatable');
+    }
+
+    /**
+     * `translations.translatable_id` es VARCHAR pero los modelos con clave
+     * entera harían que Eloquent compare `varchar = integer` (sin operador en
+     * Postgres). Inyectamos StringKeyMorphMany para que la comparación se
+     * bindee como string. Acotado a la relación con Translation: cualquier otra
+     * morphMany del modelo sigue usando la relación estándar.
+     *
+     * @param  Builder<*>  $query
+     * @param  non-empty-string  $type
+     * @param  non-empty-string  $id
+     * @param  string  $localKey
+     */
+    protected function newMorphMany(Builder $query, Model $parent, $type, $id, $localKey): MorphMany
+    {
+        if ($query->getModel() instanceof Translation) {
+            return new StringKeyMorphMany($query, $parent, $type, $id, $localKey);
+        }
+
+        return parent::newMorphMany($query, $parent, $type, $id, $localKey);
     }
 
     /**
