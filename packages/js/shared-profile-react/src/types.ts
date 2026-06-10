@@ -39,6 +39,8 @@ export type BaseMeProfile = {
   /** Locale activo del usuario (`es`, `va`, `en`). */
   locale: string
   permissions?: string[]
+  /** Roles del usuario resueltos en `/me` (p. ej. `['admin']`). */
+  roles?: string[]
   study_type_ids?: string[]
   study_ids?: string[]
   module_ids?: string[]
