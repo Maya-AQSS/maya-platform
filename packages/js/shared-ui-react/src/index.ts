@@ -43,6 +43,12 @@ export { useConfirm } from './useConfirm'
 // — Rediseño Tulsar/Beluga —
 export { Avatar, type AvatarSize } from './Avatar'
 export { PageTitle } from './PageTitle'
+export {
+  BackButton,
+  BackArrowIcon,
+  type BackButtonVariant,
+  type BackButtonProps,
+} from './BackButton'
 export { StatCard } from './StatCard'
 export { ApplicationTile } from './ApplicationTile'
 

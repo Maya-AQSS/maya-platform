@@ -1,4 +1,13 @@
 export { useAutoSave, type SaveStatus, type UseAutoSaveResult } from './useAutoSave';
+export {
+  useBackNavigation,
+  buildBackState,
+  isSafeInternalPath,
+  type BackNavigationState,
+  type UseBackNavigationOptions,
+  type GoBackOptions,
+  type UseBackNavigationResult,
+} from './useBackNavigation';
 export { useFlushOnPageLeave } from './useFlushOnPageLeave';
 export { useFilterState, type FilterRecord, type UseFilterStateResult } from './useFilterState';
 export {

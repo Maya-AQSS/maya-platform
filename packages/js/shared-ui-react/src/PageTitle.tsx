@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react'
+import { BackButton } from './BackButton'
 
 type Props = {
   title: ReactNode
@@ -8,7 +9,7 @@ type Props = {
   actions?: ReactNode
   /** Si se aporta, muestra una flecha de volver a la izquierda del título. */
   onBack?: () => void
-  /** Texto accesible del botón volver. */
+  /** Texto accesible del botón volver. Default: i18n `actions.back` ("Volver"). */
   backLabel?: string
   /** Si se aporta, se inserta como bloque adicional (filtros, tabs) bajo título. */
   meta?: ReactNode
@@ -28,25 +29,6 @@ type Props = {
   centerOnMobile?: boolean
 }
 
-function BackArrowIcon() {
-  return (
-    <svg
-      width="20"
-      height="20"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2.25"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-    >
-      <line x1="19" y1="12" x2="5" y2="12" />
-      <polyline points="12 19 5 12 12 5" />
-    </svg>
-  )
-}
-
 /**
  * Encabezado de página con tres zonas:
  *   ┌──────────────┬─────────────────────────┬──────────────┐
@@ -62,7 +44,7 @@ export function PageTitle({
   subtitle,
   actions,
   onBack,
-  backLabel = 'Volver',
+  backLabel,
   meta,
   image,
   className = '',
@@ -77,15 +59,11 @@ export function PageTitle({
       */}
       <div className="relative flex items-center justify-center min-h-[2.5rem]">
         {onBack ? (
-          <button
-            type="button"
+          <BackButton
             onClick={onBack}
-            aria-label={backLabel}
-            title={backLabel}
-            className="absolute left-0 top-1/2 -translate-y-1/2 z-10 inline-flex items-center justify-center w-10 h-10 rounded-full text-text-secondary dark:text-text-dark-secondary hover:bg-text-primary/5 dark:hover:bg-text-inverse/8 hover:text-odoo-purple dark:hover:text-odoo-dark-purple focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-odoo-purple/35 transition-colors"
-          >
-            <BackArrowIcon />
-          </button>
+            label={backLabel}
+            className="absolute left-0 top-1/2 -translate-y-1/2 z-10"
+          />
         ) : null}
 
         <div className="min-w-0 max-w-full px-12 sm:px-16 text-center">
