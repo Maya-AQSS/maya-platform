@@ -12,19 +12,16 @@ use Maya\Platform\Support\RegistersFdwBootstrap;
 
 /**
  * Create a minimal ServiceProvider bound to the test app container.
- * Used to verify loadMigrationsFrom delegation.
+ *
+ * Deliberadamente NO redeclara loadMigrationsFrom: el método hereda la
+ * visibilidad protected real de Illuminate\Support\ServiceProvider. Un stub
+ * con override public enmascaró el bug "Call to protected method" que rompía
+ * el arranque de las apps que pasaban profileMigrations.
  */
-function providerWithMigrationCapture(): ServiceProvider
+function realServiceProvider(): ServiceProvider
 {
     return new class(app()) extends ServiceProvider {
-        public array $loaded = [];
-
         public function register(): void {}
-
-        public function loadMigrationsFrom($path): void
-        {
-            $this->loaded[] = $path;
-        }
     };
 }
 
@@ -34,7 +31,7 @@ it('registers broadcast routes with default api+jwt middleware', function (): vo
         ->with(['prefix' => 'api/v1', 'middleware' => ['api', 'jwt']]);
     Auth::spy();
 
-    RegistersFdwBootstrap::register(providerWithMigrationCapture());
+    RegistersFdwBootstrap::register(realServiceProvider());
 });
 
 it('registers broadcast routes with custom middleware', function (): void {
@@ -43,7 +40,7 @@ it('registers broadcast routes with custom middleware', function (): void {
         ->with(['prefix' => 'api/v1', 'middleware' => ['api', 'custom-jwt']]);
     Auth::spy();
 
-    RegistersFdwBootstrap::register(providerWithMigrationCapture(), [
+    RegistersFdwBootstrap::register(realServiceProvider(), [
         'broadcastMiddleware' => ['api', 'custom-jwt'],
     ]);
 });
@@ -53,7 +50,7 @@ it('forces https scheme when forceHttps option is true', function (): void {
     Broadcast::shouldReceive('routes')->once()->withAnyArgs();
     Auth::spy();
 
-    RegistersFdwBootstrap::register(providerWithMigrationCapture(), ['forceHttps' => true]);
+    RegistersFdwBootstrap::register(realServiceProvider(), ['forceHttps' => true]);
 });
 
 it('does not force https when forceHttps is false and env is testing', function (): void {
@@ -64,7 +61,7 @@ it('does not force https when forceHttps is false and env is testing', function 
 
     app()['env'] = 'testing';
 
-    RegistersFdwBootstrap::register(providerWithMigrationCapture(), ['forceHttps' => false]);
+    RegistersFdwBootstrap::register(realServiceProvider(), ['forceHttps' => false]);
 });
 
 it('registers CommandStarting listener for FdwTeardown', function (): void {
@@ -77,7 +74,7 @@ it('registers CommandStarting listener for FdwTeardown', function (): void {
         $registeredListeners[] = true;
     });
 
-    RegistersFdwBootstrap::register(providerWithMigrationCapture());
+    RegistersFdwBootstrap::register(realServiceProvider());
 
     // At least one listener registered (the FdwTeardown one + ours)
     $listeners = Event::getListeners(CommandStarting::class);
@@ -93,31 +90,46 @@ it('uses provided viaRequest resolver instead of default', function (): void {
         ->once()
         ->with('jwt-token', $customResolver);
 
-    RegistersFdwBootstrap::register(providerWithMigrationCapture(), [
+    RegistersFdwBootstrap::register(realServiceProvider(), [
         'viaRequestResolver' => $customResolver,
     ]);
 });
 
-it('loads profile migrations from all provided paths', function (): void {
+it('loads profile migrations through a real provider whose loadMigrationsFrom is protected', function (): void {
     Broadcast::shouldReceive('routes')->once()->withAnyArgs();
     Auth::spy();
 
-    $provider = providerWithMigrationCapture();
-
-    RegistersFdwBootstrap::register($provider, [
+    RegistersFdwBootstrap::register(realServiceProvider(), [
         'profileMigrations' => ['/some/path/users', '/some/path/teams'],
     ]);
 
-    expect($provider->loaded)->toBe(['/some/path/users', '/some/path/teams']); // @phpstan-ignore-line
+    $paths = app('migrator')->paths();
+
+    expect($paths)->toContain('/some/path/users')
+        ->toContain('/some/path/teams');
+});
+
+it('registers migration paths even when the migrator was already resolved', function (): void {
+    Broadcast::shouldReceive('routes')->once()->withAnyArgs();
+    Auth::spy();
+
+    // Fuerza la rama "ya resuelto" de callAfterResolving (ejecución inmediata).
+    $migrator = app('migrator');
+
+    RegistersFdwBootstrap::register(realServiceProvider(), [
+        'profileMigrations' => ['/already/resolved/teams'],
+    ]);
+
+    expect($migrator->paths())->toContain('/already/resolved/teams');
 });
 
 it('loads no migrations when profileMigrations option is omitted', function (): void {
     Broadcast::shouldReceive('routes')->once()->withAnyArgs();
     Auth::spy();
 
-    $provider = providerWithMigrationCapture();
+    $pathsBefore = app('migrator')->paths();
 
-    RegistersFdwBootstrap::register($provider);
+    RegistersFdwBootstrap::register(realServiceProvider());
 
-    expect($provider->loaded)->toBeEmpty(); // @phpstan-ignore-line
+    expect(app('migrator')->paths())->toBe($pathsBefore);
 });
