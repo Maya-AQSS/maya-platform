@@ -14,7 +14,7 @@
  * const i18n = createI18n(resources, NAMESPACES)
  * export default i18n
  */
-import i18next, { type Resource } from 'i18next'
+import i18next, { type InitOptions, type Resource } from 'i18next'
 import LanguageDetector from 'i18next-browser-languagedetector'
 import { initReactI18next } from 'react-i18next'
 import { readOverrides } from '@ceedcv-maya/shared-auth-react'
@@ -42,7 +42,12 @@ function seedLocaleFromOverrides(): void {
 
 let instanceCount = 0
 
-export function createI18n(resources: Resource, namespaces: readonly string[]): typeof i18next {
+export function createI18n(
+  resources: Resource,
+  namespaces: readonly string[],
+  /** Optional i18next InitOptions merged over the shared Maya defaults. */
+  extraOptions?: Partial<InitOptions>,
+): typeof i18next {
   seedLocaleFromOverrides()
 
   const instance = instanceCount === 0 ? i18next : i18next.createInstance()
@@ -69,6 +74,7 @@ export function createI18n(resources: Resource, namespaces: readonly string[]): 
         caches: ['localStorage'],
       },
       react: { useSuspense: false },
+      ...extraOptions,
     })
 
   if (typeof window !== 'undefined') {

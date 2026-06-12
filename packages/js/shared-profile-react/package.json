@@ -21,7 +21,7 @@
   },
   "scripts": {
     "build": "tsc --noEmit",
-    "test": "echo \"no tests yet\" && exit 0",
+    "test": "vitest run",
     "typecheck": "tsc --noEmit",
     "lint": "echo \"no linter configured\""
   },
