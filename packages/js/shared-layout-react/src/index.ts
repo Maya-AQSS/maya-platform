@@ -26,3 +26,8 @@ export {
   BellIcon,
   AlertsIcon,
 } from './navIcons';
+
+// ─── App Shell ────────────────────────────────────────────────────────────────
+export { MayaProviders, AuthLoadingScreen } from './MayaProviders';
+export { MayaAppShell } from './MayaAppShell';
+export type { MayaProvidersProps, MayaAppShellProps, MayaAuthService } from './appShell.types';

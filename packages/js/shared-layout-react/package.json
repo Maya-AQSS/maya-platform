@@ -10,21 +10,36 @@
     "react-router-dom": "^6.0.0 || ^7.0.0",
     "react-i18next": "^14.0.0 || ^15.0.0 || ^16.0.0 || ^17.0.0",
     "@ceedcv-maya/shared-auth-react": "^0.16.0",
-    "@ceedcv-maya/shared-ui-react": "^0.16.0"
+    "@ceedcv-maya/shared-ui-react": "^0.16.0",
+    "@tanstack/react-query": "^5.0.0",
+    "@ceedcv-maya/shared-profile-react": "^0.16.0",
+    "@ceedcv-maya/shared-sidebar-react": "^0.16.0",
+    "@ceedcv-maya/shared-realtime-react": "^0.16.0",
+    "@ceedcv-maya/shared-i18n-react": "^0.16.0"
+  },
+  "peerDependenciesMeta": {
+    "@tanstack/react-query": { "optional": true },
+    "@ceedcv-maya/shared-profile-react": { "optional": true },
+    "@ceedcv-maya/shared-sidebar-react": { "optional": true },
+    "@ceedcv-maya/shared-realtime-react": { "optional": true },
+    "@ceedcv-maya/shared-i18n-react": { "optional": true }
   },
   "devDependencies": {
+    "@testing-library/react": "^16.1.0",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
+    "jsdom": "^29.1.1",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-router-dom": "^7.0.0",
     "react-i18next": "^17.0.0",
     "i18next": "^26.0.0",
-    "@types/react-router-dom": "^5.3.3"
+    "@types/react-router-dom": "^5.3.3",
+    "vitest": "^4.1.8"
   },
   "scripts": {
     "build": "tsc --noEmit",
-    "test": "echo \"no tests yet\" && exit 0",
+    "test": "vitest run",
     "typecheck": "tsc --noEmit",
     "lint": "echo \"no linter configured\""
   },
