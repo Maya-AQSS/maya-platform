@@ -61,8 +61,15 @@ final class RegistersFdwBootstrap
         ]);
 
         // Migraciones de shared-profile (FDW stubs en testing, vistas reales en producción).
-        foreach ($profileMigrations as $migrationPath) {
-            $provider->loadMigrationsFrom($migrationPath);
+        // loadMigrationsFrom() es protected en ServiceProvider: lo invocamos con un
+        // closure ligado al scope del provider (equivalente exacto a llamarlo desde
+        // dentro del propio AppServiceProvider).
+        if ($profileMigrations !== []) {
+            \Closure::bind(function () use ($profileMigrations): void {
+                foreach ($profileMigrations as $migrationPath) {
+                    $this->loadMigrationsFrom($migrationPath);
+                }
+            }, $provider, $provider)();
         }
 
         // Limpieza FDW antes de migrate:fresh / db:wipe.
