@@ -1,12 +1,17 @@
-import { useMemo, useEffect, type ReactNode } from 'react'
+import { useMemo, useEffect } from 'react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { BrowserRouter } from 'react-router-dom'
+import { withTranslation } from 'react-i18next'
 import { AuthProvider } from '@ceedcv-maya/shared-auth-react'
 import { UserProfileProvider } from '@ceedcv-maya/shared-profile-react'
 import { NotificationProvider } from '@ceedcv-maya/shared-sidebar-react'
 import { bootstrapRealtime } from '@ceedcv-maya/shared-realtime-react'
 import { AuthLoadingScreen, AppErrorFallback, ErrorBoundary, ToastProvider } from '@ceedcv-maya/shared-ui-react'
 import type { MayaProvidersProps } from './appShell.types'
+
+// ErrorBoundary expects the withTranslation HOC props (t, i18n, tReady);
+// wrap it once so MayaProviders can render it with just children/fallback.
+const TranslatedErrorBoundary = withTranslation('common')(ErrorBoundary)
 
 /**
  * Unified provider stack for Maya apps.
@@ -100,7 +105,7 @@ export function MayaProviders({
   )
 
   if (withErrorBoundary) {
-    return <ErrorBoundary fallback={errorFallback}>{inner}</ErrorBoundary>
+    return <TranslatedErrorBoundary fallback={errorFallback}>{inner}</TranslatedErrorBoundary>
   }
 
   return <>{inner}</>

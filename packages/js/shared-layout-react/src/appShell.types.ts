@@ -40,7 +40,10 @@ export interface MayaProvidersProps {
    */
   withErrorBoundary?: boolean
   /** Override the default QueryClient options (staleTime: 60 000, retry: 1). */
-  queryClientOptions?: Pick<NonNullable<QueryClientConfig['defaultOptions']>['queries'], 'staleTime' | 'retry'>
+  queryClientOptions?: Pick<
+    NonNullable<NonNullable<QueryClientConfig['defaultOptions']>['queries']>,
+    'staleTime' | 'retry'
+  >
   /** Props forwarded to the AppErrorFallback used inside the ErrorBoundary. */
   errorFallbackProps?: {
     heading?: string
