@@ -33,14 +33,24 @@ importers:
       '@types/react-dom':
         specifier: ^19.0.0
         version: 19.2.3(@types/react@19.2.15)
+      jsdom:
+        specifier: ^29.1.1
+        version: 29.1.1
       react:
         specifier: ^19.0.0
         version: 19.2.6
       react-dom:
         specifier: ^19.0.0
         version: 19.2.6(react@19.2.6)
+      vitest:
+        specifier: ^4.1.8
+        version: 4.1.8(@types/node@25.9.2)(jsdom@29.1.1)(vite@8.0.16(@types/node@25.9.2))
 
   packages/js/shared-dashboard-react:
+    dependencies:
+      '@types/react-grid-layout':
+        specifier: ^1.3.0
+        version: 1.3.6
     devDependencies:
       '@types/react':
         specifier: ^19.0.0
@@ -48,9 +58,6 @@ importers:
       '@types/react-dom':
         specifier: ^19.0.0
         version: 19.2.3(@types/react@19.2.15)
-      '@types/react-grid-layout':
-        specifier: ^1.3.0
-        version: 1.3.6
       i18next:
         specifier: ^26.0.0
         version: 26.2.0(typescript@5.9.3)
@@ -185,7 +192,7 @@ importers:
   packages/js/shared-i18n-react:
     dependencies:
       '@ceedcv-maya/shared-auth-react':
-        specifier: ^0.15.0
+        specifier: ^0.16.0
         version: link:../shared-auth-react
     devDependencies:
       '@types/react':
@@ -210,12 +217,30 @@ importers:
   packages/js/shared-layout-react:
     dependencies:
       '@ceedcv-maya/shared-auth-react':
-        specifier: ^0.15.0
+        specifier: ^0.16.0
         version: link:../shared-auth-react
+      '@ceedcv-maya/shared-i18n-react':
+        specifier: ^0.16.0
+        version: link:../shared-i18n-react
+      '@ceedcv-maya/shared-profile-react':
+        specifier: ^0.16.0
+        version: link:../shared-profile-react
+      '@ceedcv-maya/shared-realtime-react':
+        specifier: ^0.16.0
+        version: link:../shared-realtime-react
+      '@ceedcv-maya/shared-sidebar-react':
+        specifier: ^0.16.0
+        version: link:../shared-sidebar-react
       '@ceedcv-maya/shared-ui-react':
-        specifier: ^0.15.0
+        specifier: ^0.16.0
         version: link:../shared-ui-react
+      '@tanstack/react-query':
+        specifier: ^5.0.0
+        version: 5.100.14(react@19.2.6)
     devDependencies:
+      '@testing-library/react':
+        specifier: ^16.1.0
+        version: 16.3.2(@testing-library/dom@10.4.1)(@types/react-dom@19.2.3(@types/react@19.2.15))(@types/react@19.2.15)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
       '@types/react':
         specifier: ^19.0.0
         version: 19.2.15
@@ -228,6 +253,9 @@ importers:
       i18next:
         specifier: ^26.0.0
         version: 26.2.0(typescript@5.9.3)
+      jsdom:
+        specifier: ^29.1.1
+        version: 29.1.1
       react:
         specifier: ^19.0.0
         version: 19.2.6
@@ -240,14 +268,17 @@ importers:
       react-router-dom:
         specifier: ^7.0.0
         version: 7.15.1(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
+      vitest:
+        specifier: ^4.1.8
+        version: 4.1.8(@types/node@25.9.2)(jsdom@29.1.1)(vite@8.0.16(@types/node@25.9.2))
 
   packages/js/shared-profile-react:
     dependencies:
       '@ceedcv-maya/shared-auth-react':
-        specifier: ^0.15.0
+        specifier: ^0.16.0
         version: link:../shared-auth-react
       '@ceedcv-maya/shared-ui-react':
-        specifier: ^0.15.0
+        specifier: ^0.16.0
         version: link:../shared-ui-react
     devDependencies:
       '@types/react':
@@ -277,6 +308,9 @@ importers:
       '@types/react':
         specifier: ^19.0.0
         version: 19.2.15
+      jsdom:
+        specifier: ^29.1.1
+        version: 29.1.1
       laravel-echo:
         specifier: ^2.2.0
         version: 2.3.4(pusher-js@8.5.0)(socket.io-client@4.8.3)
@@ -289,17 +323,20 @@ importers:
       typescript:
         specifier: ^5.6.0
         version: 5.9.3
+      vitest:
+        specifier: ^4.1.8
+        version: 4.1.8(@types/node@25.9.2)(jsdom@29.1.1)(vite@8.0.16(@types/node@25.9.2))
 
   packages/js/shared-sidebar-react:
     dependencies:
       '@ceedcv-maya/shared-auth-react':
-        specifier: ^0.15.0
+        specifier: ^0.16.0
         version: link:../shared-auth-react
       '@ceedcv-maya/shared-editor-react':
-        specifier: ^0.15.0
+        specifier: ^0.16.0
         version: link:../shared-editor-react
       '@ceedcv-maya/shared-layout-react':
-        specifier: ^0.15.0
+        specifier: ^0.16.0
         version: link:../shared-layout-react
       laravel-echo:
         specifier: ^1.16.1
