@@ -9,3 +9,7 @@ export {
   type RealtimeNotificationPayload,
   type UseRealtimeNotificationsOptions,
 } from './useRealtimeNotifications';
+export {
+  bootstrapRealtime,
+  type BootstrapRealtimeOptions,
+} from './bootstrapRealtime';
