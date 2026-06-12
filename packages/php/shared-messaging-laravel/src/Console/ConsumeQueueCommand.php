@@ -121,7 +121,19 @@ abstract class ConsumeQueueCommand extends Command
             }
         });
 
-        $this->flush();
+        // flush() corre fuera del catch por-mensaje del loop: si el drenado del
+        // buffer falla (p.ej. QueryException en el insert batch) no debe tumbar
+        // el worker en silencio — se loguea, se reporta y se sale con FAILURE.
+        try {
+            $this->flush();
+        } catch (\Throwable $e) {
+            Log::error(static::class.': flush() falló tras el consume loop', [
+                'error' => $e->getMessage(),
+            ]);
+            report($e);
+
+            return self::FAILURE;
+        }
 
         return self::SUCCESS;
     }
