@@ -73,9 +73,12 @@ final class RegistersFdwBootstrap
         });
 
         // Guard JWT stateless: resuelve el usuario desde el atributo 'jwt_user'.
+        // El modelo se descubre via binding opcional 'maya.user_model' (registrarlo
+        // en AppServiceProvider::register si el modelo no es \App\Models\User) con
+        // fallback a \App\Models\User si existe.
         $resolver = $viaRequestResolver ?? static function ($request) {
             $profile = $request->attributes->get('jwt_user');
-            if (! is_array($profile) || empty($profile['id'])) {
+            if (! is_array($profile) || ! is_string($profile['id'] ?? null) || ($profile['id'] ?? '') === '') {
                 return null;
             }
 

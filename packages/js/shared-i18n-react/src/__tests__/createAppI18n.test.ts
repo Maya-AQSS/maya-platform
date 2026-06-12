@@ -63,13 +63,15 @@ describe('createAppI18n', () => {
     expect(i18n).toBeDefined()
   })
 
-  it('exports DEFAULT_LOCALE re-export', async () => {
-    const mod = await import('../createAppI18n')
+  // Ruta de export única: las constantes de locale se exponen desde ./config
+  // (re-exportadas por el index del paquete), no desde createAppI18n.
+  it('exposes DEFAULT_LOCALE from the package config module', async () => {
+    const mod = await import('../config')
     expect(mod.DEFAULT_LOCALE).toBe('es')
   })
 
-  it('exports SUPPORTED_LOCALES re-export', async () => {
-    const mod = await import('../createAppI18n')
+  it('exposes SUPPORTED_LOCALES from the package config module', async () => {
+    const mod = await import('../config')
     expect(Array.isArray(mod.SUPPORTED_LOCALES)).toBe(true)
     expect(mod.SUPPORTED_LOCALES).toContain('es')
     expect(mod.SUPPORTED_LOCALES).toContain('va')

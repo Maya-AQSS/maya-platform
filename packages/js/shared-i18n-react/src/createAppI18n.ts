@@ -62,7 +62,3 @@ export function createAppI18n(
 
   return { i18n, changeLocale }
 }
-
-// Re-export canonical locale constants so app i18n modules can forward them
-// without an extra import.
-export { DEFAULT_LOCALE, SUPPORTED_LOCALES } from './config'

@@ -14,6 +14,7 @@ use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\TooManyRequestsHttpException;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
+use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
 /**
  * Registers a uniform JSON error renderer for `api/*` routes.
@@ -137,9 +138,10 @@ final class JsonExceptionRenderer
             ];
         }
 
-        // In production, do not forward raw 500 messages
-        if ($status === 500 && !config('app.debug', false)) {
-            return ['message' => 'Server Error'];
+        // In production, do not forward raw server-error messages (5xx).
+        // 4xx messages are intentional (abort(403, '...'), policies) and pass through.
+        if ($status >= 500 && !config('app.debug', false)) {
+            return ['message' => SymfonyResponse::$statusTexts[$status] ?? 'Server Error'];
         }
 
         return ['message' => $e->getMessage()];

@@ -152,6 +152,34 @@ it('does not expose exception trace in production mode for 500', function (): vo
     // In production, the raw exception message must not be forwarded
     expect($body)->not->toHaveKey('trace');
     expect($body)->not->toHaveKey('exception');
+    expect($body['message'])->toBe('Internal Server Error');
+    expect($body['message'])->not->toContain('secret');
+});
+
+it('does not expose 5xx HttpException messages in production (e.g. 503)', function (): void {
+    $this->app['config']->set('app.debug', false);
+
+    Route::get('/api/v1/test-503-prod', function () {
+        throw new \Symfony\Component\HttpKernel\Exception\HttpException(503, 'redis at 10.0.0.5 down');
+    });
+
+    $response = $this->getJson('/api/v1/test-503-prod');
+
+    $response->assertStatus(503);
+    expect($response->json()['message'])->toBe('Service Unavailable');
+});
+
+it('keeps intentional 4xx HttpException messages in production', function (): void {
+    $this->app['config']->set('app.debug', false);
+
+    Route::get('/api/v1/test-403-prod', function () {
+        throw new \Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException('No puedes publicar este documento');
+    });
+
+    $response = $this->getJson('/api/v1/test-403-prod');
+
+    $response->assertStatus(403);
+    expect($response->json()['message'])->toBe('No puedes publicar este documento');
 });
 
 // ─── Non-API routes are NOT intercepted ───────────────────────────────────────

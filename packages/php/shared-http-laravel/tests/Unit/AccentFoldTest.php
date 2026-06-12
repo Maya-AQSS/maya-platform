@@ -119,10 +119,23 @@ it('pgsql expression contains ss replacement for ß', function (): void {
     expect($expr)->toContain("'ss'");
 });
 
-it('wraps arbitrary column expression in translate for pgsql', function (): void {
-    [$expr] = AccentFold::sqlFoldedLowerColumn('COALESCE(first_name, last_name)', 'pgsql');
+it('wraps arbitrary SQL expressions via sqlFoldedLowerExpression for pgsql', function (): void {
+    [$expr] = AccentFold::sqlFoldedLowerExpression('COALESCE(first_name, last_name)', 'pgsql');
 
     expect($expr)->toContain('lower(COALESCE(first_name, last_name))');
+});
+
+it('rejects non-identifier input in sqlFoldedLowerColumn (SQL injection guard)', function (): void {
+    expect(fn () => AccentFold::sqlFoldedLowerColumn('name); DROP TABLE users;--', 'pgsql'))
+        ->toThrow(\InvalidArgumentException::class);
+    expect(fn () => AccentFold::sqlFoldedLowerColumn('COALESCE(a, b)', 'pgsql'))
+        ->toThrow(\InvalidArgumentException::class);
+});
+
+it('accepts schema-qualified identifiers in sqlFoldedLowerColumn', function (): void {
+    [$expr] = AccentFold::sqlFoldedLowerColumn('users.name', 'pgsql');
+
+    expect($expr)->toContain('lower(users.name)');
 });
 
 it('throws for unknown driver', function (): void {

@@ -15,7 +15,6 @@ import {
   writeCachedUserProfile,
 } from '@ceedcv-maya/shared-auth-react'
 import type { BaseMeProfile } from './types'
-export { profileDisplayInitials } from './profileDisplayInitials'
 
 export type UserProfileContextValue<TProfile extends BaseMeProfile> = {
   profile: TProfile | null

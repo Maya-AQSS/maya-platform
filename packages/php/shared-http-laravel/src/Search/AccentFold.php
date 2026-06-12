@@ -123,7 +123,8 @@ final class AccentFold
     /**
      * Build a driver-aware SQL expression that lower-cases and accent-folds a column.
      *
-     * @param  string $column  Column name or arbitrary SQL expression (e.g. `COALESCE(a, b)`).
+     * @param  string $column  Column identifier (optionally schema/table-qualified).
+     *                         For arbitrary SQL expressions use {@see sqlFoldedLowerExpression()}.
      * @param  string $driver  Database driver: `'pgsql'` or `'sqlite'`.
      *
      * @return array{0: string, 1: list<string>}
@@ -143,13 +144,46 @@ final class AccentFold
      */
     public static function sqlFoldedLowerColumn(string $column, string $driver): array
     {
+        self::assertSafeColumnIdentifier($column);
+
+        return self::sqlFoldedLowerExpression($column, $driver);
+    }
+
+    /**
+     * Variante para expresiones SQL arbitrarias (p.ej. `snapshot_data->'t'->>'name'`,
+     * `COALESCE(a, b)`). La expresión se interpola SIN validar: SOLO expresiones
+     * construidas por el desarrollador — NUNCA derivadas de input de usuario.
+     * Para columnas simples preferir {@see sqlFoldedLowerColumn()}, que sí valida.
+     *
+     * @param  string $expression  Trusted SQL expression.
+     * @param  string $driver      `'pgsql'` or `'sqlite'`.
+     *
+     * @return array{0: string, 1: list<string>}
+     *
+     * @throws \InvalidArgumentException for unsupported drivers.
+     */
+    public static function sqlFoldedLowerExpression(string $expression, string $driver): array
+    {
         return match ($driver) {
-            'pgsql'  => self::pgsqlFoldedExpr($column),
-            'sqlite' => ["lower({$column})", []],
+            'pgsql'  => self::pgsqlFoldedExpr($expression),
+            'sqlite' => ["lower({$expression})", []],
             default  => throw new \InvalidArgumentException(
                 "AccentFold::sqlFoldedLowerColumn() does not support driver '{$driver}'. Supported: pgsql, sqlite."
             ),
         };
+    }
+
+    /**
+     * El nombre de columna se interpola en SQL crudo: solo identificadores
+     * simples (con esquema/tabla opcional via punto). Nunca pasar input de usuario.
+     *
+     * @throws \InvalidArgumentException si el identificador no es seguro.
+     */
+    private static function assertSafeColumnIdentifier(string $column): void
+    {
+        if (! preg_match('/^[a-zA-Z_][a-zA-Z0-9_]*(\.[a-zA-Z_][a-zA-Z0-9_]*){0,2}$/', $column)) {
+            throw new \InvalidArgumentException("AccentFold: identificador de columna inseguro: {$column}");
+        }
     }
 
     /**
