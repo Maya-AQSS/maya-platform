@@ -12,12 +12,15 @@
     "@ceedcv-maya/shared-ui-react": "^0.17.0"
   },
   "devDependencies": {
+    "@testing-library/react": "^16.1.0",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-i18next": "^17.0.0",
-    "i18next": "^26.0.0"
+    "i18next": "^26.0.0",
+    "jsdom": "^29.1.1",
+    "vitest": "^4.1.8"
   },
   "scripts": {
     "build": "tsc --noEmit",

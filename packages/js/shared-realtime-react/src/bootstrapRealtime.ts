@@ -1,3 +1,4 @@
+/// <reference path="./env.d.ts" />
 /**
  * bootstrapRealtime — factory canonique para inicializar el cliente Echo/Reverb.
  *
