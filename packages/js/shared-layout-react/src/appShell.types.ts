@@ -93,6 +93,13 @@ export interface MayaAppShellProps {
    * Pass false to hide it (e.g. when a feature permission guards the page).
    */
   showProfileLink?: boolean
+  /**
+   * Called when the user clicks "My profile", allowing the app to navigate with
+   * its own router (SPA navigation + back-state) instead of a full page reload.
+   * Falls back to `window.location.assign(`${dashboardUrl}/profile`)` when not
+   * provided. Only invoked while `showProfileLink` is true.
+   */
+  onProfileNavigate?: () => void
 
   // ── Notifications / realtime ───────────────────────────────────────────────
   /**

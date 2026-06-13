@@ -30,6 +30,7 @@ interface AppWithLayoutProps
     | 'dashboardUrl'
     | 'dashboardApiUrl'
     | 'showProfileLink'
+    | 'onProfileNavigate'
     | 'onNotificationNavigate'
     | 'favoritesLabel'
     | 'beforeLayout'
@@ -46,6 +47,7 @@ function AppWithLayout({
   dashboardUrl,
   dashboardApiUrl,
   showProfileLink = true,
+  onProfileNavigate,
   onNotificationNavigate,
   favoritesLabel = 'Favoritas',
   beforeLayout,
@@ -65,7 +67,7 @@ function AppWithLayout({
   )
 
   const onProfile = showProfileLink
-    ? () => { window.location.assign(`${dashboardUrl}/profile`) }
+    ? onProfileNavigate ?? (() => { window.location.assign(`${dashboardUrl}/profile`) })
     : undefined
 
   return (
@@ -167,6 +169,7 @@ export function MayaAppShell({
   portalLoginSlug = 'dashboard.login',
   isDashboard = false,
   showProfileLink = true,
+  onProfileNavigate,
   onNotificationNavigate,
   loadingInitializingMessage = 'Iniciando sesión…',
   loadingRedirectingMessage = 'Redirigiendo al inicio de sesión…',
@@ -208,6 +211,7 @@ export function MayaAppShell({
       dashboardApiUrl={dashboardApiUrl}
       navItems={navItems}
       showProfileLink={showProfileLink}
+      onProfileNavigate={onProfileNavigate}
       onNotificationNavigate={onNotificationNavigate}
       favoritesLabel={favoritesLabel}
       beforeLayout={beforeLayout}

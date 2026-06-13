@@ -136,6 +136,24 @@ function renderShell(overrides: Partial<typeof defaultProps & { isDashboard: boo
   )
 }
 
+/**
+ * jsdom marks `window.location.assign` non-configurable, so vi.spyOn fails.
+ * Swap the whole `location` object for a configurable stub and restore it.
+ */
+function stubLocationAssign() {
+  const original = window.location
+  const assign = vi.fn()
+  Object.defineProperty(window, 'location', {
+    configurable: true,
+    value: { ...original, assign },
+  })
+  return {
+    assign,
+    restore: () =>
+      Object.defineProperty(window, 'location', { configurable: true, value: original }),
+  }
+}
+
 // ─── Tests ────────────────────────────────────────────────────────────────────
 
 describe('MayaAppShell', () => {
@@ -251,6 +269,47 @@ describe('MayaAppShell', () => {
       </MayaAppShell>,
     )
     expect(screen.queryByTestId('profile-btn')).toBeNull()
+  })
+
+  it('invokes onProfileNavigate (SPA) instead of reloading when provided', () => {
+    const onProfileNavigate = vi.fn()
+    const { assign, restore } = stubLocationAssign()
+
+    render(
+      <MayaAppShell {...defaultProps} onProfileNavigate={onProfileNavigate}>
+        <div />
+      </MayaAppShell>,
+    )
+    screen.getByTestId('profile-btn').click()
+
+    expect(onProfileNavigate).toHaveBeenCalledTimes(1)
+    expect(assign).not.toHaveBeenCalled()
+    restore()
+  })
+
+  it('falls back to full reload when onProfileNavigate is not provided', () => {
+    const { assign, restore } = stubLocationAssign()
+
+    renderShell()
+    screen.getByTestId('profile-btn').click()
+
+    expect(assign).toHaveBeenCalledWith('https://dashboard.maya.test/profile')
+    restore()
+  })
+
+  it('does not wire onProfileNavigate when showProfileLink=false', () => {
+    const onProfileNavigate = vi.fn()
+    render(
+      <MayaAppShell
+        {...defaultProps}
+        showProfileLink={false}
+        onProfileNavigate={onProfileNavigate}
+      >
+        <div />
+      </MayaAppShell>,
+    )
+    expect(screen.queryByTestId('profile-btn')).toBeNull()
+    expect(onProfileNavigate).not.toHaveBeenCalled()
   })
 
   // ── Slots ─────────────────────────────────────────────────────────────────
