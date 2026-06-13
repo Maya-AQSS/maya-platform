@@ -15,12 +15,29 @@ name: Release
 # to need a manual tag re-push. Calling them as reusable workflows runs the whole
 # release → publish → split chain in one click, with no extra PAT.
 
+# Disparadores:
+#   • push a main (paths packages/**): release AUTOMÁTICO. La versión se calcula
+#     desde los Conventional Commits acumulados desde el último tag (feat→minor,
+#     resto→patch; BREAKING→minor mientras estemos en 0.x). Así, un merge a main
+#     publica sin intervención: calcula versión, tagea, publica npm + split.
+#   • workflow_dispatch: release MANUAL con versión explícita (fallback / hotfix).
+#
+# Anti-bucle: los commits + tags que este workflow pushea usan GITHUB_TOKEN, y
+# GitHub NO entrega esos eventos push para disparar nuevas runs (misma garantía
+# que ya explota la cadena publish/split más abajo). Por eso el push de
+# alineación JS y el de monorepo-builder no re-disparan este workflow.
 on:
+  push:
+    branches: [main]
+    paths:
+      - 'packages/**'
+      - 'monorepo-builder.php'
+      - 'scripts/bump-js-version.mjs'
   workflow_dispatch:
     inputs:
       version:
-        description: 'Semver version to release (e.g. 0.2.0)'
-        required: true
+        description: 'Semver version to release (e.g. 0.2.0). Vacío en push = auto.'
+        required: false
         type: string
 
 jobs:
@@ -29,7 +46,7 @@ jobs:
     permissions:
       contents: write
     outputs:
-      version: ${{ inputs.version }}
+      version: ${{ steps.determine.outputs.version }}
     steps:
       # Usamos GITHUB_TOKEN (auto-provisto por Actions) en lugar de SPLIT_TOKEN.
       # SPLIT_TOKEN es un PAT con scope sobre los repos hijos `shared-*` para
@@ -54,6 +71,42 @@ jobs:
           git config user.name  'maya_platform-bot'
           git config user.email 'bot@maya-aqss.org'
 
+      # Determina la versión a publicar. Manual (workflow_dispatch con input) o
+      # automática (push): semver bump desde Conventional Commits desde el último
+      # tag v*.*.*. En 0.x un BREAKING no salta a 1.0.0 (se trata como minor).
+      - name: Determine version
+        id: determine
+        run: |
+          set -euo pipefail
+          MANUAL="${{ github.event.inputs.version }}"
+          if [ -n "$MANUAL" ]; then
+            V="$MANUAL"
+            echo "Release manual: $V"
+          else
+            LAST=$(git describe --tags --abbrev=0 --match 'v*.*.*' 2>/dev/null || echo "v0.0.0")
+            if git rev-parse "$LAST" >/dev/null 2>&1; then RANGE="${LAST}..HEAD"; else RANGE="HEAD"; fi
+            CUR="${LAST#v}"; MAJ="${CUR%%.*}"; REST="${CUR#*.}"; MIN="${REST%%.*}"; PAT="${REST#*.}"
+            LOG="$(git log $RANGE --format='%s%n%b')"
+            if [ -z "$(git log $RANGE --oneline)" ]; then
+              echo "::error::No hay commits desde $LAST — nada que publicar."; exit 1
+            fi
+            BUMP=patch
+            if echo "$LOG" | grep -qE '^[a-zA-Z]+(\(.+\))?!:|BREAKING CHANGE'; then BUMP=major
+            elif echo "$LOG" | grep -qE '^feat(\(.+\))?:'; then BUMP=minor; fi
+            if [ "$MAJ" = "0" ] && [ "$BUMP" = "major" ]; then BUMP=minor; fi
+            case "$BUMP" in
+              major) MAJ=$((MAJ+1)); MIN=0; PAT=0 ;;
+              minor) MIN=$((MIN+1)); PAT=0 ;;
+              patch) PAT=$((PAT+1)) ;;
+            esac
+            V="${MAJ}.${MIN}.${PAT}"
+            echo "Release automático ($BUMP): $LAST → v$V"
+          fi
+          if git rev-parse "v$V" >/dev/null 2>&1; then
+            echo "::error::El tag v$V ya existe."; exit 1
+          fi
+          echo "version=$V" >> "$GITHUB_OUTPUT"
+
       # pnpm version comes from `packageManager` in root package.json
       - uses: pnpm/action-setup@v4
 
@@ -62,8 +115,8 @@ jobs:
           node-version: '20'
           cache: 'pnpm'
 
-      - name: Align JS packages to ${{ inputs.version }}
-        run: node scripts/bump-js-version.mjs "${{ inputs.version }}"
+      - name: Align JS packages to ${{ steps.determine.outputs.version }}
+        run: node scripts/bump-js-version.mjs "${{ steps.determine.outputs.version }}"
 
       - name: Refresh pnpm lockfile
         run: pnpm install --lockfile-only
@@ -71,16 +124,16 @@ jobs:
       - name: Commit JS version alignment
         run: |
           if git diff --quiet -- packages/js pnpm-lock.yaml; then
-            echo "JS packages already at ${{ inputs.version }} — nothing to commit"
+            echo "JS packages already at ${{ steps.determine.outputs.version }} — nothing to commit"
           else
             git add packages/js/*/package.json pnpm-lock.yaml
-            git commit -m "chore(release): align JS packages to ${{ inputs.version }}"
+            git commit -m "chore(release): align JS packages to ${{ steps.determine.outputs.version }}"
           fi
 
       # Tags the current HEAD (which now includes the JS alignment commit), bumps
       # PHP mutual deps, and pushes both the tag and the branch.
       - name: Release
-        run: vendor/bin/monorepo-builder release ${{ inputs.version }}
+        run: vendor/bin/monorepo-builder release ${{ steps.determine.outputs.version }}
 
       # monorepo-builder tags the release commit WITHOUT a leading "v"
       # (e.g. "0.11.0"), but the whole platform — publish-npm.yml, split.yml,
@@ -89,8 +142,8 @@ jobs:
       # ref to check out and propagate.
       - name: Create v-prefixed release tag
         run: |
-          git tag "v${{ inputs.version }}" "${{ inputs.version }}"
-          git push origin "v${{ inputs.version }}"
+          git tag "v${{ steps.determine.outputs.version }}" "${{ steps.determine.outputs.version }}"
+          git push origin "v${{ steps.determine.outputs.version }}"
 
   # Ship JS to npm from the tag the release job just created. Runs in the same
   # workflow, so it does not depend on the (blocked) token-pushed tag event.
