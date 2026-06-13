@@ -103,5 +103,10 @@
             "email": "info@ceedcv.es",
             "homepage": "https://ceedcv.es"
         }
-    ]
+    ],
+    "extra": {
+        "branch-alias": {
+            "dev-main": "0.18.x-dev"
+        }
+    }
 }

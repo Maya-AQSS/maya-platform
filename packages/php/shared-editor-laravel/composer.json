@@ -1,6 +1,6 @@
 {
     "name": "ceedcv-maya/shared-editor-laravel",
-    "description": "Server-side renderers for TipTap/ProseMirror JSON documents: TiptapHtmlRenderer (SSR HTML), BlockNoteToTiptap (legacy conversion), DocxExporter (Word export). Domain-agnostic — usable from any Laravel app rendering rich editor content.",
+    "description": "Server-side renderers for TipTap/ProseMirror JSON documents: TiptapHtmlRenderer (SSR HTML), BlockNoteToTiptap (legacy conversion), DocxExporter (Word export). Domain-agnostic \u2014 usable from any Laravel app rendering rich editor content.",
     "type": "library",
     "license": "MIT",
     "homepage": "https://github.com/Maya-AQSS/shared-editor-laravel",
@@ -44,6 +44,9 @@
             "providers": [
                 "Maya\\Editor\\Providers\\SharedEditorServiceProvider"
             ]
+        },
+        "branch-alias": {
+            "dev-main": "0.18.x-dev"
         }
     },
     "minimum-stability": "stable",

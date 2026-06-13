@@ -50,6 +50,9 @@
             "providers": [
                 "Maya\\Platform\\Providers\\SharedPlatformServiceProvider"
             ]
+        },
+        "branch-alias": {
+            "dev-main": "0.18.x-dev"
         }
     },
     "minimum-stability": "stable",
