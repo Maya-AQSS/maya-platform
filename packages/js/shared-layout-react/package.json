@@ -25,6 +25,7 @@
     "@ceedcv-maya/shared-i18n-react": { "optional": true }
   },
   "devDependencies": {
+    "@tanstack/react-query": "^5.100.0",
     "@testing-library/react": "^16.1.0",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",

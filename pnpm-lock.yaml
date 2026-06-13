@@ -204,6 +204,9 @@ importers:
       i18next-browser-languagedetector:
         specifier: ^8.0.0
         version: 8.2.1
+      jsdom:
+        specifier: ^29.1.1
+        version: 29.1.1
       react:
         specifier: ^19.0.0
         version: 19.2.6
@@ -213,6 +216,9 @@ importers:
       react-i18next:
         specifier: ^17.0.0
         version: 17.0.8(i18next@26.2.0(typescript@5.9.3))(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(typescript@5.9.3)
+      vitest:
+        specifier: ^4.1.8
+        version: 4.1.8(@types/node@25.9.2)(jsdom@29.1.1)(vite@8.0.16(@types/node@25.9.2))
 
   packages/js/shared-layout-react:
     dependencies:
@@ -234,10 +240,10 @@ importers:
       '@ceedcv-maya/shared-ui-react':
         specifier: ^0.17.0
         version: link:../shared-ui-react
-      '@tanstack/react-query':
-        specifier: ^5.0.0
-        version: 5.100.14(react@19.2.6)
     devDependencies:
+      '@tanstack/react-query':
+        specifier: ^5.100.0
+        version: 5.100.14(react@19.2.6)
       '@testing-library/react':
         specifier: ^16.1.0
         version: 16.3.2(@testing-library/dom@10.4.1)(@types/react-dom@19.2.3(@types/react@19.2.15))(@types/react@19.2.15)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
@@ -281,6 +287,9 @@ importers:
         specifier: ^0.17.0
         version: link:../shared-ui-react
     devDependencies:
+      '@testing-library/react':
+        specifier: ^16.1.0
+        version: 16.3.2(@testing-library/dom@10.4.1)(@types/react-dom@19.2.3(@types/react@19.2.15))(@types/react@19.2.15)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
       '@types/react':
         specifier: ^19.0.0
         version: 19.2.15
@@ -290,6 +299,9 @@ importers:
       i18next:
         specifier: ^26.0.0
         version: 26.2.0(typescript@5.9.3)
+      jsdom:
+        specifier: ^29.1.1
+        version: 29.1.1
       react:
         specifier: ^19.0.0
         version: 19.2.6
@@ -299,6 +311,9 @@ importers:
       react-i18next:
         specifier: ^17.0.0
         version: 17.0.8(i18next@26.2.0(typescript@5.9.3))(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(typescript@5.9.3)
+      vitest:
+        specifier: ^4.1.8
+        version: 4.1.8(@types/node@25.9.2)(jsdom@29.1.1)(vite@8.0.16(@types/node@25.9.2))
 
   packages/js/shared-realtime-react:
     devDependencies:
