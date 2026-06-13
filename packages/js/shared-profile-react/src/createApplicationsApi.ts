@@ -24,10 +24,16 @@
  * export const { fetchApplications } = createApplicationsApi<ApplicationScope>({ apiGetJson })
  */
 
+/**
+ * Default application reference shape. `slug` is optional because some
+ * endpoints return only `{ id, name }` (e.g. maya_logs). Consumers that
+ * require a guaranteed `slug` should pass their own stricter `TRef`
+ * (e.g. `createApplicationsApi<Scope, { id: number; name: string; slug: string }>`).
+ */
 export type ApplicationRef = {
   id: number | string
   name: string
-  slug: string
+  slug?: string
 }
 
 type ApiGetJson = <T>(path: string) => Promise<T>

@@ -50,6 +50,20 @@ describe('createApplicationsApi', () => {
     expect(result).toEqual([])
   })
 
+  it('supports a TRef without slug (e.g. maya_logs returns only id+name)', async () => {
+    const mockGetJson = vi.fn().mockResolvedValue({
+      data: [{ id: 7, name: 'Logs' }],
+    })
+    // No type cast needed: slug is optional on the default ApplicationRef.
+    const api = createApplicationsApi<TestScope, { id: number; name: string }>({
+      apiGetJson: mockGetJson,
+    })
+
+    const result = await api.fetchApplications('all')
+
+    expect(result).toEqual([{ id: 7, name: 'Logs' }])
+  })
+
   it('propagates errors from apiGetJson', async () => {
     const mockGetJson = vi.fn().mockRejectedValue(new Error('Network error'))
     const api = createApplicationsApi<TestScope, { id: number; name: string; slug: string }>({
