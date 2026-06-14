@@ -1,6 +1,7 @@
 export * from './config'
 export * from './commonResources'
 export * from './notificationResources'
+export * from './auditEventResources'
 export * from './createI18n'
 export { createAppI18n, type CreateAppI18nResult } from './createAppI18n'
 export * from './deepMerge'
