@@ -92,5 +92,10 @@
       "title": "Critical error spike",
       "body": "{{count}} critical errors were detected in the last window."
     }
+  },
+  "relativeTime": {
+    "now": "now",
+    "minutes": "{{count}} min",
+    "hours": "{{count}} h"
   }
 }

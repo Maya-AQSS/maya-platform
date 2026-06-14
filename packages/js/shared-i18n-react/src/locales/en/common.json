@@ -100,7 +100,23 @@
     "groupInsert": "Insert",
     "groupTable": "Table",
     "groupTools": "Tools",
-    "groupView": "View"
+    "groupView": "View",
+    "toolbarAriaLabel": "Editor toolbar",
+    "findReplaceAriaLabel": "Find and replace",
+    "colors": {
+      "default": "Default",
+      "black": "Black",
+      "grey": "Grey",
+      "red": "Red",
+      "orange": "Orange",
+      "yellow": "Yellow",
+      "green": "Green",
+      "cyan": "Cyan",
+      "blue": "Blue",
+      "purple": "Purple",
+      "pink": "Pink",
+      "brown": "Brown"
+    }
   },
   "status": {
     "loading": "Loading…",
@@ -309,5 +325,67 @@
     "on": "On",
     "off": "Off"
   },
-  "notFound": "404 — Not found"
+  "notFound": "404 — Not found",
+  "datePicker": {
+    "placeholder": "Select date",
+    "clear": "Clear date",
+    "calendar": "Calendar",
+    "selectedDate": "Selected date",
+    "prevMonth": "Previous month",
+    "nextMonth": "Next month",
+    "dayLabel": "{{day}} {{month}} {{year}}",
+    "weekdaysShort": [
+      "M",
+      "T",
+      "W",
+      "T",
+      "F",
+      "S",
+      "S"
+    ],
+    "months": [
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December"
+    ],
+    "monthsShort": [
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec"
+    ]
+  },
+  "dataTable": {
+    "flipCard": "Flip card",
+    "flip": "Flip",
+    "viewGroup": "View",
+    "viewTable": "Table view",
+    "viewCards": "Cards view",
+    "viewFlip": "Flip cards view"
+  },
+  "multiSelect": {
+    "placeholder": "Select…",
+    "selectedCount": "{{count}} selected",
+    "noOptions": "No options"
+  },
+  "form": {
+    "required": "Required"
+  }
 }

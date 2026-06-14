@@ -1,11 +1,43 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+
+/**
+ * Textos del DatePicker. TODOS opcionales: si se omiten, el componente
+ * resuelve el default vía `useTranslation('common')` contra el namespace
+ * `datePicker.*` (con fallback en español para no romper apps sin i18n).
+ *
+ * El consumidor puede sobrescribir cualquier texto pasando `labels`:
+ *
+ * ```tsx
+ * <DatePicker labels={{ placeholder: t('myPlaceholder') }} … />
+ * ```
+ */
+export interface DatePickerLabels {
+  placeholder?: string
+  /** aria-label del botón de limpiar. */
+  clear?: string
+  /** aria-label del diálogo del calendario. */
+  calendar?: string
+  /** Cabecera "Fecha seleccionada". */
+  selectedDate?: string
+  /** aria-label de navegación a mes anterior. */
+  prevMonth?: string
+  /** aria-label de navegación a mes siguiente. */
+  nextMonth?: string
+  /** Nombres largos de mes (12). Índice 0 = enero. */
+  months?: string[]
+  /** Nombres cortos de mes (12) para el texto del input. */
+  monthsShort?: string[]
+  /** Iniciales de los días de la semana (7), lunes primero. */
+  weekdaysShort?: string[]
+}
 
 interface Props {
   /** Valor actual en formato ISO `YYYY-MM-DD` (o `null`/`''`). */
   value: string | null | undefined
   /** Callback al seleccionar una fecha (ISO string) o `null` al limpiar. */
   onChange: (date: string | null) => void
-  /** Placeholder. */
+  /** Placeholder. @deprecated Usa `labels.placeholder`. */
   placeholder?: string
   /** Etiqueta accesible. */
   ariaLabel?: string
@@ -17,18 +49,21 @@ interface Props {
   min?: string
   /** Fecha máxima permitida (ISO). */
   max?: string
+  /** Textos i18n inyectables (opcional; defaults vía `t('datePicker.*')`). */
+  labels?: DatePickerLabels
 }
 
 /* ─── Helpers ──────────────────────────────────────────────────────── */
 
-const DAYS_OF_WEEK = ['L', 'M', 'X', 'J', 'V', 'S', 'D'] // lunes-first
+/** Fallbacks en español usados si no hay i18n ni `labels`. */
+const FALLBACK_WEEKDAYS = ['L', 'M', 'X', 'J', 'V', 'S', 'D'] // lunes-first
 
-const MONTH_NAMES = [
+const FALLBACK_MONTHS = [
   'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
   'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre',
 ]
 
-const SHORT_MONTH_NAMES = [
+const FALLBACK_MONTHS_SHORT = [
   'ene', 'feb', 'mar', 'abr', 'may', 'jun',
   'jul', 'ago', 'sep', 'oct', 'nov', 'dic',
 ]
@@ -46,10 +81,10 @@ function parseIso(s: string | null | undefined): { year: number; month: number; 
   return { year: Number(m[1]), month: Number(m[2]) - 1, day: Number(m[3]) }
 }
 
-function formatDisplay(s: string | null | undefined): string {
+function formatDisplay(s: string | null | undefined, monthsShort: string[]): string {
   const p = parseIso(s)
   if (!p) return ''
-  return `${p.day} ${SHORT_MONTH_NAMES[p.month]} ${p.year}`
+  return `${p.day} ${monthsShort[p.month]} ${p.year}`
 }
 
 /** Days in month (0-indexed month). */
@@ -82,13 +117,34 @@ function isToday(y: number, m: number, d: number): boolean {
 export function DatePicker({
   value,
   onChange,
-  placeholder = 'Seleccionar fecha',
+  placeholder,
   ariaLabel,
   className = '',
   disabled = false,
   min,
   max,
+  labels,
 }: Props) {
+  const { t } = useTranslation('common')
+
+  // Resolución de textos: `labels` (prop) > `t('datePicker.*')` > fallback ES.
+  // `t(..., { defaultValue })` evita que aparezca la clave cruda si una app no
+  // tiene cargado el namespace `common`.
+  const MONTH_NAMES =
+    labels?.months ?? (t('datePicker.months', { returnObjects: true, defaultValue: FALLBACK_MONTHS }) as string[])
+  const SHORT_MONTH_NAMES =
+    labels?.monthsShort ?? (t('datePicker.monthsShort', { returnObjects: true, defaultValue: FALLBACK_MONTHS_SHORT }) as string[])
+  const DAYS_OF_WEEK =
+    labels?.weekdaysShort ?? (t('datePicker.weekdaysShort', { returnObjects: true, defaultValue: FALLBACK_WEEKDAYS }) as string[])
+  const placeholderText = placeholder ?? labels?.placeholder ?? t('datePicker.placeholder', { defaultValue: 'Seleccionar fecha' })
+  const clearLabel = labels?.clear ?? t('datePicker.clear', { defaultValue: 'Limpiar fecha' })
+  const calendarLabel = labels?.calendar ?? t('datePicker.calendar', { defaultValue: 'Calendario' })
+  const selectedDateLabel = labels?.selectedDate ?? t('datePicker.selectedDate', { defaultValue: 'Fecha seleccionada' })
+  const prevMonthLabel = labels?.prevMonth ?? t('datePicker.prevMonth', { defaultValue: 'Mes anterior' })
+  const nextMonthLabel = labels?.nextMonth ?? t('datePicker.nextMonth', { defaultValue: 'Mes siguiente' })
+  const dayLabelFor = (day: number, month: number, year: number) =>
+    t('datePicker.dayLabel', { day, month: MONTH_NAMES[month], year, defaultValue: `${day} de ${MONTH_NAMES[month]} ${year}` })
+
   const [open, setOpen] = useState(false)
   const containerRef = useRef<HTMLDivElement>(null)
   const parsed = parseIso(value)
@@ -180,7 +236,7 @@ export function DatePicker({
 
   /* ── Render ─────────────────────────────────────────────────────── */
 
-  const displayText = formatDisplay(value)
+  const displayText = formatDisplay(value, SHORT_MONTH_NAMES)
 
   return (
     <div ref={containerRef} className={`relative ${className}`}>
@@ -214,7 +270,7 @@ export function DatePicker({
         ].join(' ')}
       >
         <span className={displayText ? '' : 'text-text-muted dark:text-text-dark-muted'}>
-          {displayText || placeholder}
+          {displayText || placeholderText}
         </span>
         <div className="flex items-center gap-1.5 flex-shrink-0">
           {/* Clear button */}
@@ -225,7 +281,7 @@ export function DatePicker({
               onClick={handleClear}
               onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onChange(null) } }}
               className="p-0.5 rounded hover:bg-ui-body dark:hover:bg-ui-dark-bg text-text-muted dark:text-text-dark-muted hover:text-text-primary dark:hover:text-text-dark-primary transition-colors"
-              aria-label="Limpiar fecha"
+              aria-label={clearLabel}
             >
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                 <line x1="18" y1="6" x2="6" y2="18" />
@@ -258,7 +314,7 @@ export function DatePicker({
       {open && (
         <div
           role="dialog"
-          aria-label="Calendario"
+          aria-label={calendarLabel}
           className={[
             'absolute z-50 mt-1 w-[300px] rounded-xl border shadow-lg',
             'border-ui-border dark:border-ui-dark-border',
@@ -269,9 +325,9 @@ export function DatePicker({
           {/* Header: selected date display */}
           {parsed ? (
             <div className="px-4 pt-3 pb-2 border-b border-ui-border-l/50 dark:border-ui-dark-border-l/50">
-              <p className="text-xs text-text-muted dark:text-text-dark-muted uppercase tracking-wide">Fecha seleccionada</p>
+              <p className="text-xs text-text-muted dark:text-text-dark-muted uppercase tracking-wide">{selectedDateLabel}</p>
               <p className="text-lg font-semibold text-text-primary dark:text-text-dark-primary mt-0.5">
-                {parsed.day} de {MONTH_NAMES[parsed.month]} {parsed.year}
+                {dayLabelFor(parsed.day, parsed.month, parsed.year)}
               </p>
             </div>
           ) : null}
@@ -282,7 +338,7 @@ export function DatePicker({
               type="button"
               onClick={prevMonth}
               className="p-1.5 rounded-md hover:bg-ui-body dark:hover:bg-ui-dark-bg text-text-secondary dark:text-text-dark-secondary transition-colors"
-              aria-label="Mes anterior"
+              aria-label={prevMonthLabel}
             >
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                 <polyline points="15 18 9 12 15 6" />
@@ -295,7 +351,7 @@ export function DatePicker({
               type="button"
               onClick={nextMonth}
               className="p-1.5 rounded-md hover:bg-ui-body dark:hover:bg-ui-dark-bg text-text-secondary dark:text-text-dark-secondary transition-colors"
-              aria-label="Mes siguiente"
+              aria-label={nextMonthLabel}
             >
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                 <polyline points="9 18 15 12 9 6" />
@@ -338,7 +394,7 @@ export function DatePicker({
                           ? 'text-text-muted/40 dark:text-text-dark-muted/40 cursor-not-allowed'
                           : 'text-text-primary dark:text-text-dark-primary hover:bg-odoo-purple/10 dark:hover:bg-odoo-dark-purple/15',
                   ].join(' ')}
-                  aria-label={`${day} de ${MONTH_NAMES[viewMonth]} ${viewYear}`}
+                  aria-label={dayLabelFor(day, viewMonth, viewYear)}
                   aria-pressed={isSelected}
                 >
                   {day}

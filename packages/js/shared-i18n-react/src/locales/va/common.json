@@ -100,7 +100,23 @@
     "groupInsert": "Inserir",
     "groupTable": "Taula",
     "groupTools": "Eines",
-    "groupView": "Vista"
+    "groupView": "Vista",
+    "toolbarAriaLabel": "Barra d'eines de l'editor",
+    "findReplaceAriaLabel": "Cercar i reemplaçar",
+    "colors": {
+      "default": "Per defecte",
+      "black": "Negre",
+      "grey": "Gris",
+      "red": "Roig",
+      "orange": "Taronja",
+      "yellow": "Groc",
+      "green": "Verd",
+      "cyan": "Cian",
+      "blue": "Blau",
+      "purple": "Morat",
+      "pink": "Rosa",
+      "brown": "Marró"
+    }
   },
   "status": {
     "loading": "Carregant…",
@@ -309,5 +325,67 @@
     "on": "Activat",
     "off": "Desactivat"
   },
-  "notFound": "404 — No trobat"
+  "notFound": "404 — No trobat",
+  "datePicker": {
+    "placeholder": "Seleccionar data",
+    "clear": "Netejar data",
+    "calendar": "Calendari",
+    "selectedDate": "Data seleccionada",
+    "prevMonth": "Mes anterior",
+    "nextMonth": "Mes següent",
+    "dayLabel": "{{day}} de {{month}} {{year}}",
+    "weekdaysShort": [
+      "DL",
+      "DT",
+      "DC",
+      "DJ",
+      "DV",
+      "DS",
+      "DG"
+    ],
+    "months": [
+      "Gener",
+      "Febrer",
+      "Març",
+      "Abril",
+      "Maig",
+      "Juny",
+      "Juliol",
+      "Agost",
+      "Setembre",
+      "Octubre",
+      "Novembre",
+      "Desembre"
+    ],
+    "monthsShort": [
+      "gen",
+      "feb",
+      "mar",
+      "abr",
+      "mai",
+      "jun",
+      "jul",
+      "ago",
+      "set",
+      "oct",
+      "nov",
+      "des"
+    ]
+  },
+  "dataTable": {
+    "flipCard": "Girar targeta",
+    "flip": "Girar",
+    "viewGroup": "Vista",
+    "viewTable": "Vista taula",
+    "viewCards": "Vista targetes",
+    "viewFlip": "Vista targetes amb dors"
+  },
+  "multiSelect": {
+    "placeholder": "Seleccionar…",
+    "selectedCount": "{{count}} seleccionats",
+    "noOptions": "Sense opcions"
+  },
+  "form": {
+    "required": "Obligatori"
+  }
 }

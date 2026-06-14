@@ -17,6 +17,8 @@ interface FindReplaceBarProps {
     count: (current: number, total: number) => string;
     none: string;
     replacedCount: (n: number) => string;
+    /** aria-label de la barra (rol search). Opcional; default "Find and replace". */
+    ariaLabel?: string;
   };
 }
 
@@ -155,7 +157,7 @@ export function FindReplaceBar({ editor, open, onClose, labels }: FindReplaceBar
   if (!open) return null;
 
   return (
-    <div className="maya-editor-find" role="search" aria-label="Find and replace">
+    <div className="maya-editor-find" role="search" aria-label={labels.ariaLabel ?? 'Find and replace'}>
       <div className="maya-editor-find__row">
         <input
           ref={inputRef}
