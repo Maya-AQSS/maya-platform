@@ -92,5 +92,10 @@
       "title": "Pic d'errors crítics",
       "body": "S'han detectat {{count}} errors crítics en l'última finestra."
     }
+  },
+  "relativeTime": {
+    "now": "ara",
+    "minutes": "{{count}} min",
+    "hours": "{{count}} h"
   }
 }

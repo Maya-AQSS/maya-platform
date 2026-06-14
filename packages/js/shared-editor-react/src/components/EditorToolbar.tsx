@@ -100,6 +100,8 @@ export interface ToolbarLabels {
   groupTable?: string;
   groupTools?: string;
   groupView?: string;
+  /** aria-label de la barra de herramientas (rol toolbar). */
+  toolbarAriaLabel?: string;
 }
 
 export const DEFAULT_LABELS: ToolbarLabels = {
@@ -170,6 +172,7 @@ export const DEFAULT_LABELS: ToolbarLabels = {
   groupTable: 'Table',
   groupTools: 'Tools',
   groupView: 'View',
+  toolbarAriaLabel: 'Editor toolbar',
 };
 
 /**
@@ -200,7 +203,7 @@ export function EditorToolbar({
   // Lite mode: a single flat row (no captions), as before.
   if (isLite) {
     return (
-      <div className="maya-editor-toolbar" role="toolbar" aria-label="Editor toolbar">
+      <div className="maya-editor-toolbar" role="toolbar" aria-label={L.toolbarAriaLabel ?? 'Editor toolbar'}>
         <Btn
           disabled={!editor.can().undo()}
           onClick={() => editor.chain().focus().undo().run()}
@@ -226,7 +229,7 @@ export function EditorToolbar({
       <div
         className="maya-editor-toolbar maya-editor-ribbon"
         role="toolbar"
-        aria-label="Editor toolbar"
+        aria-label={L.toolbarAriaLabel ?? 'Editor toolbar'}
       >
         <RibbonGroup label={L.groupHistory ?? 'History'}>
           <Btn

@@ -100,7 +100,23 @@
     "groupInsert": "Insertar",
     "groupTable": "Tabla",
     "groupTools": "Herramientas",
-    "groupView": "Vista"
+    "groupView": "Vista",
+    "toolbarAriaLabel": "Barra de herramientas del editor",
+    "findReplaceAriaLabel": "Buscar y reemplazar",
+    "colors": {
+      "default": "Por defecto",
+      "black": "Negro",
+      "grey": "Gris",
+      "red": "Rojo",
+      "orange": "Naranja",
+      "yellow": "Amarillo",
+      "green": "Verde",
+      "cyan": "Cian",
+      "blue": "Azul",
+      "purple": "Morado",
+      "pink": "Rosa",
+      "brown": "Marrón"
+    }
   },
   "status": {
     "loading": "Cargando…",
@@ -309,5 +325,67 @@
     "on": "Activado",
     "off": "Desactivado"
   },
-  "notFound": "404 — No encontrado"
+  "notFound": "404 — No encontrado",
+  "datePicker": {
+    "placeholder": "Seleccionar fecha",
+    "clear": "Limpiar fecha",
+    "calendar": "Calendario",
+    "selectedDate": "Fecha seleccionada",
+    "prevMonth": "Mes anterior",
+    "nextMonth": "Mes siguiente",
+    "dayLabel": "{{day}} de {{month}} {{year}}",
+    "weekdaysShort": [
+      "L",
+      "M",
+      "X",
+      "J",
+      "V",
+      "S",
+      "D"
+    ],
+    "months": [
+      "Enero",
+      "Febrero",
+      "Marzo",
+      "Abril",
+      "Mayo",
+      "Junio",
+      "Julio",
+      "Agosto",
+      "Septiembre",
+      "Octubre",
+      "Noviembre",
+      "Diciembre"
+    ],
+    "monthsShort": [
+      "ene",
+      "feb",
+      "mar",
+      "abr",
+      "may",
+      "jun",
+      "jul",
+      "ago",
+      "sep",
+      "oct",
+      "nov",
+      "dic"
+    ]
+  },
+  "dataTable": {
+    "flipCard": "Voltear tarjeta",
+    "flip": "Voltear",
+    "viewGroup": "Vista",
+    "viewTable": "Vista tabla",
+    "viewCards": "Vista tarjetas",
+    "viewFlip": "Vista tarjetas con dorso"
+  },
+  "multiSelect": {
+    "placeholder": "Seleccionar…",
+    "selectedCount": "{{count}} seleccionados",
+    "noOptions": "Sin opciones"
+  },
+  "form": {
+    "required": "Obligatorio"
+  }
 }

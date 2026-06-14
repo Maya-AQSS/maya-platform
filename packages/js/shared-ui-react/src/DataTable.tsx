@@ -1,4 +1,5 @@
 import { useEffect, useState, type MouseEvent as ReactMouseEvent, type ReactNode } from 'react'
+import { useTranslation } from 'react-i18next'
 import { ColumnVisibilityMenu } from './ColumnVisibilityMenu'
 
 /**
@@ -164,6 +165,25 @@ interface Props<T> {
   /** Etiqueta del botón "Limpiar" (default). */
   clearFiltersLabel?: string
   /**
+   * Textos i18n del toggle de vista y del botón de voltear tarjeta. TODOS
+   * opcionales: si se omiten, se resuelven vía `t('dataTable.*')` con fallback
+   * en español. El consumidor puede sobrescribir cualquiera pasando `viewLabels`.
+   */
+  viewLabels?: {
+    /** aria-label del grupo toggle de vista. */
+    viewGroup?: string
+    /** title del botón vista tabla. */
+    viewTable?: string
+    /** title del botón vista tarjetas. */
+    viewCards?: string
+    /** title del botón vista tarjetas con dorso. */
+    viewFlip?: string
+    /** aria-label del botón de voltear tarjeta. */
+    flipCard?: string
+    /** title del botón de voltear tarjeta. */
+    flip?: string
+  }
+  /**
    * Si se pasa, se renderiza un `ColumnVisibilityMenu` integrado en la cabecera.
    * El consumidor sigue manteniendo el estado (típico con `useTablePreferences`).
    */
@@ -235,7 +255,7 @@ function isStringImage(img: FlipCardFace['image']): img is string {
  * muestra contenido libre y acción secundaria. El icono de voltear vive en la
  * esquina superior derecha de ambas caras.
  */
-function FlipCard({ face }: { face: FlipCardFace }) {
+function FlipCard({ face, flipCardLabel, flipLabel }: { face: FlipCardFace; flipCardLabel: string; flipLabel: string }) {
   const [flipped, setFlipped] = useState(false)
   const [imageError, setImageError] = useState(false)
   const handleFlip = (e: ReactMouseEvent) => {
@@ -300,8 +320,8 @@ function FlipCard({ face }: { face: FlipCardFace }) {
             <button
               type="button"
               onClick={handleFlip}
-              aria-label="Voltear tarjeta"
-              title="Voltear"
+              aria-label={flipCardLabel}
+              title={flipLabel}
               className={[
                 'absolute top-2 right-2 inline-flex items-center justify-center w-8 h-8 rounded-full',
                 'bg-ui-card/85 dark:bg-ui-dark-card/85 backdrop-blur-sm',
@@ -356,8 +376,8 @@ function FlipCard({ face }: { face: FlipCardFace }) {
           <button
             type="button"
             onClick={handleFlip}
-            aria-label="Voltear tarjeta"
-            title="Voltear"
+            aria-label={flipCardLabel}
+            title={flipLabel}
             className={[
               'absolute top-2 right-2 z-10 inline-flex items-center justify-center w-8 h-8 rounded-full',
               'bg-ui-card/85 dark:bg-ui-dark-card/85 backdrop-blur-sm',
@@ -430,6 +450,7 @@ export function DataTable<T>({
   onFiltersOpenChange,
   filtersLabel = 'Filtros',
   clearFiltersLabel = 'Limpiar',
+  viewLabels,
   onToggleHiddenColumn,
   columnsLabel,
   hideColumnsMenu = false,
@@ -447,6 +468,16 @@ export function DataTable<T>({
   filterValues: _filterValues,
   onFilterChange: _onFilterChange,
 }: Props<T>) {
+  const { t } = useTranslation('common')
+  // Textos del toggle de vista y del botón de voltear: `viewLabels` (prop) >
+  // `t('dataTable.*')` > fallback ES. No-overridable hasta ahora; ahora inyectables.
+  const viewGroupLabel = viewLabels?.viewGroup ?? t('dataTable.viewGroup', { defaultValue: 'Vista' })
+  const viewTableLabel = viewLabels?.viewTable ?? t('dataTable.viewTable', { defaultValue: 'Vista tabla' })
+  const viewCardsLabel = viewLabels?.viewCards ?? t('dataTable.viewCards', { defaultValue: 'Vista tarjetas' })
+  const viewFlipLabel = viewLabels?.viewFlip ?? t('dataTable.viewFlip', { defaultValue: 'Vista tarjetas con dorso' })
+  const flipCardLabel = viewLabels?.flipCard ?? t('dataTable.flipCard', { defaultValue: 'Voltear tarjeta' })
+  const flipLabel = viewLabels?.flip ?? t('dataTable.flip', { defaultValue: 'Voltear' })
+
   // Auto-genera un cardRender por defecto a partir de las columnas visibles.
   // Sin etiquetas: la primera columna actúa como título destacado, la segunda
   // como subtítulo, el resto como detalles atenuados. Las columnas marcadas
@@ -675,12 +706,12 @@ export function DataTable<T>({
               </select>
             ) : null}
             {cardRender || hasFlip ? (
-              <div role="group" aria-label="Vista" className="inline-flex h-9 rounded-md border border-ui-border dark:border-ui-dark-border bg-ui-card dark:bg-ui-dark-card overflow-hidden">
+              <div role="group" aria-label={viewGroupLabel} className="inline-flex h-9 rounded-md border border-ui-border dark:border-ui-dark-border bg-ui-card dark:bg-ui-dark-card overflow-hidden">
                 <button
                   type="button"
                   aria-pressed={view === 'table'}
                   onClick={() => setView('table')}
-                  title="Vista tabla"
+                  title={viewTableLabel}
                   className={[
                     'inline-flex items-center justify-center w-9 transition-colors',
                     view === 'table'
@@ -699,7 +730,7 @@ export function DataTable<T>({
                     type="button"
                     aria-pressed={view === 'cards'}
                     onClick={() => setView('cards')}
-                    title="Vista tarjetas"
+                    title={viewCardsLabel}
                     className={[
                       'inline-flex items-center justify-center w-9 transition-colors border-l border-ui-border dark:border-ui-dark-border',
                       view === 'cards'
@@ -720,7 +751,7 @@ export function DataTable<T>({
                     type="button"
                     aria-pressed={view === 'flip'}
                     onClick={() => setView('flip')}
-                    title="Vista tarjetas con dorso"
+                    title={viewFlipLabel}
                     className={[
                       'inline-flex items-center justify-center w-9 transition-colors border-l border-ui-border dark:border-ui-dark-border',
                       view === 'flip'
@@ -786,7 +817,7 @@ export function DataTable<T>({
                     onClick={clickable ? () => onRowClick!(row) : undefined}
                     className={clickable ? 'cursor-pointer' : undefined}
                   >
-                    <FlipCard face={face} />
+                    <FlipCard face={face} flipCardLabel={flipCardLabel} flipLabel={flipLabel} />
                   </div>
                 )
               })}

@@ -92,5 +92,10 @@
       "title": "Pico de errores críticos",
       "body": "Se han detectado {{count}} errores críticos en la última ventana."
     }
+  },
+  "relativeTime": {
+    "now": "ahora",
+    "minutes": "{{count}} min",
+    "hours": "{{count}} h"
   }
 }

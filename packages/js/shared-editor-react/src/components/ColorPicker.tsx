@@ -1,5 +1,45 @@
 import { useEffect, useRef, useState } from 'react';
 
+/**
+ * Nombres de color inyectables (title/aria-label de cada swatch). Todos
+ * opcionales: si se omiten, se usa el default en inglés. Como este paquete
+ * NO depende de react-i18next, el consumidor traduce pasando `colorLabels`,
+ * p.ej. construyéndolo con `t('editor.colors.*')`:
+ *
+ * ```tsx
+ * <ColorPicker colorLabels={{ red: t('editor.colors.red'), … }} … />
+ * ```
+ */
+export interface ColorLabels {
+  default?: string;
+  black?: string;
+  grey?: string;
+  red?: string;
+  orange?: string;
+  yellow?: string;
+  green?: string;
+  cyan?: string;
+  blue?: string;
+  purple?: string;
+  pink?: string;
+  brown?: string;
+}
+
+const DEFAULT_COLOR_LABELS: Required<ColorLabels> = {
+  default: 'Default',
+  black: 'Black',
+  grey: 'Grey',
+  red: 'Red',
+  orange: 'Orange',
+  yellow: 'Yellow',
+  green: 'Green',
+  cyan: 'Cyan',
+  blue: 'Blue',
+  purple: 'Purple',
+  pink: 'Pink',
+  brown: 'Brown',
+};
+
 interface ColorPickerProps {
   title: string;
   /** Currently applied colour (used for the swatch indicator + state). */
@@ -9,21 +49,23 @@ interface ColorPickerProps {
   /** Glyph shown inside the trigger button (e.g. `A` for text, `▮` for bg). */
   glyph: React.ReactNode;
   clearLabel?: string;
+  /** Nombres de color traducidos (opcional; default en inglés). */
+  colorLabels?: ColorLabels;
 }
 
-const PALETTE: Array<{ value: string | null; label: string }> = [
-  { value: null, label: 'Default' },
-  { value: '#000000', label: 'Black' },
-  { value: '#5b5b5b', label: 'Grey' },
-  { value: '#ef4444', label: 'Red' },
-  { value: '#f97316', label: 'Orange' },
-  { value: '#f59e0b', label: 'Yellow' },
-  { value: '#10b981', label: 'Green' },
-  { value: '#06b6d4', label: 'Cyan' },
-  { value: '#3b82f6', label: 'Blue' },
-  { value: '#8b5cf6', label: 'Purple' },
-  { value: '#ec4899', label: 'Pink' },
-  { value: '#a16207', label: 'Brown' },
+const PALETTE: Array<{ value: string | null; key: keyof ColorLabels }> = [
+  { value: null, key: 'default' },
+  { value: '#000000', key: 'black' },
+  { value: '#5b5b5b', key: 'grey' },
+  { value: '#ef4444', key: 'red' },
+  { value: '#f97316', key: 'orange' },
+  { value: '#f59e0b', key: 'yellow' },
+  { value: '#10b981', key: 'green' },
+  { value: '#06b6d4', key: 'cyan' },
+  { value: '#3b82f6', key: 'blue' },
+  { value: '#8b5cf6', key: 'purple' },
+  { value: '#ec4899', key: 'pink' },
+  { value: '#a16207', key: 'brown' },
 ];
 
 /**
@@ -31,7 +73,8 @@ const PALETTE: Array<{ value: string | null; label: string }> = [
  * and highlight (background) selection. Closes on outside click, Escape,
  * or after a swatch is chosen.
  */
-export function ColorPicker({ title, value, onSelect, glyph, clearLabel = 'Default' }: ColorPickerProps) {
+export function ColorPicker({ title, value, onSelect, glyph, clearLabel = 'Default', colorLabels }: ColorPickerProps) {
+  const labels = { ...DEFAULT_COLOR_LABELS, ...colorLabels };
   const [open, setOpen] = useState(false);
   const wrapperRef = useRef<HTMLDivElement | null>(null);
 
@@ -74,14 +117,16 @@ export function ColorPicker({ title, value, onSelect, glyph, clearLabel = 'Defau
       </button>
       {open && (
         <div className="maya-editor-color__panel" role="menu">
-          {PALETTE.map((item) => (
+          {PALETTE.map((item) => {
+            const colorName = labels[item.key] ?? DEFAULT_COLOR_LABELS[item.key];
+            return (
             <button
               key={item.value ?? '__default__'}
               type="button"
               role="menuitem"
               className={`maya-editor-color__cell${value === item.value ? ' is-active' : ''}`}
-              title={item.value === null ? clearLabel : item.label}
-              aria-label={item.value === null ? clearLabel : item.label}
+              title={item.value === null ? clearLabel : colorName}
+              aria-label={item.value === null ? clearLabel : colorName}
               onClick={() => {
                 onSelect(item.value);
                 setOpen(false);
@@ -92,7 +137,8 @@ export function ColorPicker({ title, value, onSelect, glyph, clearLabel = 'Defau
                   : { background: item.value }
               }
             />
-          ))}
+            );
+          })}
         </div>
       )}
     </div>

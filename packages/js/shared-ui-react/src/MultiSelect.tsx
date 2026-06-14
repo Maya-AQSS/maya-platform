@@ -1,8 +1,21 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react'
+import { useTranslation } from 'react-i18next'
 
 export interface MultiSelectOption {
   value: string
   label: ReactNode
+}
+
+/**
+ * Textos del MultiSelect. Todos opcionales: si se omiten, se resuelven vía
+ * `useTranslation('common')` contra `multiSelect.*` (con fallback ES).
+ * El consumidor puede sobrescribirlos pasando `labels`.
+ */
+export interface MultiSelectLabels {
+  /** Resumen "N seleccionados". Recibe `{{count}}`. */
+  selectedCount?: string
+  /** Texto cuando no hay opciones. */
+  noOptions?: string
 }
 
 interface Props {
@@ -20,6 +33,8 @@ interface Props {
   className?: string
   /** Deshabilitado. */
   disabled?: boolean
+  /** Textos i18n inyectables (opcional; defaults vía `t('multiSelect.*')`). */
+  labels?: MultiSelectLabels
 }
 
 /**
@@ -32,11 +47,15 @@ export function MultiSelect({
   options,
   value,
   onChange,
-  placeholder = 'Seleccionar…',
+  placeholder,
   ariaLabel,
   className = '',
   disabled = false,
+  labels,
 }: Props) {
+  const { t } = useTranslation('common')
+  const placeholderText = placeholder ?? t('multiSelect.placeholder', { defaultValue: 'Seleccionar…' })
+  const noOptionsText = labels?.noOptions ?? t('multiSelect.noOptions', { defaultValue: 'Sin opciones' })
   const [open, setOpen] = useState(false)
   const containerRef = useRef<HTMLDivElement>(null)
 
@@ -75,13 +94,15 @@ export function MultiSelect({
   // Build display text.
   const displayText =
     value.length === 0
-      ? placeholder
+      ? placeholderText
       : value.length <= 2
         ? options
             .filter((o) => selectedSet.has(o.value))
             .map((o) => (typeof o.label === 'string' ? o.label : o.value))
             .join(', ')
-        : `${value.length} seleccionados`
+        : (labels?.selectedCount
+            ? labels.selectedCount.replace('{{count}}', String(value.length))
+            : t('multiSelect.selectedCount', { count: value.length, defaultValue: `${value.length} seleccionados` }))
 
   return (
     <div ref={containerRef} className={`relative ${className}`}>
@@ -164,7 +185,7 @@ export function MultiSelect({
           })}
           {options.length === 0 && (
             <div className="px-3 py-2.5 text-sm text-text-muted dark:text-text-dark-muted">
-              Sin opciones
+              {noOptionsText}
             </div>
           )}
         </div>
