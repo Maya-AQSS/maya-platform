@@ -79,7 +79,12 @@ jobs:
         if: github.event_name != 'workflow_dispatch'
         working-directory: packages/js/${{ matrix.package }}
         env:
-          TAG_VERSION: ${{ github.event_name == 'workflow_call' && inputs.version || github.ref_name }}
+          # En un reusable workflow llamado con `uses:`, github.event_name es el
+          # evento del CALLER (p.ej. 'push' a main), NO 'workflow_call'. Por eso
+          # no se puede discriminar por event_name: hay que mirar inputs.version
+          # directamente. Si viene (workflow_call desde release.yml), se usa; si
+          # está vacío (tag pusheado a mano), se cae a github.ref_name (vX.Y.Z).
+          TAG_VERSION: ${{ inputs.version || github.ref_name }}
         run: |
           node -e '
             const fs = require("fs");
