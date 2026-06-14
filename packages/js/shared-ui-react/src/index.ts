@@ -8,7 +8,7 @@ export { Select } from './Select'
 export { Button, type ButtonVariant, type ButtonSize } from './Button'
 export { ConfirmDialog, type ConfirmDialogResult, type ConfirmDialogVariant } from './ConfirmDialog'
 export { Table, TableHead, TableBody, TableRow, TableHeader, TableCell } from './Table'
-export { ErrorBoundary } from './ErrorBoundary'
+export { ErrorBoundary, createI18nErrorBoundary } from './ErrorBoundary'
 
 // — Sprint 2 primitives —
 export { Spinner, type SpinnerSize, type SpinnerTone } from './Spinner'

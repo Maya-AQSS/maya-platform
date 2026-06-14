@@ -25,3 +25,9 @@ export {
   type UseServerTableOptions,
   type UseServerTableResult,
 } from './useServerTable';
+export {
+  createDomainTableHook,
+  type DomainTableConfig,
+  type DomainTableRuntimeOptions,
+  type UseDomainTableResult,
+} from './createDomainTableHook';
