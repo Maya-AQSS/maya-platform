@@ -47,9 +47,6 @@
             "providers": [
                 "Maya\\Profile\\Providers\\SharedProfileServiceProvider"
             ]
-        },
-        "branch-alias": {
-            "dev-main": "0.18.x-dev"
         }
     },
     "minimum-stability": "stable",

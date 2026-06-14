@@ -1,6 +1,6 @@
 {
     "name": "ceedcv-maya/shared-translations-laravel",
-    "description": "Polymorphic translations for Laravel: a single translations table + HasTranslations trait to store per-locale field values for any model (panel alerts, messages, \u2026).",
+    "description": "Polymorphic translations for Laravel: a single translations table + HasTranslations trait to store per-locale field values for any model (panel alerts, messages, …).",
     "type": "library",
     "license": "MIT",
     "homepage": "https://github.com/Maya-AQSS/shared-translations-laravel",
@@ -44,9 +44,6 @@
             "providers": [
                 "Maya\\Translations\\Providers\\SharedTranslationsServiceProvider"
             ]
-        },
-        "branch-alias": {
-            "dev-main": "0.18.x-dev"
         }
     },
     "minimum-stability": "stable",
