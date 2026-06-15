@@ -228,9 +228,23 @@ export function useServerTable<F extends ServerTableFilters>({
 
   const commit = useCallback(
     (nextFilters: F, nextSort: SortState | null, nextPage: number) => {
-      setSearchParams(writeTableState(nextFilters, defaults, nextSort, nextPage), {
-        replace: true,
-      });
+      const tableQs = writeTableState(nextFilters, defaults, nextSort, nextPage);
+      // Mergear sobre los params actuales en vez de reemplazarlos: el hook solo
+      // "posee" sus filtros + sort_by/sort_dir/page. Reemplazar toda la query
+      // borraría params ajenos que el consumidor guarde en la URL (p.ej. `tab` en
+      // una página con pestañas), tirándolo a la vista por defecto al filtrar.
+      setSearchParams(
+        (prev) => {
+          const next = new URLSearchParams(prev);
+          for (const key of Object.keys(defaults)) next.delete(key); // limpia filtros obsoletos
+          next.delete('sort_by');
+          next.delete('sort_dir');
+          next.delete('page');
+          for (const [k, v] of tableQs) next.set(k, v);
+          return next;
+        },
+        { replace: true },
+      );
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [setSearchParams],
