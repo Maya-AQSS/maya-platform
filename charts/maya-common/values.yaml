@@ -1,0 +1,263 @@
+# maya-common — values schema documentation.
+#
+# This is a Helm library chart: Helm never renders these values directly. They
+# describe the contract every consumer values.yaml must satisfy. Per-service
+# overrides (matrix below) live in each repo's deploy/helm/values.yaml.
+#
+# Per-service matrix (filled in the consumer chart, NOT here):
+# ┌─────────────────────┬──────────────────────────┬──────────────────┬───────────────┐
+# │ Service             │ worker.command           │ scheduler        │ storage       │
+# ├─────────────────────┼──────────────────────────┼──────────────────┼───────────────┤
+# │ maya_dms            │ ["queue:work"]           │ disabled         │ ENABLED (RWX) │
+# │ maya_dashboard      │ ["notifications:consume"]│ enabled, 1 repl  │ disabled      │
+# │ maya_authorization  │ ["queue:work"]           │ disabled         │ disabled      │
+# │ maya_audit          │ ["audit:consume"]        │ disabled         │ disabled      │
+# │ maya_logs           │ ["logs:consume"]         │ disabled         │ disabled      │
+# └─────────────────────┴──────────────────────────┴──────────────────┴───────────────┘
+
+nameOverride: ""
+fullnameOverride: ""
+
+# Labels applied to every rendered resource.
+commonLabels:
+  app.kubernetes.io/part-of: maya
+
+# Default image reference. Tag MUST be set per release via --set image.tag=<sha>.
+image:
+  registry: gitea.ceedcv.es
+  repository: maya/maya-<service>
+  tag: ""
+  pullPolicy: IfNotPresent
+  pullSecrets:
+    - regcred
+
+# ─── Backend (php-fpm + nginx sidecar) ────────────────────────────────────────
+backend:
+  enabled: true
+  replicas: 2
+  image:
+    repository: ""   # overrides .Values.image.repository
+    tag: ""
+  fpmPort: 9000
+  httpPort: 8000
+  nginx:
+    image: nginx:1.29-alpine
+    resources:
+      requests:
+        cpu: 25m
+        memory: 32Mi
+      limits:
+        cpu: 200m
+        memory: 64Mi
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      cpu: 1000m
+      memory: 512Mi   # DMS bumps this to 768Mi
+  livenessProbe:
+    httpGet:
+      path: /api/v1/health/live
+      port: http
+    initialDelaySeconds: 30
+    periodSeconds: 15
+    timeoutSeconds: 5
+    failureThreshold: 5
+  readinessProbe:
+    httpGet:
+      path: /api/v1/health/ready
+      port: http
+    initialDelaySeconds: 10
+    periodSeconds: 10
+    timeoutSeconds: 5
+    failureThreshold: 3
+  podAnnotations: {}
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+
+# ─── Frontend (nginx static) ──────────────────────────────────────────────────
+frontend:
+  enabled: true
+  replicas: 2
+  image:
+    repository: ""
+    tag: ""
+  containerPort: 8080
+  resources:
+    requests:
+      cpu: 50m
+      memory: 64Mi
+    limits:
+      cpu: 200m
+      memory: 128Mi
+  livenessProbe:
+    httpGet:
+      path: /healthz
+      port: http
+    initialDelaySeconds: 10
+    periodSeconds: 15
+    timeoutSeconds: 3
+  readinessProbe:
+    httpGet:
+      path: /healthz
+      port: http
+    initialDelaySeconds: 5
+    periodSeconds: 10
+    timeoutSeconds: 3
+
+# ─── Worker — see per-service matrix above ───────────────────────────────────
+worker:
+  enabled: true
+  replicas: 1
+  containerRole: worker
+  command: ["queue:work"]   # overridden per service
+  image:
+    repository: ""
+    tag: ""
+  resources:
+    requests:
+      cpu: 50m
+      memory: 128Mi
+    limits:
+      cpu: 500m
+      memory: 256Mi
+
+# ─── Scheduler (dashboard only) ──────────────────────────────────────────────
+scheduler:
+  enabled: false
+  command: ["schedule:work"]
+  image:
+    repository: ""
+    tag: ""
+  resources:
+    requests:
+      cpu: 25m
+      memory: 64Mi
+    limits:
+      cpu: 200m
+      memory: 128Mi
+
+# ─── Reverb (WebSockets) ─────────────────────────────────────────────────────
+reverb:
+  enabled: true
+  replicas: 1
+  containerPort: 8080
+  image:
+    repository: ""
+    tag: ""
+  resources:
+    requests:
+      cpu: 50m
+      memory: 128Mi
+    limits:
+      cpu: 500m
+      memory: 256Mi
+  livenessProbe:
+    tcpSocket:
+      port: ws
+    initialDelaySeconds: 15
+    periodSeconds: 20
+  readinessProbe:
+    tcpSocket:
+      port: ws
+    initialDelaySeconds: 10
+    periodSeconds: 10
+
+# ─── Migration Job ───────────────────────────────────────────────────────────
+migrate:
+  enabled: true
+  command: ["php", "artisan", "migrate", "--force"]
+  image:
+    repository: ""
+    tag: ""
+  backoffLimit: 1
+  activeDeadlineSeconds: 600
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+
+# ─── DMS media PVC (RWX on maya-nfs) ─────────────────────────────────────────
+storage:
+  enabled: false
+  storageClassName: maya-nfs
+  accessMode: ReadWriteMany
+  size: 20Gi
+
+# ─── Ingress ─────────────────────────────────────────────────────────────────
+ingress:
+  enabled: true
+  className: traefik
+  annotations: {}
+  frontend:
+    host: <service>.ceedcv.es
+    tlsSecretName: <service>-frontend-tls
+  api:
+    host: <service>-api.ceedcv.es
+    tlsSecretName: <service>-api-tls
+  reverb:
+    host: <service>-reverb.ceedcv.es
+    tlsSecretName: <service>-reverb-tls
+
+# ─── ConfigMap (UPPER_SNAKE_CASE keys mirror .env.example) ───────────────────
+# Service-specific. Consumer overrides the entire block. APP_ENV, APP_DEBUG
+# and SESSION_SECURE_COOKIE are appended unconditionally by _configmap.tpl.
+#
+# IMPORTANT: set TRUSTED_PROXIES to the Traefik CIDR (e.g. "172.29.71.0/24")
+# so shared-http-laravel CommonMiddleware restricts trustProxies(at: ...).
+config:
+  APP_NAME: "Maya"
+  LOG_CHANNEL: stack
+  LOG_LEVEL: warning
+  SESSION_SAME_SITE: lax
+  TRUSTED_PROXIES: "172.29.71.0/24,10.42.0.0/16"
+
+# ─── Secret ──────────────────────────────────────────────────────────────────
+# Use `externalName` in prod (Sealed Secrets / kubectl). The chart only writes
+# the resource if externalName is empty.
+secret:
+  externalName: ""
+  name: ""
+  data:
+    APP_KEY: "CHANGE-ME-base64-app-key"
+    DB_PASSWORD: "CHANGE-ME-db-password"
+    REDIS_PASSWORD: "CHANGE-ME-redis-password"
+    RABBITMQ_PASSWORD: "CHANGE-ME-rabbitmq-password"
+    KEYCLOAK_CLIENT_SECRET: "CHANGE-ME-keycloak-client-secret"
+    REVERB_APP_KEY: "CHANGE-ME-reverb-app-key"
+    REVERB_APP_SECRET: "CHANGE-ME-reverb-app-secret"
+
+# ─── NetworkPolicy ───────────────────────────────────────────────────────────
+networkPolicy:
+  enabled: true
+  ingressNamespace: kube-system
+  allowedNamespaces: []   # per-service: maya-* namespaces that may call us
+
+# ─── PodSecurity ─────────────────────────────────────────────────────────────
+serviceAccountName: default
+terminationGracePeriodSeconds: 30
+reverbTerminationGracePeriodSeconds: 60
+preStopSleepSeconds: 5
+
+podSecurityContext:
+  runAsNonRoot: true
+  runAsUser: 82       # www-data in php:8.4-fpm-alpine
+  runAsGroup: 82
+  fsGroup: 82
+  seccompProfile:
+    type: RuntimeDefault
+
+containerSecurityContext:
+  runAsNonRoot: true
+  runAsUser: 82
+  runAsGroup: 82
+  allowPrivilegeEscalation: false
+  readOnlyRootFilesystem: true
+  capabilities:
+    drop:
+      - ALL

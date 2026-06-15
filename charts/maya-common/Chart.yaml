@@ -1,0 +1,31 @@
+apiVersion: v2
+name: maya-common
+description: |
+  Library Helm chart shared by all Maya services. Exposes parametrizable
+  named templates for the standard Maya topology: backend (php-fpm + nginx
+  sidecar), frontend (nginx static), worker, scheduler, reverb, Service,
+  Ingress (Traefik), ConfigMap, Secret stub, pre-upgrade migration Job,
+  optional RWX PVC (for DMS media) and NetworkPolicy.
+
+  Published to the Gitea OCI registry (oci://gitea.ceedcv.es/maya/charts).
+  Consumer charts declare it under `dependencies:` and re-export resources
+  via `{{ include "maya-common.<resource>" . }}` from their own
+  `templates/*.yaml` files.
+
+  See README.md for the values contract.
+type: library
+version: 0.1.0
+appVersion: "0.21.0"
+icon: https://ceedcv.es/favicon.ico
+maintainers:
+  - name: CEEDCV — equipo Maya
+sources:
+  - https://gitea.ceedcv.es/maya/maya_platform
+kubeVersion: ">=1.27.0-0"
+keywords:
+  - maya
+  - laravel
+  - react
+  - library
+  - traefik
+  - keycloak
