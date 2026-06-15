@@ -203,7 +203,7 @@ export function useServerTable<F extends ServerTableFilters>({
   sortableColumns,
   storageKey,
   defaultSort = null,
-  defaultPageSize = 15,
+  defaultPageSize = 10,
 }: UseServerTableOptions<F>): UseServerTableResult<F> {
   const [searchParams, setSearchParams] = useSearchParams();
 
