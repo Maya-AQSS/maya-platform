@@ -105,7 +105,9 @@ final class CommonMiddleware
             return array_values(array_map('strval', $option));
         }
 
-        $envValue = getenv('TRUSTED_PROXIES');
+        // Read from $_ENV first (phpdotenv may populate it without putenv,
+        // in which case getenv() alone would miss it), then process env.
+        $envValue = $_ENV['TRUSTED_PROXIES'] ?? getenv('TRUSTED_PROXIES');
         if ($envValue !== false && trim((string) $envValue) !== '') {
             $items = array_values(array_filter(array_map('trim', explode(',', (string) $envValue)), static fn (string $v): bool => $v !== ''));
             if ($items !== []) {
@@ -113,8 +115,17 @@ final class CommonMiddleware
             }
         }
 
-        // Insecure fallback for dev/Compose. Production MUST set TRUSTED_PROXIES
-        // (see ConfigMap in the maya-common Helm chart).
+        // No explicit value and no TRUSTED_PROXIES: refuse the insecure '*'
+        // fallback in production (trusting any proxy enables X-Forwarded-* spoofing).
+        $appEnv = $_ENV['APP_ENV'] ?? getenv('APP_ENV');
+        if (is_string($appEnv) && $appEnv === 'production') {
+            throw new \RuntimeException(
+                'TRUSTED_PROXIES must be set explicitly in production (e.g. the Traefik CIDR '
+                .'such as 172.29.71.0/24). Refusing to trust all proxies ("*").'
+            );
+        }
+
+        // Insecure fallback for dev/Compose only.
         return '*';
     }
 }

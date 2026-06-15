@@ -29,7 +29,7 @@ spec:
       labels:
         {{- include "maya-common.componentSelectorLabels" (dict "root" . "component" $component) | nindent 8 }}
       annotations:
-        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+        checksum/config: {{ include "maya-common.configmap" . | sha256sum }}
         {{- with .Values.backend.podAnnotations }}
         {{- toYaml . | nindent 8 }}
         {{- end }}
