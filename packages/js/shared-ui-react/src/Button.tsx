@@ -51,9 +51,9 @@ const variantClass: Record<ButtonVariant, string> = {
   outline:
     'border border-ui-border dark:border-ui-dark-border text-text-secondary dark:text-text-dark-secondary hover:bg-ui-body dark:hover:bg-ui-dark-bg hover:border-text-secondary/60 dark:hover:border-text-dark-secondary/50 hover:text-text-primary dark:hover:text-text-dark-primary',
   outlineTeal:
-    'border border-odoo-teal/40 text-odoo-teal hover:bg-odoo-teal/10 hover:border-odoo-teal hover:shadow-[0_3px_10px_-4px_rgba(17,164,156,0.35)]',
+    'border border-odoo-teal/40 dark:border-odoo-dark-teal/50 text-odoo-teal dark:text-odoo-dark-teal hover:bg-odoo-teal/10 dark:hover:bg-odoo-dark-teal/10 hover:border-odoo-teal dark:hover:border-odoo-dark-teal hover:shadow-[0_3px_10px_-4px_rgba(17,164,156,0.35)]',
   outlineWarning:
-    'border border-warning/40 text-warning-dark hover:bg-warning-light/30 dark:hover:bg-warning-dark/15 hover:border-warning hover:shadow-[0_3px_10px_-4px_rgba(245,158,11,0.4)]',
+    'border border-warning/40 dark:border-warning/50 text-warning-dark dark:text-warning hover:bg-warning-light/30 dark:hover:bg-warning-dark/20 hover:border-warning hover:shadow-[0_3px_10px_-4px_rgba(245,158,11,0.4)]',
   ghost:
     'bg-transparent text-text-secondary dark:text-text-dark-secondary border border-transparent hover:border-ui-border dark:hover:border-ui-dark-border hover:text-text-primary dark:hover:text-text-dark-primary hover:bg-ui-body/60 dark:hover:bg-ui-dark-bg/60',
   unstyled: '',
