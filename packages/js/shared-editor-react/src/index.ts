@@ -7,7 +7,6 @@ export type { ToolbarLabels } from './components/EditorToolbar';
 export { buildToolbarLabels } from './lib/buildToolbarLabels';
 export type { TranslateFn } from './lib/buildToolbarLabels';
 
-export { IframeBlock } from './extensions/IframeBlock';
 export { AlertBlock } from './extensions/AlertBlock';
 export type { AlertVariant } from './extensions/AlertBlock';
 export { CommentMark } from './extensions/CommentMark';

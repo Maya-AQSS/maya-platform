@@ -265,7 +265,7 @@ export function ListAndBlockButtons({ editor, labels: L }: ToolbarGroupProps) {
 }
 
 /**
- * Table and media buttons: insert table, iframe, and optional image upload.
+ * Table and media buttons: insert table and optional image upload.
  */
 export interface TableAndMediaButtonsProps extends ToolbarGroupProps {
   onImage?: () => void;
@@ -276,12 +276,6 @@ export function TableAndMediaButtons({
   labels: L,
   onImage,
 }: TableAndMediaButtonsProps) {
-  const setIframe = () => {
-    const url = window.prompt(L.iframePrompt, '');
-    if (!url) return;
-    editor.chain().focus().setIframe({ src: url }).run();
-  };
-
   return (
     <>
       <Btn
@@ -291,9 +285,6 @@ export function TableAndMediaButtons({
         title={L.table}
       >
         <EditorIcon name="table" />
-      </Btn>
-      <Btn onClick={setIframe} title={L.iframe}>
-        <EditorIcon name="iframe" />
       </Btn>
       {onImage && (
         <Btn onClick={onImage} title={L.uploadImage}>

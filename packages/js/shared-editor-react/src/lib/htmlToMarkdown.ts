@@ -112,10 +112,6 @@ function blockToMarkdown(el: Element, listDepth = 0): string {
       const alt = el.getAttribute('alt') ?? '';
       return `![${alt}](${src})\n\n`;
     }
-    case 'IFRAME': {
-      const src = el.getAttribute('src') ?? '';
-      return `<iframe src="${src}"></iframe>\n\n`;
-    }
     case 'ASIDE':
       return Array.from(el.children).map((c) => blockToMarkdown(c, listDepth)).join('');
     case 'FIGURE': {

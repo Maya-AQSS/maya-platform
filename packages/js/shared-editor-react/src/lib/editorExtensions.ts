@@ -23,7 +23,6 @@ import { Color } from '@tiptap/extension-color';
 import { TextAlign } from '@tiptap/extension-text-align';
 import type { Extensions } from '@tiptap/core';
 
-import { IframeBlock } from '../extensions/IframeBlock';
 import { AlertBlock } from '../extensions/AlertBlock';
 import { CommentMark } from '../extensions/CommentMark';
 import { Indent } from '../extensions/Indent';
@@ -65,7 +64,6 @@ export function buildMayaEditorExtensions(mode: EditorMode = 'full'): Extensions
       Image,
       TaskList,
       TaskItem.configure({ nested: true }),
-      IframeBlock,
       AlertBlock,
     );
   }

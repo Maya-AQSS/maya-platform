@@ -33,7 +33,6 @@ export type EditorIconName =
   | 'horizontalRule'
   | 'table'
   | 'image'
-  | 'iframe'
   | 'comment'
   | 'find'
   | 'importDocx'
@@ -220,14 +219,6 @@ const PATHS: Record<EditorIconName, ReactNode> = {
       <rect x="3" y="3" width="18" height="18" rx="2" />
       <circle cx="9" cy="9" r="2" />
       <path d="m21 15-4-4-9 9" />
-    </>
-  ),
-  iframe: (
-    <>
-      <rect x="2" y="4" width="20" height="16" rx="2" />
-      <line x1="2" y1="9" x2="22" y2="9" />
-      <line x1="6" y1="6.5" x2="6.01" y2="6.5" />
-      <line x1="9" y1="6.5" x2="9.01" y2="6.5" />
     </>
   ),
   comment: (

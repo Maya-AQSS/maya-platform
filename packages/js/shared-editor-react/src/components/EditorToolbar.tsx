@@ -53,8 +53,6 @@ export interface ToolbarLabels {
   image: string;
   table: string;
   alert: string;
-  iframe: string;
-  iframePrompt: string;
   fullscreen: string;
   exitFullscreen: string;
   insertHtml: string;
@@ -125,8 +123,6 @@ export const DEFAULT_LABELS: ToolbarLabels = {
   image: 'Image',
   table: 'Table',
   alert: 'Alert',
-  iframe: 'Iframe',
-  iframePrompt: 'Iframe URL',
   fullscreen: 'Fullscreen',
   exitFullscreen: 'Exit fullscreen',
   insertHtml: 'Insert HTML',

@@ -3,7 +3,6 @@ import type { TiptapDoc, TiptapNode } from '../types';
 const MEANINGFUL_BLOCK_TYPES = new Set([
   'image',
   'table',
-  'iframeBlock',
   'alertBlock',
   'horizontalRule',
   'codeBlock',

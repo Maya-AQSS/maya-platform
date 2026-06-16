@@ -543,6 +543,28 @@
   box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.18);
 }
 
+.maya-editor-dialog__input {
+  margin: 16px 18px 4px;
+  box-sizing: border-box;
+  width: calc(100% - 36px);
+  border: 1px solid var(--maya-editor-border, #d6d6df);
+  border-radius: 6px;
+  padding: 8px 12px;
+  font-size: 14px;
+  line-height: 1.5;
+  background: var(--maya-editor-toolbar-bg, #f7f7f9);
+  color: inherit;
+  outline: none;
+}
+.maya-editor-dialog__input:focus {
+  border-color: var(--maya-editor-link, #7c3aed);
+  box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.18);
+}
+
+.maya-editor-dialog--compact {
+  width: min(480px, 100%);
+}
+
 .maya-editor-dialog__footer {
   display: flex;
   justify-content: flex-end;

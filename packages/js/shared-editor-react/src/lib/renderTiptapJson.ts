@@ -5,7 +5,7 @@
  * This replaces hand-rolled JSON→HTML walkers (which drift from the live
  * editor and from the server-side `TiptapHtmlRenderer.php`). The static
  * renderer builds the schema from the canonical extension set and runs each
- * extension's `renderHTML`, so custom nodes (AlertBlock, IframeBlock, …) and
+ * extension's `renderHTML`, so custom nodes (AlertBlock, …) and
  * marks render exactly as the editor defines them — a single source of truth
  * on the JS side.
  *
