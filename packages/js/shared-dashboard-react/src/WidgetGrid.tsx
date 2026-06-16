@@ -44,11 +44,16 @@ export function WidgetGrid({
   emptyKey = 'dashboard.noWidgets',
   removeAriaLabel,
 }: WidgetGridProps) {
-  // Widgets pueden redimensionarse libremente: minW/minH del layout/registry
-  // se ignoran para permitir tamaños arbitrarios.
   const validItems = layout
     .filter((item) => item.i in registry)
-    .map((item) => ({ ...item, minW: 1, minH: 1 }))
+    .map((item) => {
+      const def = registry[item.i]
+      return {
+        ...item,
+        minW: item.minW ?? def?.minSize.w ?? 1,
+        minH: item.minH ?? def?.minSize.h ?? 1,
+      }
+    })
 
   const handleStop = useCallback(
     (currentLayout: Layout[]) => {
