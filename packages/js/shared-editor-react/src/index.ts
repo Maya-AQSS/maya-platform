@@ -45,6 +45,12 @@ export { SourceInputDialog } from './components/SourceInputDialog';
 export { FindReplaceBar } from './components/FindReplaceBar';
 export { CommentHoverPopover } from './components/CommentHoverPopover';
 export type { CommentHoverData } from './components/CommentHoverPopover';
+export {
+  getCommentsForBlock,
+  resolveCommentBlockableId,
+  countUnreadCommentsForBlock,
+} from './lib/commentTree';
+export type { CommentTreeNode, CommentReadState } from './lib/commentTree';
 
 export type {
   EditorMode,
